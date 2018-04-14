@@ -43,11 +43,13 @@ unsigned short c;
 char filename[MAX_SIZE];                                                   //will save the name of transaction file, which is read from "a.txt", which is to be opened.
 char folder[MAX_SIZE];
 
-FILE *fpg;                                                                      //to open a.txt
+FILE *fpg, *fp;                                                                 //to open a.txt
 
 struct merkle* create_merkle_node();                                            //function to dynamically allocate memory for data type merkle.
 struct transaction* create_transaction_node();                                  //function to dynamically allocate memory for data type transaction.
 struct merkle* binary_make(struct merkle*, unsigned short, unsigned short);     //forms a binary tree out of transaction records.
+void binary_traverse(struct merkle*, unsigned short, unsigned short);
+void binary_correct(struct merkle*, unsigned short, unsigned short);
 
 void prerun_setup();                                                            //initializes some important values, like path to the bitcoin folder.
 /*function_by_shikhar: a function to be made by shikhar to list the names of files in current directory and count them*/
@@ -62,23 +64,27 @@ int main()
 {
  unsigned short i;
 
- prerun_setup(); 
-// height = log;
-
-// for(i=0; i<n;)
-
-/*
-fpg = fopen("/a.txt","r");
-c=0;
- root = NULL;
- root = binary_make(root,height,0); 
-*/
+ prerun_setup();               //to assign folder path, count no of files. 
+ height = ceil(log2(count));  
  
- strcpy(filename,"hello.txt");
+ printf("\n%hu\n%hu\n%s\n\n\n\n",height,count,folder);
+
+ strcpy(filename,"list.txt");
  full_path(filename);
- printf("%s",filename);
- 
+ fpg = fopen(filename,"r");
 
+ root = NULL;
+ c=0;
+ root = binary_make(root,height,0);
+
+ fclose(fpg);
+
+ if(root == NULL)
+  printf("\n\nnull root\n\n");
+
+ binary_correct(root,height,0);
+
+ binary_traverse(root,height,0);
  return 0;
  }
 
@@ -132,7 +138,7 @@ struct transaction* create_transaction_node()
 
 struct merkle* binary_make(struct merkle *head, unsigned short height, unsigned short h)
 {
- if(c > count)  //'c' > 'count' means all transactions are listed in binary tree.
+ if(c == count)  //'c' > 'count' means all transactions are listed in binary tree.
   return head;
 
  if(h>height)   //if height is getting larger tha the height decided, then it will stop making new nodes and return.
@@ -146,6 +152,9 @@ struct merkle* binary_make(struct merkle *head, unsigned short height, unsigned 
   exit(1);
   }
 
+printf("\nheight: %hu",h);
+
+
  if(h == height)
  {
   head->data = create_transaction_node();
@@ -154,12 +163,21 @@ struct merkle* binary_make(struct merkle *head, unsigned short height, unsigned 
    printf("\n\n\tERROR: WHILE CREATING TRANSACTION DATA, AT HEIGHT %d",height);
    exit(1);
    }
+  
+  fscanf(fpg,"%s",filename);
+  full_path(filename);
 
+  fp = fopen(filename,"rb");
+  fread(head->data, sizeof(struct transaction),1, fp);
+  printf("\nblabla   %lu",head->data->amount);
+  fclose(fp);
+  c++;
+ 
   }
 
 
- binary_make(head->left, height, h+1);
- binary_make(head->right, height, h+1);
+ head->left = binary_make(head->left, height, h+1);
+ head->right = binary_make(head->right, height, h+1);
 
  return head;
  }
@@ -241,7 +259,37 @@ void prerun_setup()
  closedir(dr);
  }
 /*------------------------------------------------------------------------------------*/
+
+void binary_traverse(struct merkle *head, unsigned short height, unsigned short h)
+{
+ if(head == NULL)
+  return;
+
+ if(h > height)
+  return;
+
+
+printf("\nheight traverde: %hu",h);
+ if(h == height)
+  printf("\n\n%lu", head->data->amount);
+
+ binary_traverse(head->left, height, h+1);
+ binary_traverse(head->right, height, h+1);
+
+ }
+
 /*------------------------------------------------------------------------------------*/
+void binary_correct(struct merkle *head, unsigned short height, unsigned short h)
+{
+ if(h > height)
+  return;
+
+ if(h <= height && head->right == NULL)
+  head->right = head->left;
+
+ binary_correct(head->left, height, h+1);
+ binary_correct(head->right, height, h+1); 
+ }
 /*------------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------------*/
