@@ -39,6 +39,8 @@ int main()
  printf("Enter name: ");
  scanf("%[^\n]s",name);
 
+ strcat(name,".transaction");
+
  printf("Enter amount: ");
  scanf("%Lf",&temp.amount);
 
@@ -49,12 +51,11 @@ int main()
  strcat(t,name);
  strcpy(name,t);
 
- gettimeofday(&tv, NULL);                //or system("date +%s"), returns seconds passed since 1970-01-01 00:00:00 UTC.
+ gettimeofday(&tv, NULL);                //or system("date +%s"), tells us the number of seconds passed since 1970-01-01 00:00:00 UTC.
 
  temp.timestamp= tv.tv_sec;
 
  fp = fopen(name, "wb");
  fwrite(&temp,sizeof(temp),1,fp);
  fclose(fp);
-
  }

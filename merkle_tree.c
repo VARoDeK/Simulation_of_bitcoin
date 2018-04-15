@@ -63,8 +63,8 @@ struct merkle* create_merkle_node();                                            
 struct transaction* create_transaction_node();                                  //function to dynamically allocate memory for data type transaction.
 
 struct merkle* binary_make(struct merkle*, unsigned short, unsigned short);     //forms a binary tree out of transaction records.
-void binary_correct(struct merkle*, unsigned short, unsigned short);            //in case if no of transactions is less than no of leaves.
 void merkle_hash(struct merkle*, unsigned short, unsigned short);
+void binary_correct(struct merkle*, unsigned short, unsigned short);            //in case if no of transactions is less than no of leaves.
 
 void binary_traverse(struct merkle*, unsigned short, unsigned short);
 void delete_tree(struct merkle*,unsigned short,unsigned short);
