@@ -53,6 +53,7 @@ unsigned short count;          //counts the total number of transactions. The ce
 unsigned short c;
 
 char filename[MAX_SIZE];                                                   //will save the name of transaction file, which is read from "a.txt", which is to be opened.
+char tempfile[MAX_SIZE];
 char miner[] = "/miner/";
 char sha[] = "/sha/";
 
@@ -82,7 +83,7 @@ int main()
  prerun_setup();               //to assign folder path, count no of files. 
  height = ceil(log2(count));  
  
- printf("\n%hu\n%hu\n%s\n\n\n\n",height,count,folder);
+// printf("\n%hu\n%hu\n%s\n\n\n\n",height,count,folder);
 
  strcpy(filename,"list.txt");
  full_path(miner,filename);
@@ -95,7 +96,7 @@ int main()
  fclose(fpg);
 
  binary_correct(root,height,0);
- printf("\n\n The output is in level order\n");
+// printf("\n\n The output is in level order\n");
 // binary_traverse(root,height,0);
 
  merkle_hash(root,height,0);
@@ -107,6 +108,8 @@ int main()
  fclose(fp);
 
  delete_tree(root,height,0);
+ 
+ printf("\nSuccessful\n Check ~/betacoin/miner/merkle_hash.txt\n");
  return 0;
  }
 
@@ -175,7 +178,7 @@ struct merkle* binary_make(struct merkle *head, unsigned short height, unsigned 
   exit(1);
   }
 
- printf("\nCreation height: %hu",h);
+// printf("\nCreation height: %hu",h);
 
  if(h == height)
  {
@@ -191,7 +194,7 @@ struct merkle* binary_make(struct merkle *head, unsigned short height, unsigned 
 
   fp = fopen(filename,"rb");
   fread(head->data, sizeof(struct transaction),1, fp);
-  printf("\nAmount inserted: %Lf",head->data->amount);
+//  printf("\nAmount inserted: %Lf",head->data->amount);
   fclose(fp);
   c++;
  
@@ -246,6 +249,8 @@ void prerun_setup()
  FILE *fp;                        //FILE pointr to open list.txt which will save names of transaction files.
  struct dirent *de;              
  unsigned short len;
+ char **name, *tempo;
+ unsigned short i,j;
 
  root = NULL;
  count = 0;
@@ -289,6 +294,42 @@ void prerun_setup()
  
  fclose(fp);
  closedir(dr);
+
+ name = (char**)malloc(sizeof(char*)*count);
+ for(c = 0; c < count; c++)
+  name[c] = (char*)malloc(sizeof(char*)*50);
+
+ fp = fopen(filename,"r");
+ for(i = 0 ; i< count; i++)
+  fscanf(fp,"%s",name[i]);
+ fclose(fp); 
+
+ for(i=0; i<count; i++)
+ {
+  for(j=0; j<count-i-1; j++)
+  {
+   if(strcmp(name[j] , name[j+1])>0)
+   {
+    tempo = name[j];
+    name[j] = name[j+1];
+    name[j+1] = tempo;
+    }
+   }
+  }
+
+
+  strcpy(tempfile,"temp.txt");
+  full_path(miner,tempfile);
+  fp = fopen(tempfile,"w");
+   for(i=0;i<count;i++)
+    fprintf(fp,"%s\n",name[i]);
+   fclose(fp);
+
+
+remove(filename);
+rename(tempfile,filename);
+
+
  }
 /*------------------------------------------------------------------------------------*/
 
@@ -301,10 +342,10 @@ void binary_traverse(struct merkle *head, unsigned short height, unsigned short 
   return;
 
 
-printf("\nheight traverde: %hu",h);
+//printf("\nheight traverde: %hu",h);
  if(h == height)
-  printf("\nAmount: %Lf", head->data->amount);
-  printf("\nhash: %s\n",head->hash);
+//  printf("\nAmount: %Lf", head->data->amount);
+//  printf("\nhash: %s\n",head->hash);
  binary_traverse(head->left, height, h+1);
  binary_traverse(head->right, height, h+1);
 
