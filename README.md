@@ -21,7 +21,7 @@ The discussion finally ended on this topic, suggested by my cousin, to whom I as
 
 5- Suppose, 1st program generated an output which is an argument for another c program. Since project is divided into different .c files, we will save that ouput in a file so that when another program executes, it can read for arguments. 
 
-6- All the data, of which sha256 has to be created, will be written in "~/bitcoin/miner/input.txt" file. So that another 'c' program can read it from there and the output will be saved in "~/bitcoin/miner/output.txt" file.
+6- All the data, of which sha256 has to be created, will be written in " ~/bitcoin/miner/input.txt " file. So that another 'c' program can read it from there and the output will be saved in " ~/bitcoin/miner/output.txt " file.
 
 7- To generate sha256, we will not write 'c' function for it. sha256 is builtin in python, hence we will integrate python program to generate sha.
 
@@ -35,5 +35,5 @@ Step1- Compile and run "first_run.c" . This will create necessary folders on you
 
 Step2- To test merkle tree, we need some fake transaction records. Hence, compile and run "create_temp_transaction.c". Enter name for that file and amount of transaction.In future updates of UI, the names for transaction files will be automatically generated. (Fake transactions will remain fake, once blockhain formation starts.)
 
-Step3- Now compile and run "merkle_tree.c". Then go to "~/betacoin/miner" folder and open "merkle_hash.txt", you will get your sha256 of your merkle tree.
+Step3- Now compile and run "merkle_tree.c". Then go to " ~/betacoin/miner " folder and open "merkle_hash.txt", you will get your sha256 of your merkle tree.
 
