@@ -3,6 +3,20 @@
 #include<unistd.h>
 #include<sys/time.h>
 
+
+#ifdef __linux__
+ char t[201] = "/home/";
+
+#elif __APPLE__
+ char t[201] = "/Users/";
+
+#else
+ printf("OS Not found");
+
+#endif
+
+
+
 struct transaction
 {
  long double amount;                                                  //amount to be debited from account
@@ -19,7 +33,6 @@ int main()
  FILE *fp;
  short i;
  char name[201];
- char t[201]="/home/";
  char folder[20];
  struct timeval tv;
 

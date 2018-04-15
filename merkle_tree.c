@@ -9,6 +9,18 @@
 #include<dirent.h>
 
 #define MAX_SIZE 201                                                  //maximum length of filename
+
+#ifdef __linux__
+ char folder[MAX_SIZE] = "/home/";
+
+#elif __APPLE__
+ char folder[MAX_SIZE] = "/Users/";
+
+#else
+ printf("\n\n\n\t\tOS Not Found.\n\n");
+
+#endif
+
 /*------------------------------------------------------------------------------------*/
 // structure for transaction record.
 
@@ -28,6 +40,7 @@ struct transaction
 struct merkle
 {
  unsigned short index;
+ unsigned char copy;
  char hash[65];                                  //hash is 64 characters long. 1 byte for NULL charactere.
  struct transaction *data;
  struct merkle *left;
@@ -41,7 +54,6 @@ unsigned short count;          //counts the total number of transactions. The ce
 unsigned short c;
 
 char filename[MAX_SIZE];                                                   //will save the name of transaction file, which is read from "a.txt", which is to be opened.
-char folder[MAX_SIZE];
 
 FILE *fpg, *fp;                                                                 //"fpg" to open list.txt, "fp" to open transaction files.
 
@@ -111,6 +123,7 @@ struct merkle* create_merkle_node()
 
  for(i=0; i<66; i++, ptr->hash[i]='\0');
 
+ ptr->copy = 0;
  ptr->data = NULL;
  ptr->left = NULL;
  ptr->right = NULL;
@@ -215,7 +228,7 @@ void full_path(char a[])
 
 void prerun_setup()
 {
- char temp[MAX_SIZE] = "/home/";
+ char temp[20];
  DIR *dr;                         //DIR pointer to open "/bitcoin/miner/" directory so that we can list out names of files inside it.
  FILE *fp;                        //FILE pointr to open list.txt which will save names of transaction files.
  struct dirent *de;              
@@ -227,10 +240,9 @@ void prerun_setup()
  height = 0;
 
  
- getlogin_r(folder,201);                  //saves the current logged in user_name in "folder"
- strcat(folder,"/betacoin/miner/");
- strcat(temp,folder);
- strcpy(folder,temp);                     //finally folder contains: "/home/<user_name>/bitcoin/miner/"
+ getlogin_r(temp,20);                            //saves the current logged in user_name in "folder"
+ strcat(folder,temp);
+ strcat(folder,"/betacoin/miner/");                    //finally folder contains: "/home/<user_name>/bitcoin/miner/"
  
  dr = opendir(folder);
 
@@ -289,7 +301,10 @@ void binary_correct(struct merkle *head, unsigned short height, unsigned short h
   return;
 
  if(h <= height && head->right == NULL)
+ {
   head->right = head->left;
+  head->copy = 1;
+  }
 
  binary_correct(head->left, height, h+1);
  binary_correct(head->right, height, h+1); 
@@ -297,6 +312,9 @@ void binary_correct(struct merkle *head, unsigned short height, unsigned short h
 /*------------------------------------------------------------------------------------*/
 void delete_tree(struct merkle *head, unsigned short height, unsigned short h)
 {
+ if(head->copy == 1)
+  return;
+
  if(h > height)
  return;
  

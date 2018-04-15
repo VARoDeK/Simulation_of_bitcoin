@@ -5,10 +5,22 @@
 #include<unistd.h>                  //for getlogin_R()
 #include<errno.h>                   //for errno and error values
 
+#ifdef __linux__
+ char t[44] = "/home/";
+
+#elif __APPLE__
+ char t[44] = "/Users/";
+
+#else
+ printf("OS Not found");
+
+#endif
+
+
+
 int main()
 {
  char uname[20];
- char t[44]="/home/";
  getlogin_r(uname,201);                 //returns user name
  
  strcat(t,uname);
