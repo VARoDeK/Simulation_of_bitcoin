@@ -14,7 +14,7 @@
 
 struct transaction
 {
- unsigned long amount;                                                //amount to be debited from account
+ long double amount;                                                  //amount to be debited from account
  unsigned char transaction_fee;                                       //char can be used a integer with range 0-255. Transaction fee will not be greater than that.
 
  /* data types for 'public key' of reciever,
@@ -43,19 +43,20 @@ unsigned short c;
 char filename[MAX_SIZE];                                                   //will save the name of transaction file, which is read from "a.txt", which is to be opened.
 char folder[MAX_SIZE];
 
-FILE *fpg, *fp;                                                                 //to open a.txt
+FILE *fpg, *fp;                                                                 //"fpg" to open list.txt, "fp" to open transaction files.
 
 struct merkle* create_merkle_node();                                            //function to dynamically allocate memory for data type merkle.
 struct transaction* create_transaction_node();                                  //function to dynamically allocate memory for data type transaction.
-struct merkle* binary_make(struct merkle*, unsigned short, unsigned short);     //forms a binary tree out of transaction records.
-void binary_traverse(struct merkle*, unsigned short, unsigned short);
-void binary_correct(struct merkle*, unsigned short, unsigned short);
 
+struct merkle* binary_make(struct merkle*, unsigned short, unsigned short);     //forms a binary tree out of transaction records.
+void binary_correct(struct merkle*, unsigned short, unsigned short);            //in case if no of transactions is less than no of leaves.
+
+void binary_traverse(struct merkle*, unsigned short, unsigned short);
+void delete_tree(struct merkle*,unsigned short,unsigned short);
 void prerun_setup();                                                            //initializes some important values, like path to the bitcoin folder.
-/*function_by_shikhar: a function to be made by shikhar to list the names of files in current directory and count them*/
 
 void char_refresh(char[],unsigned short);
-void full_path(char[]);
+void full_path(char[]);                                                         //gives the path to a file from the root location.
 /*------------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------------*/
 
@@ -71,20 +72,18 @@ int main()
 
  strcpy(filename,"list.txt");
  full_path(filename);
- fpg = fopen(filename,"r");
 
  root = NULL;
  c=0;
- root = binary_make(root,height,0);
 
+ fpg = fopen(filename,"r");
+ root = binary_make(root,height,0);
  fclose(fpg);
 
- if(root == NULL)
-  printf("\n\nnull root\n\n");
-
  binary_correct(root,height,0);
-
+ printf("\n\n The output is in level order\n");
  binary_traverse(root,height,0);
+ delete_tree(root,height,0);
  return 0;
  }
 
@@ -152,8 +151,7 @@ struct merkle* binary_make(struct merkle *head, unsigned short height, unsigned 
   exit(1);
   }
 
-printf("\nheight: %hu",h);
-
+ printf("\nCreation height: %hu",h);
 
  if(h == height)
  {
@@ -169,7 +167,7 @@ printf("\nheight: %hu",h);
 
   fp = fopen(filename,"rb");
   fread(head->data, sizeof(struct transaction),1, fp);
-  printf("\nblabla   %lu",head->data->amount);
+  printf("\nAmount inserted: %Lf",head->data->amount);
   fclose(fp);
   c++;
  
@@ -218,15 +216,21 @@ void full_path(char a[])
 void prerun_setup()
 {
  char temp[MAX_SIZE] = "/home/";
- DIR *dr;
- FILE *fp,*fp2;
- struct dirent *de;
+ DIR *dr;                         //DIR pointer to open "/bitcoin/miner/" directory so that we can list out names of files inside it.
+ FILE *fp;                        //FILE pointr to open list.txt which will save names of transaction files.
+ struct dirent *de;              
  unsigned short len;
+
+ root = NULL;
+ count = 0;
+ c = 0;
+ height = 0;
+
  
  getlogin_r(folder,201);                  //saves the current logged in user_name in "folder"
- strcat(folder,"/bitcoin/");
+ strcat(folder,"/bitcoin/miner/");
  strcat(temp,folder);
- strcpy(folder,temp);                     //finally folder contains: "/home/<user_name>/bitcoin/"
+ strcpy(folder,temp);                     //finally folder contains: "/home/<user_name>/bitcoin/miner/"
  
  dr = opendir(folder);
 
@@ -241,19 +245,19 @@ void prerun_setup()
  full_path(filename);
  fp = fopen(filename,"w");
  
- count =0;
  while((de = readdir(dr)) != NULL)
  {
-  if(strcmp(de->d_name,".") == 0 || strcmp(de->d_name,"..") == 0)                  //not to select "current directory" and "previous directory"
+  if(strcmp(de->d_name , ".") == 0 || strcmp(de->d_name , "..") == 0)                  //not to select "current directory" and "previous directory"
   continue;
 
  len = strlen(de->d_name);
+
  if(strncmp(de->d_name + len - 12, ".transaction",12) == 0)                        //length of string ".transaction" is 12.
  {
   fprintf(fp,"%s\n",de->d_name);
   count++;
   }
-  }
+ }
  
  fclose(fp);
  closedir(dr);
@@ -271,7 +275,7 @@ void binary_traverse(struct merkle *head, unsigned short height, unsigned short 
 
 printf("\nheight traverde: %hu",h);
  if(h == height)
-  printf("\n\n%lu", head->data->amount);
+  printf("\nAmount: %Lf\n", head->data->amount);
 
  binary_traverse(head->left, height, h+1);
  binary_traverse(head->right, height, h+1);
@@ -291,5 +295,25 @@ void binary_correct(struct merkle *head, unsigned short height, unsigned short h
  binary_correct(head->right, height, h+1); 
  }
 /*------------------------------------------------------------------------------------*/
+void delete_tree(struct merkle *head, unsigned short height, unsigned short h)
+{
+ if(h > height)
+ return;
+ 
+ if(head == NULL)
+ return;
+
+ if(h == height)
+  free(head->data);
+
+ delete_tree(head->left, height, h+1);
+ free(head->left);
+ head->left = NULL;
+ 
+ delete_tree(head->right, height, h+1);
+ free(head->right);
+ head->right = NULL;
+ }
+
 /*------------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------------*/
