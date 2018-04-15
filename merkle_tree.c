@@ -55,7 +55,6 @@ unsigned short c;
 char filename[MAX_SIZE];                                                   //will save the name of transaction file, which is read from "a.txt", which is to be opened.
 char miner[] = "/miner/";
 char sha[] = "/sha/";
-char pycommand[MAX_SIZE];
 
 FILE *fpg, *fp;                                                                 //"fpg" to open list.txt, "fp" to open transaction files.
 
@@ -290,12 +289,6 @@ void prerun_setup()
  
  fclose(fp);
  closedir(dr);
-
-  strcpy(pycommand, "python3 ");
-  strcat(pycommand,folder);
-  strcat(pycommand,"/miner/SHA_function.py");
-
-
  }
 /*------------------------------------------------------------------------------------*/
 
@@ -370,7 +363,7 @@ void merkle_hash(struct merkle *head, unsigned short height, unsigned short h)
   fprintf(fp,"%ld",head->data->timestamp);
   fclose(fp);
 
-  system(pycommand);
+  system("python3 ~/betacoin/miner/SHA_function.py");
 
   strcpy(filename,"output.txt");
   full_path(sha,filename);
@@ -391,7 +384,7 @@ void merkle_hash(struct merkle *head, unsigned short height, unsigned short h)
   fprintf(fp,"%s%s",head->left->hash,head->right->hash);
   fclose(fp);
 
-  system(pycommand);
+  system("python3 ~/betacoin/miner/SHA_function.py");
 
   strcpy(filename,"output.txt");
   full_path(sha,filename);
