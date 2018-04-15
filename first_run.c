@@ -63,5 +63,10 @@ int main()
 
 
 
+ strcpy(temp,"cp SHA_function.py ");
+ strcat(temp,static_path);
+ strcat(temp,"/miner/SHA_function.py");
+ system(temp);
+
 
  }

@@ -39,7 +39,6 @@ struct transaction
 
 struct merkle
 {
- unsigned short index;
  unsigned char copy;
  char hash[65];                                  //hash is 64 characters long. 1 byte for NULL charactere.
  struct transaction *data;
@@ -54,6 +53,9 @@ unsigned short count;          //counts the total number of transactions. The ce
 unsigned short c;
 
 char filename[MAX_SIZE];                                                   //will save the name of transaction file, which is read from "a.txt", which is to be opened.
+char miner[] = "/miner/";
+char sha[] = "/sha/";
+char pycommand[MAX_SIZE];
 
 FILE *fpg, *fp;                                                                 //"fpg" to open list.txt, "fp" to open transaction files.
 
@@ -62,13 +64,14 @@ struct transaction* create_transaction_node();                                  
 
 struct merkle* binary_make(struct merkle*, unsigned short, unsigned short);     //forms a binary tree out of transaction records.
 void binary_correct(struct merkle*, unsigned short, unsigned short);            //in case if no of transactions is less than no of leaves.
+void merkle_hash(struct merkle*, unsigned short, unsigned short);
 
 void binary_traverse(struct merkle*, unsigned short, unsigned short);
 void delete_tree(struct merkle*,unsigned short,unsigned short);
 void prerun_setup();                                                            //initializes some important values, like path to the bitcoin folder.
 
 void char_refresh(char[],unsigned short);
-void full_path(char[]);                                                         //gives the path to a file from the root location.
+void full_path(char[],char[]);                                                         //gives the path to a file from the root location.
 /*------------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------------*/
 
@@ -83,7 +86,7 @@ int main()
  printf("\n%hu\n%hu\n%s\n\n\n\n",height,count,folder);
 
  strcpy(filename,"list.txt");
- full_path(filename);
+ full_path(miner,filename);
 
  root = NULL;
  c=0;
@@ -95,6 +98,15 @@ int main()
  binary_correct(root,height,0);
  printf("\n\n The output is in level order\n");
  binary_traverse(root,height,0);
+
+ merkle_hash(root,height,0);
+
+ strcpy(filename,"merkle_sha.txt");
+ full_path(miner,filename);
+ fpg = fopen(filename,"w");
+ fprintf(fpg,"%s",root->hash);
+ fclose(fp);
+
  delete_tree(root,height,0);
  return 0;
  }
@@ -176,7 +188,7 @@ struct merkle* binary_make(struct merkle *head, unsigned short height, unsigned 
    }
   
   fscanf(fpg,"%s",filename);
-  full_path(filename);
+  full_path(miner,filename);
 
   fp = fopen(filename,"rb");
   fread(head->data, sizeof(struct transaction),1, fp);
@@ -205,7 +217,7 @@ void char_refresh(char a[], unsigned short n)
  }
 /*------------------------------------------------------------------------------------*/
 
-void full_path(char a[])
+void full_path(char subd[],char a[])
 {
  unsigned short i;
  char temp[MAX_SIZE];
@@ -220,7 +232,7 @@ void full_path(char a[])
   }
 
  strcpy(temp,folder);
- strcat(temp,"/miner/");
+ strcat(temp,subd);
  strcat(temp,a);
  strcpy(a,temp);
  }
@@ -244,7 +256,7 @@ void prerun_setup()
  
  getlogin_r(uname,20);                            //saves the current logged in user_name in "folder"
  strcat(folder,uname);
- strcat(folder,"/betacoin");                    //finally folder contains: "/home/<user_name>/bitcoin"
+ strcat(folder,"/betacoin");                    //finally folder contains: "/home/<user_name>/betacoin"
  
  strcpy(temp,folder);
  strcat(temp,"/miner/");
@@ -259,7 +271,7 @@ void prerun_setup()
 
 
  strcpy(filename,"list.txt");
- full_path(filename);
+ full_path(miner,filename);
  fp = fopen(filename,"w");
  
  while((de = readdir(dr)) != NULL)
@@ -278,6 +290,12 @@ void prerun_setup()
  
  fclose(fp);
  closedir(dr);
+
+  strcpy(pycommand, "python3 ");
+  strcat(pycommand,folder);
+  strcat(pycommand,"/miner/SHA_function.py");
+
+
  }
 /*------------------------------------------------------------------------------------*/
 
@@ -316,10 +334,7 @@ void binary_correct(struct merkle *head, unsigned short height, unsigned short h
  }
 /*------------------------------------------------------------------------------------*/
 void delete_tree(struct merkle *head, unsigned short height, unsigned short h)
-{
- if(head->copy == 1)
-  return;
-
+{ 
  if(h > height)
  return;
  
@@ -333,10 +348,57 @@ void delete_tree(struct merkle *head, unsigned short height, unsigned short h)
  free(head->left);
  head->left = NULL;
  
- delete_tree(head->right, height, h+1);
- free(head->right);
- head->right = NULL;
+ if(head->copy != 1)
+ {
+  delete_tree(head->right, height, h+1);
+  free(head->right);
+  head->right = NULL;
+  }
  }
 
 /*------------------------------------------------------------------------------------*/
+
+void merkle_hash(struct merkle *head, unsigned short height, unsigned short h)
+{ 
+ if(h == height)
+ {
+  strcpy(filename,"input.txt");
+  full_path(sha,filename);
+  fp = fopen(filename,"w");
+  fprintf(fp,"%Lf",head->data->amount);
+  fprintf(fp,"%c",head->data->transaction_fee);
+  fprintf(fp,"%ld",head->data->timestamp);
+  fclose(fp);
+
+  system(pycommand);
+
+  strcpy(filename,"output.txt");
+  full_path(sha,filename);
+  fp = fopen(filename,"r");
+  fscanf(fp,"%s",head->hash);
+  fclose(fp);
+  return;
+  }  
+
+  merkle_hash(head->left, height, h+1);
+  
+  if(head->copy != 1)
+   merkle_hash(head->right, height, h+1);
+
+  strcpy(filename,"input.txt");
+  full_path(sha,filename);
+  fp = fopen(filename,"w");
+  fprintf(fp,"%s%s",head->left->hash,head->right->hash);
+  fclose(fp);
+
+  system(pycommand);
+
+  strcpy(filename,"output.txt");
+  full_path(sha,filename);
+  fp = fopen(filename,"r");
+  fscanf(fp,"%s",head->hash);
+  fclose(fp);
+  return;
+  
+ }
 /*------------------------------------------------------------------------------------*/
