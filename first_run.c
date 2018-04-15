@@ -12,13 +12,13 @@ int main()
  getlogin_r(uname,201);                 //returns user name
  
  strcat(t,uname);
- strcat(t,"/bitcoin");
+ strcat(t,"/betacoin");
 
  if(mkdir(t,S_IRWXU) !=0)                //S_IRWXU - gives "read + write + execute" permission to current user.
  {
-  if(errno != EEXIST)                    //mkdir throws non-zero number on failure. The errno is set to certain value. EEXIST means already exist.
+  if(errno == EACCES)                    //mkdir throws non-zero number on failure. The errno is set to certain value. EEXIST means already exist.
   { 
-   printf("\n\n\t\tCANNOT CREATE DIRECTORY \"bitcoin\" in home folder.");
+   printf("\n\n\t\tCANNOT CREATE DIRECTORY \"betacoin\" in home folder, permission denied.");
    exit(1);
    }
   }
@@ -29,7 +29,7 @@ int main()
  {
   if(errno != EEXIST)
   {
-   printf("\n\n\t\tCANNOT CREATE DIRECTORY \"miner\" in bitcoin folder.");
+   printf("\n\n\t\tCANNOT CREATE DIRECTORY \"miner\" in betacoin folder.");
    exit(1);
    }
   }

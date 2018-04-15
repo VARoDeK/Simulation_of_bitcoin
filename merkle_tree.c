@@ -16,10 +16,10 @@ struct transaction
 {
  long double amount;                                                  //amount to be debited from account
  unsigned char transaction_fee;                                       //char can be used a integer with range 0-255. Transaction fee will not be greater than that.
+ unsigned long timestamp;
 
  /* data types for 'public key' of reciever,
-    'digital signature' of sender and 
-    'time-stamp' yet to be declared.         */
+    'digital signature' of sender and          */
  }; 
 
 /*------------------------------------------------------------------------------------*/
@@ -228,7 +228,7 @@ void prerun_setup()
 
  
  getlogin_r(folder,201);                  //saves the current logged in user_name in "folder"
- strcat(folder,"/bitcoin/miner/");
+ strcat(folder,"/betacoin/miner/");
  strcat(temp,folder);
  strcpy(folder,temp);                     //finally folder contains: "/home/<user_name>/bitcoin/miner/"
  
