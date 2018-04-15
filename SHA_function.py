@@ -5,7 +5,7 @@ import sys
 
 homedir = os.environ['HOME']
 
-path = homedir + "/betacoin/sha/folder" + "/input.txt"
+path = homedir + "/betacoin/sha" + "/input.txt"
 try:
     f = open(path, "r")
 except FileNotFoundError:
@@ -19,7 +19,7 @@ f.close()
 m = hashlib.sha256()
 m.update(a)
 
-path = homedir + "/betacoin/sha/folder" + "/output.txt"
+path = homedir + "/betacoin/sha" + "/output.txt"
 f = open(path, "w+")
 f.write(m.hexdigest())
 f.close()

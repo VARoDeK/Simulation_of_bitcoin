@@ -220,6 +220,7 @@ void full_path(char a[])
   }
 
  strcpy(temp,folder);
+ strcat(temp,"/miner/");
  strcat(temp,a);
  strcpy(a,temp);
  }
@@ -228,7 +229,8 @@ void full_path(char a[])
 
 void prerun_setup()
 {
- char temp[20];
+ char uname[20];
+ char temp[MAX_SIZE];
  DIR *dr;                         //DIR pointer to open "/bitcoin/miner/" directory so that we can list out names of files inside it.
  FILE *fp;                        //FILE pointr to open list.txt which will save names of transaction files.
  struct dirent *de;              
@@ -240,11 +242,14 @@ void prerun_setup()
  height = 0;
 
  
- getlogin_r(temp,20);                            //saves the current logged in user_name in "folder"
- strcat(folder,temp);
- strcat(folder,"/betacoin/miner/");                    //finally folder contains: "/home/<user_name>/bitcoin/miner/"
+ getlogin_r(uname,20);                            //saves the current logged in user_name in "folder"
+ strcat(folder,uname);
+ strcat(folder,"/betacoin");                    //finally folder contains: "/home/<user_name>/bitcoin"
  
- dr = opendir(folder);
+ strcpy(temp,folder);
+ strcat(temp,"/miner/");
+
+ dr = opendir(temp);
 
  if(dr == NULL)
  {
