@@ -96,10 +96,10 @@ int main()
 
  binary_correct(root,height,0);
  printf("\n\n The output is in level order\n");
- binary_traverse(root,height,0);
+// binary_traverse(root,height,0);
 
  merkle_hash(root,height,0);
-
+ binary_traverse(root,height,0);
  strcpy(filename,"merkle_sha.txt");
  full_path(miner,filename);
  fpg = fopen(filename,"w");
@@ -303,8 +303,8 @@ void binary_traverse(struct merkle *head, unsigned short height, unsigned short 
 
 printf("\nheight traverde: %hu",h);
  if(h == height)
-  printf("\nAmount: %Lf\n", head->data->amount);
-
+  printf("\nAmount: %Lf", head->data->amount);
+  printf("\nhash: %s\n",head->hash);
  binary_traverse(head->left, height, h+1);
  binary_traverse(head->right, height, h+1);
 
