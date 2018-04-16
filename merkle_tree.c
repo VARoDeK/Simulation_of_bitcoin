@@ -8,18 +8,8 @@
 #include<unistd.h>
 #include<dirent.h>
 
-#define MAX_SIZE 201                                                  //maximum length of filename
-
-#ifdef __linux__
- char folder[MAX_SIZE] = "/home/";
-
-#elif __APPLE__
- char folder[MAX_SIZE] = "/Users/";
-
-#else
- printf("\n\n\n\t\tOS Not Found.\n\n");
-
-#endif
+#define FILE_SIZE 201                                                  //maximum length of filename
+#define FOLDER_SIZE 51
 
 /*------------------------------------------------------------------------------------*/
 // structure for transaction record.
@@ -48,12 +38,13 @@ struct merkle
 
 
 /*------------------------------------------------------------------------------------*/
-unsigned short height;                                                           //stores the height of the binary tree
-unsigned short count;          //counts the total number of transactions. The ceil() of log of count, with base 2, will give the height of binary tree.
-unsigned short c;
+unsigned short height_global;                                                           //stores the height of the binary tree
+unsigned short count_global;          //counts the total number of transactions. The ceil() of log of count, with base 2, will give the height of binary tree.
+unsigned short c_global;
 
-char filename[MAX_SIZE];                                                   //will save the name of transaction file, which is read from "a.txt", which is to be opened.
-char tempfile[MAX_SIZE];
+char folder[FOLDER_SIZE];
+char filename[FILE_SIZE];                                                   //will save the name of transaction file, which is read from "a.txt", which is to be opened.
+
 char miner[] = "/miner/";
 char sha[] = "/sha/";
 
@@ -81,7 +72,7 @@ int main()
  unsigned short i;
 
  prerun_setup();               //to assign folder path, count no of files. 
- height = ceil(log2(count));  
+ height_global = ceil(log2(count_global));  
  
 
 /*
@@ -93,29 +84,31 @@ int main()
 
 // printf("\n%hu\n%hu\n%s\n\n\n\n",height,count,folder);
 
- strcpy(filename,"list.txt");
- full_path(miner,filename);
+ strcpy(filename , "list.txt");
+ full_path(miner , filename);
 
  root = NULL;
- c=0;
+ c_global = 0;
 
- fpg = fopen(filename,"r");
- root = binary_make(root,height,0);
+ fpg = fopen(filename , "r");
+ root = binary_make(root , height_global , 0);
  fclose(fpg);
 
- binary_correct(root,height,0);
+ binary_correct(root , height_global , 0);
 // printf("\n\n The output is in level order\n");
 // binary_traverse(root,height,0);
 
- merkle_hash(root,height,0);
- binary_traverse(root,height,0);
- strcpy(filename,"merkle_sha.txt");
- full_path(miner,filename);
- fpg = fopen(filename,"w");
- fprintf(fpg,"%s",root->hash);
+ merkle_hash(root , height_global , 0);
+// binary_traverse(root , height_global , 0);
+
+ strcpy(filename , "merkle_sha.txt");
+ full_path(miner , filename);
+
+ fpg = fopen(filename , "w");
+ fprintf(fpg , "%s" , root->hash);
  fclose(fp);
 
- delete_tree(root,height,0);
+ delete_tree(root , height_global , 0);
  
  printf("\nSuccessful\n Check ~/betacoin/miner/merkle_hash.txt\n");
  return 0;
@@ -163,47 +156,47 @@ struct transaction* create_transaction_node()
  }
 /*------------------------------------------------------------------------------------*/
 
-struct merkle* binary_make(struct merkle *head, unsigned short height, unsigned short h)
+struct merkle* binary_make(struct merkle *head, unsigned short height_local, unsigned short h)
 {
- if(c == count)  //'c' > 'count' means all transactions are listed in binary tree.
+ if(c_global == count_global)  //'c_global' > 'count_global' means all transactions are listed in binary tree.
   return head;
 
- if(h>height)   //if height is getting larger tha the height decided, then it will stop making new nodes and return.
+ if(h > height_local)   //if height is getting larger tha the height decided, then it will stop making new nodes and return.
   return head;
 
  head = create_merkle_node();
 
  if(head == NULL)
  {
-  printf("\n\n\tERROR: WHILE CREATING MERKLE TREE, AT HEIGHT %d",height);
+  printf("\n\n\tERROR: WHILE CREATING MERKLE TREE, AT HEIGHT %d", height_local);
   exit(1);
   }
 
 // printf("\nCreation height: %hu",h);
 
- if(h == height)
+ if(h == height_local)
  {
   head->data = create_transaction_node();
   if(head->data == NULL)
   {
-   printf("\n\n\tERROR: WHILE CREATING TRANSACTION DATA, AT HEIGHT %d",height);
+   printf("\n\n\tERROR: WHILE CREATING TRANSACTION DATA, AT HEIGHT %d", height_local);
    exit(1);
    }
   
-  fscanf(fpg,"%s",filename);
-  full_path(miner,filename);
+  fscanf(fpg , "%s" , filename);
+  full_path(miner , filename);
 
-  fp = fopen(filename,"rb");
-  fread(head->data, sizeof(struct transaction),1, fp);
+  fp = fopen(filename , "rb");
+  fread(head->data , sizeof(struct transaction) , 1 , fp);
 //  printf("\nAmount inserted: %Lf",head->data->amount);
   fclose(fp);
-  c++;
+  c_global++;
  
   }
 
 
- head->left = binary_make(head->left, height, h+1);
- head->right = binary_make(head->right, height, h+1);
+ head->left = binary_make(head->left, height_local, h+1);
+ head->right = binary_make(head->right, height_local, h+1);
 
  return head;
  }
@@ -223,7 +216,8 @@ void char_refresh(char a[], unsigned short n)
 void full_path(char subd[],char a[])
 {
  unsigned short i;
- char temp[MAX_SIZE];
+ char temp[FILE_SIZE];
+
  for(i=0; ;i++)
  {
   if(a[i]=='\0')
@@ -234,18 +228,17 @@ void full_path(char subd[],char a[])
    }
   }
 
- strcpy(temp,folder);
- strcat(temp,subd);
- strcat(temp,a);
- strcpy(a,temp);
+ strcpy(temp , folder);
+ strcat(temp , subd);
+ strcat(temp , a);
+ strcpy(a , temp);
  }
 
 /*------------------------------------------------------------------------------------*/
 
 void prerun_setup()
 {
- char uname[20];
- char temp[MAX_SIZE];
+ char tempfile[FILE_SIZE];
  DIR *dr;                         //DIR pointer to open "/bitcoin/miner/" directory so that we can list out names of files inside it.
  FILE *fp;                        //FILE pointr to open list.txt which will save names of transaction files.
  struct dirent *de;              
@@ -254,19 +247,18 @@ void prerun_setup()
  unsigned short i,j;
 
  root = NULL;
- count = 0;
- c = 0;
- height = 0;
+ count_global = 0;
+ c_global = 0;
+ height_global = 0;
 
- 
- getlogin_r(uname,20);                            //saves the current logged in user_name in "folder"
- strcat(folder,uname);
- strcat(folder,"/betacoin");                    //finally folder contains: "/home/<user_name>/betacoin"
- 
- strcpy(temp,folder);
- strcat(temp,"/miner/");
 
- dr = opendir(temp);
+ strcpy(folder , getenv("HOME")); //sets folder to "/home/<user-name>" in linux and "/Users/<user-name>" for OSX.
+ strcat(folder , "/betacoin");    //sets folder to "/home/<user-name>/betacoin" in linux and "/Users/<user-name>/betacoin" for OSX. 
+
+ strcpy(tempfile , folder);
+ strcat(tempfile , "/miner/");
+
+ dr = opendir(tempfile);
 
  if(dr == NULL)
  {
@@ -275,9 +267,9 @@ void prerun_setup()
   }
 
 
- strcpy(filename,"list.txt");
- full_path(miner,filename);
- fp = fopen(filename,"w");
+ strcpy(filename , "list.txt");
+ full_path(miner , filename);
+ fp = fopen(filename , "w");
  
  while((de = readdir(dr)) != NULL)
  {
@@ -288,26 +280,26 @@ void prerun_setup()
 
  if(strncmp(de->d_name + len - 12, ".transaction",12) == 0)                        //length of string ".transaction" is 12.
  {
-  fprintf(fp,"%s\n",de->d_name);
-  count++;
+  fprintf(fp , "%s\n" , de->d_name);
+  count_global++;
   }
  }
  
  fclose(fp);
  closedir(dr);
 
- name = (char**)malloc(sizeof(char*)*count);
- for(c = 0; c < count; c++)
-  name[c] = (char*)malloc(sizeof(char*)*50);
+ name = (char**)malloc(sizeof(char*)*count_global);
+ for(i = 0; i < count_global; i++)
+  name[i] = (char*)malloc(sizeof(char*)*50);
 
  fp = fopen(filename,"r");
- for(i = 0 ; i< count; i++)
+ for(i = 0 ; i< count_global; i++)
   fscanf(fp,"%s",name[i]);
  fclose(fp); 
 
- for(i=0; i<count; i++)
+ for(i=0; i<count_global; i++)
  {
-  for(j=0; j<count-i-1; j++)
+  for(j=0; j<count_global-i-1; j++)
   {
    if(strcmp(name[j] , name[j+1])>0)
    {
@@ -321,51 +313,55 @@ void prerun_setup()
 
   strcpy(tempfile,"temp.txt");
   full_path(miner,tempfile);
+
   fp = fopen(tempfile,"w");
-   for(i=0;i<count;i++)
+
+   for(i=0 ; i<count_global ; i++)
     fprintf(fp,"%s\n",name[i]);
+
    fclose(fp);
 
 
 remove(filename);
-rename(tempfile,filename);
+rename(tempfile , filename);
 
 
  }
 /*------------------------------------------------------------------------------------*/
 
-void binary_traverse(struct merkle *head, unsigned short height, unsigned short h)
+void binary_traverse(struct merkle *head, unsigned short height_local, unsigned short h)
 {
  if(head == NULL)
   return;
 
- if(h > height)
+ if(h > height_local)
   return;
 
 
-//printf("\nheight traverde: %hu",h);
- if(h == height)
-//  printf("\nAmount: %Lf", head->data->amount);
-//  printf("\nhash: %s\n",head->hash);
- binary_traverse(head->left, height, h+1);
- binary_traverse(head->right, height, h+1);
+printf("\nheight traverde: %hu",h);
+
+ if(h == height_local)
+  printf("\nAmount: %Lf", head->data->amount);
+  printf("\nhash: %s\n",head->hash);
+ binary_traverse(head->left, height_local, h+1);
+ binary_traverse(head->right, height_local, h+1);
 
  }
 
 /*------------------------------------------------------------------------------------*/
-void binary_correct(struct merkle *head, unsigned short height, unsigned short h)
+void binary_correct(struct merkle *head, unsigned short height_local, unsigned short h)
 {
- if(h > height)
+ if(h > height_local)
   return;
 
- if(h <= height && head->right == NULL)
+ if(h <= height_local && head->right == NULL)
  {
   head->right = head->left;
   head->copy = 1;                              
   }
 
- binary_correct(head->left, height, h+1);
- binary_correct(head->right, height, h+1); 
+ binary_correct(head->left, height_local, h+1);
+ binary_correct(head->right, height_local, h+1); 
  }
 /*
 - Since we are traversing in Inorder sequence, only the right leg of any of the node will have to contain repeated data, since left leg will be filled first.
@@ -376,24 +372,24 @@ void binary_correct(struct merkle *head, unsigned short height, unsigned short h
 
 
 /*------------------------------------------------------------------------------------*/
-void delete_tree(struct merkle *head, unsigned short height, unsigned short h)
+void delete_tree(struct merkle *head, unsigned short height_local, unsigned short h)
 { 
- if(h > height)
+ if(h > height_local)
  return;
  
  if(head == NULL)
  return;
 
- if(h == height)
+ if(h == height_local)
   free(head->data);
 
- delete_tree(head->left, height, h+1);
+ delete_tree(head->left, height_local, h+1);
  free(head->left);
  head->left = NULL;
  
  if(head->copy != 1)
  {
-  delete_tree(head->right, height, h+1);
+  delete_tree(head->right, height_local, h+1);
   free(head->right);
   head->right = NULL;
   }
@@ -410,46 +406,54 @@ void delete_tree(struct merkle *head, unsigned short height, unsigned short h)
 
 /*------------------------------------------------------------------------------------*/
 
-void merkle_hash(struct merkle *head, unsigned short height, unsigned short h)
+void merkle_hash(struct merkle *head, unsigned short height_local, unsigned short h)
 { 
- if(h == height)
+ if(h == height_local)
  {
-  strcpy(filename,"input.txt");
-  full_path(sha,filename);
-  fp = fopen(filename,"w");
-  fprintf(fp,"%Lf",head->data->amount);
-  fprintf(fp,"%c",head->data->transaction_fee);
-  fprintf(fp,"%ld",head->data->timestamp);
+  strcpy(filename , "input.txt");
+  full_path(sha , filename);
+
+  fp = fopen(filename , "w");
+
+  fprintf(fp,"%Lf" , head->data->amount);
+  fprintf(fp,"%c" , head->data->transaction_fee);
+  fprintf(fp,"%ld" , head->data->timestamp);
+
   fclose(fp);
 
-  system("python3 ~/betacoin/miner/SHA_function.py");
 
-  strcpy(filename,"output.txt");
-  full_path(sha,filename);
-  fp = fopen(filename,"r");
-  fscanf(fp,"%s",head->hash);
+  system("python3 ~/betacoin/miner/SHA_function_DUP.py");
+
+  strcpy(filename , "output.txt");
+  full_path(sha , filename);
+
+  fp = fopen(filename , "r");
+  fscanf(fp , "%s" , head->hash);
   fclose(fp);
+
   return;
   }  
 
-  merkle_hash(head->left, height, h+1);
+  merkle_hash(head->left , height_local , h+1);
   
   if(head->copy != 1)
-   merkle_hash(head->right, height, h+1);
+   merkle_hash(head->right , height_local , h+1);
 
-  strcpy(filename,"input.txt");
-  full_path(sha,filename);
-  fp = fopen(filename,"w");
-  fprintf(fp,"%s%s",head->left->hash,head->right->hash);
+  strcpy(filename , "input.txt");
+  full_path(sha , filename);
+  fp = fopen(filename , "w");
+  fprintf(fp,"%s%s" , head->left->hash , head->right->hash);
   fclose(fp);
 
-  system("python3 ~/betacoin/miner/SHA_function.py");
+  system("python3 ~/betacoin/miner/SHA_function_DUP.py");
 
-  strcpy(filename,"output.txt");
-  full_path(sha,filename);
-  fp = fopen(filename,"r");
-  fscanf(fp,"%s",head->hash);
+  strcpy(filename , "output.txt");
+  full_path(sha , filename);
+
+  fp = fopen(filename , "r");
+  fscanf(fp , "%s" , head->hash);
   fclose(fp);
+
   return;
   
  }

@@ -1,20 +1,10 @@
 #include<stdio.h>
 #include<string.h>
-#include<unistd.h>
+#include<stdlib.h>
 #include<sys/time.h>
 
 
-#ifdef __linux__
- char t[201] = "/home/";
-
-#elif __APPLE__
- char t[201] = "/Users/";
-
-#else
- printf("OS Not found");
-
-#endif
-
+char folder[51];
 
 
 struct transaction
@@ -33,7 +23,6 @@ int main()
  FILE *fp;
  short i;
  char name[201];
- char folder[20];
  struct timeval tv;
 
  printf("Enter name: ");
@@ -44,18 +33,16 @@ int main()
  printf("Enter amount: ");
  scanf("%Lf",&temp.amount);
 
- getlogin_r(folder,201);                  //saves the current logged in user_name in "folder"
+ strcpy(folder , getenv("HOME"));
+ strcat(folder,"/betacoin/miner/");
+ strcat(folder , name);
 
- strcat(t,folder);
- strcat(t,"/betacoin/miner/");
- strcat(t,name);
- strcpy(name,t);
-
+// printf("%s",name);
  gettimeofday(&tv, NULL);                //or system("date +%s"), tells us the number of seconds passed since 1970-01-01 00:00:00 UTC.
 
  temp.timestamp= tv.tv_sec;
 
- fp = fopen(name, "wb");
+ fp = fopen(folder, "wb");
  fwrite(&temp,sizeof(temp),1,fp);
  fclose(fp);
  }

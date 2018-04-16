@@ -5,30 +5,17 @@
 #include<unistd.h>                  //for getlogin_R()
 #include<errno.h>                   //for errno and error values
 
-#ifdef __linux__
- char static_path[44] = "/home/";
-
-#elif __APPLE__
- char static_path[44] = "/Users/";
-
-#else
- printf("OS Not found");
-
-#endif
-
+ char static_path[51];
 
 
 int main()
 {
- char uname[20];
- char temp[201];
-
- getlogin_r(uname,20);                 //returns user name
+ char tempfolder[101];
  
- strcat(static_path,uname);
- strcat(static_path,"/betacoin");
+ strcpy(static_path , getenv("HOME"));
+ strcat(static_path , "/betacoin");
 
- if(mkdir(static_path,S_IRWXU) !=0)                //S_IRWXU - gives "read + write + execute" permission to current user.
+ if(mkdir(static_path , S_IRWXU) !=0)                //S_IRWXU - gives "read + write + execute" permission to current user.
  {
   if(errno != EEXIST)                    //mkdir throws non-zero number on failure. The errno is set to certain value. EEXIST means already exist.
   { 
@@ -37,10 +24,9 @@ int main()
    }
   }
 
- strcpy(temp,static_path);
- strcat(temp,"/miner");
-
- if(mkdir(temp,S_IRWXU) !=0)
+ strcpy(tempfolder , static_path);
+ strcat(tempfolder , "/miner");
+ if(mkdir(tempfolder , S_IRWXU) !=0)
  {
   if(errno != EEXIST)
   {
@@ -50,10 +36,10 @@ int main()
   }
 
 
- strcpy(temp,static_path);
- strcat(temp,"/sha");
+ strcpy(tempfolder , static_path);
+ strcat(tempfolder , "/sha");
 
- if(mkdir(temp,S_IRWXU) !=0)
+ if(mkdir(tempfolder , S_IRWXU) !=0)
  {
   if(errno != EEXIST)
   {
@@ -62,7 +48,21 @@ int main()
    }
   }
 
- system("cp ./SHA_function.py ~/betacoin/miner");
+ system("cp ./SHA_function.py ~/betacoin/miner/SHA_function_DUP.py");
+
+ strcpy(tempfolder , static_path);
+ strcat(tempfolder , "/BLOCKCHAIN");
+ 
+ if(mkdir(tempfolder , S_IRWXU) !=0)
+ {
+  if(errno != EEXIST)
+  {
+   printf("\n\n\t\tCANNOT CREATE DIRECTORY \"BLOCKCHAIN\" in betacoin folder.");
+   exit(1);
+   }
+  }
+
+
 
 
  }
