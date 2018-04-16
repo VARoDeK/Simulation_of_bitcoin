@@ -1,5 +1,5 @@
 /*All the software related files will reside in a folder name, "bitcoin", in root folder.*/
-
+/*MUST READ ABOUT MERKLE TREE AND HOW IT WORKS (duplication of records when no of records are less than number of leaves etc) BEFORE READING THE CODE*/
 
 #include<stdio.h>
 #include<stdlib.h>
@@ -28,7 +28,7 @@ struct transaction
 {
  long double amount;                                                  //amount to be debited from account
  unsigned char transaction_fee;                                       //char can be used a integer with range 0-255. Transaction fee will not be greater than that.
- unsigned long timestamp;
+ unsigned long timestamp;                                             // number of seconds passed since 1970-01-01 00:00:00 UTC
 
  /* data types for 'public key' of reciever,
     'digital signature' of sender and          */
@@ -39,7 +39,7 @@ struct transaction
 
 struct merkle
 {
- unsigned char copy;
+ unsigned char copy;                             //The need of this memeber is explained in the code of binary_correct() and delete_tree() function.
  char hash[65];                                  //hash is 64 characters long. 1 byte for NULL charactere.
  struct transaction *data;
  struct merkle *left;
@@ -71,7 +71,7 @@ void delete_tree(struct merkle*,unsigned short,unsigned short);
 void prerun_setup();                                                            //initializes some important values, like path to the bitcoin folder.
 
 void char_refresh(char[],unsigned short);
-void full_path(char[],char[]);                                                         //gives the path to a file from the root location.
+void full_path(char[],char[]);                                                  //gives the path to a file from the root location.
 /*------------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------------*/
 
@@ -83,6 +83,14 @@ int main()
  prerun_setup();               //to assign folder path, count no of files. 
  height = ceil(log2(count));  
  
+
+/*
+- The height of a complete-balanced binary tree is always x = log2(count), where count is no of leaves. thus count is always 2^x;
+- Since we are not sure that no of transaction record will be in form of 2^x, we take [log2(count)], where [.] is GIF function.
+- The the leaves which will be left, will contain repeated data.
+*/
+
+
 // printf("\n%hu\n%hu\n%s\n\n\n\n",height,count,folder);
 
  strcpy(filename,"list.txt");
@@ -112,13 +120,6 @@ int main()
  printf("\nSuccessful\n Check ~/betacoin/miner/merkle_hash.txt\n");
  return 0;
  }
-
-
-
-
-
-
-
 
 
 
@@ -360,12 +361,20 @@ void binary_correct(struct merkle *head, unsigned short height, unsigned short h
  if(h <= height && head->right == NULL)
  {
   head->right = head->left;
-  head->copy = 1;
+  head->copy = 1;                              
   }
 
  binary_correct(head->left, height, h+1);
  binary_correct(head->right, height, h+1); 
  }
+/*
+- Since we are traversing in Inorder sequence, only the right leg of any of the node will have to contain repeated data, since left leg will be filled first.
+- Now, copy = 1, means the right leg of current node, is pointing to same chain, pointed by its left leg.
+- We could have duplicated the data, but to make it memory efficient, we pointed it.
+ */
+
+
+
 /*------------------------------------------------------------------------------------*/
 void delete_tree(struct merkle *head, unsigned short height, unsigned short h)
 { 
@@ -389,6 +398,15 @@ void delete_tree(struct merkle *head, unsigned short height, unsigned short h)
   head->right = NULL;
   }
  }
+
+/*
+- Here the need of 'copy' member, is explained.
+- When copy = 1, means left leg and right leg are pointing to same data.
+- We are traversing in Inorder sequence, means left leg is freed, and right leg was pointing to same data.
+- If we again try to free same memory, it will cause segmentation error. 
+- Thus we check if copy = 1, it should not try to free the left leg.
+ */
+
 
 /*------------------------------------------------------------------------------------*/
 
