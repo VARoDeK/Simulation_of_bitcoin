@@ -23,7 +23,7 @@ int main()
  char uname[20];
  char temp[201];
 
- getlogin_r(uname,201);                 //returns user name
+ getlogin_r(uname,20);                 //returns user name
  
  strcat(static_path,uname);
  strcat(static_path,"/betacoin");
