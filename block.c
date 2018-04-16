@@ -1,6 +1,8 @@
-
-
-
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include<sys/time.h>
 
 
 struct block
@@ -14,5 +16,4 @@ struct block
  unsigned long nonce;
  unsigned int no_of_transaction;
  transaction_list;
-
  }
