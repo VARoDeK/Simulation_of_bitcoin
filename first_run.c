@@ -47,7 +47,7 @@ int main()
    }
   }
 
- system("cp ./SHA_function.py ~/betacoin/miner/SHA_function_DUP.py");
+ system("cp ./SHA_function.py ~/betacoin/miner/");
 
  strcpy(tempfolder , static_path);
  strcat(tempfolder , "/BLOCKCHAIN");
