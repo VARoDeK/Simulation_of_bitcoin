@@ -15,6 +15,7 @@
 
 struct transaction
 {
+ unsigned char t_id[FILE_SIZE];                     //It is the name of transaction file (*.transaction) which is string concat of wallet_id+timestamp;                  
  long double amount;                                                  //amount to be debited from account
  unsigned char transaction_fee;                                       //char can be used a integer with range 0-255. Transaction fee will not be greater than that.
  unsigned long timestamp;                                             // number of seconds passed since 1970-01-01 00:00:00 UTC
@@ -70,6 +71,8 @@ int main()
 {
  unsigned short i;
 
+ printf("\n\n\n\n Creating Merkle Hash..\n");
+
  prerun_setup();               //to assign folder path, count no of files. 
  height_global = ceil(log2(count_global));  
  
@@ -80,41 +83,47 @@ int main()
 - The the leaves which will be left, will contain repeated data.
 */
 
-
 // printf("\n%hu\n%hu\n%s\n\n\n\n",height,count,folder);
 
- strcpy(filename , "list.txt");
- full_path(miner , filename);
-
- root = NULL;
+ root = NULL; 
  c_global = 0;
 
+/*--Oening ~/betacoin/miner/list.txt--------------------------*/
+ strcpy(filename , "list.txt");
+ full_path(miner , filename);
  fpg = fopen(filename , "r");
       if(fpg == NULL)
       {
        printf("\n\tERROR: COULD NOT OPEN %s TO FORM MERKLE TREE." , filename);
        exit(1);
        }
+
+printf("\n Reading Transactions Record..");
  root = binary_make(root , height_global , 0);
  fclose(fpg);
 
+
+
+printf("\n Correcting Merkle Tree..");
  binary_correct(root , height_global , 0);
 // printf("\n\n The output is in level order\n");
 // binary_traverse(root,height,0);
 
+printf("\n Calculating Merkle Hash..");
  merkle_hash(root , height_global , 0);
 // binary_traverse(root , height_global , 0);
 
+
+/*--OPening ~/betacoin/miner/merkle_sha.txt----------------------*/
  strcpy(filename , "merkle_sha.txt");
  full_path(miner , filename);
-
  fpg = fopen(filename , "w");
       if(fpg == NULL)
       {
        printf("\n\tERROR: COULD NOT OPEN %s TO FORM MERKLE TREE." , filename);
        exit(1);
        }
-
+ printf("\n Writing Merkle Hash to %s.." , filename);
  fprintf(fpg , "%s" , root->hash);
  fclose(fpg);
 
@@ -129,13 +138,14 @@ int main()
        printf("\n\tERROR: COULD NOT OPEN %s TO FORM MERKLE TREE." , filename);
        exit(1);
        }
-
+ printf("\n Writing No Of Transactions to %s.." , filename);
  fprintf(fpg , "%hu" , count_global);
  fclose(fpg);
 
  delete_tree(root , height_global , 0);
- 
- printf("\nSuccessful\n Check ~/betacoin/miner/merkle_hash.txt\n");
+ printf("\n Deleted Merkle Tree..");
+
+ printf("\n\n OPERATION SUCCESSFUL. Merkle Hash Created and written\n\n");
  return 0;
  }
 
@@ -217,6 +227,7 @@ struct merkle* binary_make(struct merkle *head, unsigned short height_local, uns
            printf("\n\tERROR: CANNOT OPEN %s IN binary_make()" , filename);
            exit(1); 
             }
+  printf("\n Reading Transaction Record %s.." , filename);
   fread(head->data , sizeof(struct transaction) , 1 , fp);
 //  printf("\nAmount inserted: %Lf",head->data->amount);
   fclose(fp);
@@ -296,7 +307,7 @@ void prerun_setup()
   exit(0);
   }
 
-
+ printf("\n Inside Directory %s.." , tempfile);
  strcpy(filename , "list.txt");
  full_path(miner , filename);
  fp = fopen(filename , "w");
@@ -306,7 +317,7 @@ void prerun_setup()
            closedir(dr);
            exit(1);
             }
-
+ printf("\n Writing File %s.." , filename);
  while((de = readdir(dr)) != NULL)
  {
   if(strcmp(de->d_name , ".") == 0 || strcmp(de->d_name , "..") == 0)                  //not to select "current directory" and "previous directory"
@@ -335,10 +346,12 @@ void prerun_setup()
            exit(1);
             }
 
+ printf("\n Reading File %s.." , filename);
  for(i = 0 ; i< count_global; i++)
   fscanf(fp,"%s",name[i]);
  fclose(fp); 
 
+ printf("\n Sorting contents of %s.." , filename);
  for(i=0; i<count_global; i++)
  {
   for(j=0; j<count_global-i-1; j++)
@@ -362,7 +375,7 @@ void prerun_setup()
            printf("\n\tERROR: CANNOT OPEN %s IN binary_make() for writing to sort contents." , filename);
            exit(1);
             }
-
+ printf("\n Writing to %s.." , tempfile);
    for(i=0 ; i<count_global ; i++)
     fprintf(fp,"%s\n",name[i]);
 
@@ -370,7 +383,9 @@ void prerun_setup()
 
 
 remove(filename);
+printf("\n Delelted %s.." , filename);
 rename(tempfile , filename);
+printf("\n Renamed %s to %s..", tempfile , filename);
 
 
  }
@@ -467,10 +482,11 @@ void merkle_hash(struct merkle *head, unsigned short height_local, unsigned shor
            exit(1);
             }
 
-
-  fprintf(fp,"%Lf" , head->data->amount);
-  fprintf(fp,"%c" , head->data->transaction_fee);
-  fprintf(fp,"%ld" , head->data->timestamp);
+//  printf("\n\nname: %s",head->data->t_id);
+  fprintf(fp , "%s" , head->data->t_id);
+  fprintf(fp , "%Lf" , head->data->amount);
+  fprintf(fp , "%c" , head->data->transaction_fee);
+  fprintf(fp , "%ld" , head->data->timestamp);
 
   fclose(fp);
 
