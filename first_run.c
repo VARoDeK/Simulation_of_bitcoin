@@ -2,7 +2,6 @@
 #include<string.h> 
 #include<stdio.h>
 #include<stdlib.h>
-#include<unistd.h>                  //for getlogin_R()
 #include<errno.h>                   //for errno and error values
 
  char static_path[51];

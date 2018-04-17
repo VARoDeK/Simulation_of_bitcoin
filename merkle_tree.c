@@ -5,7 +5,6 @@
 #include<stdlib.h>
 #include<math.h>
 #include<string.h>
-#include<unistd.h>
 #include<dirent.h>
 
 #define FILE_SIZE 201                                                  //maximum length of filename
@@ -91,6 +90,11 @@ int main()
  c_global = 0;
 
  fpg = fopen(filename , "r");
+      if(fpg == NULL)
+      {
+       printf("\n\tERROR: COULD NOT OPEN %s TO FORM MERKLE TREE." , filename);
+       exit(1);
+       }
  root = binary_make(root , height_global , 0);
  fclose(fpg);
 
@@ -105,8 +109,29 @@ int main()
  full_path(miner , filename);
 
  fpg = fopen(filename , "w");
+      if(fpg == NULL)
+      {
+       printf("\n\tERROR: COULD NOT OPEN %s TO FORM MERKLE TREE." , filename);
+       exit(1);
+       }
+
  fprintf(fpg , "%s" , root->hash);
- fclose(fp);
+ fclose(fpg);
+
+
+
+ strcpy(filename , "count_no_of_files_in_block.txt");
+ full_path(miner , filename);
+
+ fpg = fopen(filename , "w");
+      if(fpg == NULL)
+      {
+       printf("\n\tERROR: COULD NOT OPEN %s TO FORM MERKLE TREE." , filename);
+       exit(1);
+       }
+
+ fprintf(fpg , "%hu" , count_global);
+ fclose(fpg);
 
  delete_tree(root , height_global , 0);
  
@@ -129,7 +154,7 @@ struct merkle* create_merkle_node()
  if(ptr == NULL)
   return ptr;
 
- for(i=0; i<66; i++, ptr->hash[i]='\0');
+ for( i=0 ; i < 66; i++, ptr->hash[i]='\0');
 
  ptr->copy = 0;
  ptr->data = NULL;
@@ -187,6 +212,11 @@ struct merkle* binary_make(struct merkle *head, unsigned short height_local, uns
   full_path(miner , filename);
 
   fp = fopen(filename , "rb");
+          if(fp == NULL)
+          {
+           printf("\n\tERROR: CANNOT OPEN %s IN binary_make()" , filename);
+           exit(1); 
+            }
   fread(head->data , sizeof(struct transaction) , 1 , fp);
 //  printf("\nAmount inserted: %Lf",head->data->amount);
   fclose(fp);
@@ -262,7 +292,7 @@ void prerun_setup()
 
  if(dr == NULL)
  {
-  printf("ERROR: CANNOT OPEN DIRECTORY IN prerun_setup.");
+  printf("ERROR: CANNOT OPEN %s DIRECTORY IN prerun_setup." , tempfile);
   exit(0);
   }
 
@@ -270,7 +300,13 @@ void prerun_setup()
  strcpy(filename , "list.txt");
  full_path(miner , filename);
  fp = fopen(filename , "w");
- 
+          if(fp == NULL)
+          {
+           printf("\n\tERROR: CANNOT OPEN %s IN prerun_setup()" , filename);
+           closedir(dr);
+           exit(1);
+            }
+
  while((de = readdir(dr)) != NULL)
  {
   if(strcmp(de->d_name , ".") == 0 || strcmp(de->d_name , "..") == 0)                  //not to select "current directory" and "previous directory"
@@ -293,6 +329,12 @@ void prerun_setup()
   name[i] = (char*)malloc(sizeof(char*)*50);
 
  fp = fopen(filename,"r");
+          if(fp == NULL)
+          {
+           printf("\n\tERROR: CANNOT OPEN %s IN binary_make() for reading to sort contents." , filename);
+           exit(1);
+            }
+
  for(i = 0 ; i< count_global; i++)
   fscanf(fp,"%s",name[i]);
  fclose(fp); 
@@ -315,6 +357,11 @@ void prerun_setup()
   full_path(miner,tempfile);
 
   fp = fopen(tempfile,"w");
+          if(fp == NULL)
+          {
+           printf("\n\tERROR: CANNOT OPEN %s IN binary_make() for writing to sort contents." , filename);
+           exit(1);
+            }
 
    for(i=0 ; i<count_global ; i++)
     fprintf(fp,"%s\n",name[i]);
@@ -414,6 +461,12 @@ void merkle_hash(struct merkle *head, unsigned short height_local, unsigned shor
   full_path(sha , filename);
 
   fp = fopen(filename , "w");
+          if(fp == NULL)
+          {
+           printf("\n\tERROR: CANNOT OPEN %s IN merkle_hash()" , filename);
+           exit(1);
+            }
+
 
   fprintf(fp,"%Lf" , head->data->amount);
   fprintf(fp,"%c" , head->data->transaction_fee);
@@ -428,6 +481,12 @@ void merkle_hash(struct merkle *head, unsigned short height_local, unsigned shor
   full_path(sha , filename);
 
   fp = fopen(filename , "r");
+          if(fp == NULL)
+          {
+           printf("\n\tERROR: CANNOT OPEN %s IN merkle_hash()" , filename);
+           exit(1);
+            }
+
   fscanf(fp , "%s" , head->hash);
   fclose(fp);
 
@@ -442,6 +501,12 @@ void merkle_hash(struct merkle *head, unsigned short height_local, unsigned shor
   strcpy(filename , "input.txt");
   full_path(sha , filename);
   fp = fopen(filename , "w");
+          if(fp == NULL)
+          {
+           printf("\n\tERROR: CANNOT OPEN %s IN merkle_hash()" , filename);
+           exit(1);
+            }
+
   fprintf(fp,"%s%s" , head->left->hash , head->right->hash);
   fclose(fp);
 
@@ -451,6 +516,12 @@ void merkle_hash(struct merkle *head, unsigned short height_local, unsigned shor
   full_path(sha , filename);
 
   fp = fopen(filename , "r");
+          if(fp == NULL)
+          {
+           printf("\n\tERROR: CANNOT OPEN %s IN merkle_hash()" , filename);
+           exit(1);
+            }
+
   fscanf(fp , "%s" , head->hash);
   fclose(fp);
 
