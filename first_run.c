@@ -12,9 +12,22 @@ int main()
  FILE *fp;
  char tempname[101];
  
+ if(system("python3 -V") != 0)
+ {
+  printf("\n]tERROR: CANNOT RUN python3. CHECK IF IT IS INSTALLED OR FOR OTHER ERRORS.");
+  exit(1);
+  }
+ 
+ if(system("gcc -v") != 0)
+ {
+  printf("\n]tERROR: CANNOT RUN gcc. CHECK IF IT IS INSTALLED OR FOR OTHER ERRORS.");
+  exit(1);
+  }
+
+
+ 
  strcpy(static_path , getenv("HOME"));
  strcat(static_path , "/betacoin");
-
  //Making ~/betacoin 
  if(mkdir(static_path , S_IRWXU) !=0)                //S_IRWXU - gives "read + write + execute" permission to current user.
  {
@@ -24,6 +37,7 @@ int main()
    exit(1);
    }
   }
+ printf("\n Created folder %s.." , static_path);
 
  //Making ~/betacoin/miner
  strcpy(tempname , static_path);
@@ -36,6 +50,7 @@ int main()
    exit(1);
    }
   }
+ printf("\n Created folder %s.." , tempname);
 
  //Making ~/betacoin/sha
  strcpy(tempname , static_path);
@@ -49,6 +64,8 @@ int main()
    exit(1);
    }
   }
+ printf("\n Created folder %s.." , tempname);
+
 
  //Making ~/betacoin/BLOCKCHAIN
  strcpy(tempname , static_path);
@@ -62,6 +79,7 @@ int main()
    exit(1);
    }
   }
+ printf("\n Created folder %s.." , tempname);
 
 
  //Making ~/betacoin/binary
@@ -76,9 +94,11 @@ int main()
    exit(1);
    }
   }
+ printf("\n Created folder %s.." , tempname);
 
  
- system("cp ./SHA_function.py ~/betacoin/miner/SHA_function_DUP.py");
+ system("cp ./SHA_function.py ~/betacoin/binary/SHA_function_DUP.py");
+ printf("\n Copied ./SHA_function.py to ~/betacoin/binary/SHA_function_DUP.py..");
 
  //Creating ~/betacoin/miner/difficulty_target.txt
  strcpy(tempname , static_path);
@@ -91,6 +111,8 @@ int main()
           } 
  fprintf(fp , "%lu" , (unsigned long)2);
  fclose(fp);
+ printf("\n Created file %s to set difficulty target.." , tempname);
+
  
  #ifdef __linux__ 
   system("gcc merkle_tree.c -o  ~/betacoin/binary/merkle_tree -lm");

@@ -491,7 +491,7 @@ void merkle_hash(struct merkle *head, unsigned short height_local, unsigned shor
   fclose(fp);
 
 
-  system("python3 ~/betacoin/miner/SHA_function_DUP.py");
+  system("python3 ~/betacoin/binary/SHA_function_DUP.py");
 
   strcpy(filename , "output.txt");
   full_path(sha , filename);
@@ -526,7 +526,7 @@ void merkle_hash(struct merkle *head, unsigned short height_local, unsigned shor
   fprintf(fp,"%s%s" , head->left->hash , head->right->hash);
   fclose(fp);
 
-  system("python3 ~/betacoin/miner/SHA_function_DUP.py");
+  system("python3 ~/betacoin/binary/SHA_function_DUP.py");
 
   strcpy(filename , "output.txt");
   full_path(sha , filename);

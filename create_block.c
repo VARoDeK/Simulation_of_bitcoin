@@ -285,7 +285,7 @@ void create_current_block_hash()
    }
   fclose(fp);
 
- system("python3 ~/betacoin/miner/SHA_function_DUP.py");
+ system("python3 ~/betacoin/binary/SHA_function_DUP.py");
 
   strcpy(filename , "output.txt");
   full_path(sha , filename);
@@ -295,7 +295,7 @@ void create_current_block_hash()
              printf("\nERROR: COULD NOT OPEN %s TO CALCULATE NONCE." , filename);
              exit(1);
              }
-  fscanf(fp , "%s[^\n]" , block_global.current_block_hash);
+  fscanf(fp , "%[^\n]s" , block_global.current_block_hash);
   fclose(fp); 
  
   flag = 1;
