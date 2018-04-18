@@ -15,7 +15,7 @@
 
 struct transaction
 {
- unsigned char t_id[FILE_SIZE];                     //It is the name of transaction file (*.transaction) which is string concat of wallet_id+timestamp;                  
+ char t_id[FILE_SIZE];                     //It is the name of transaction file (*.transaction) which is string concat of wallet_id+timestamp;                  
  long double amount;                                                  //amount to be debited from account
  unsigned char transaction_fee;                                       //char can be used a integer with range 0-255. Transaction fee will not be greater than that.
  unsigned long timestamp;                                             // number of seconds passed since 1970-01-01 00:00:00 UTC
@@ -144,6 +144,8 @@ printf("\n Calculating Merkle Hash..");
 
  delete_tree(root , height_global , 0);
  printf("\n Deleted Merkle Tree..");
+
+ printf("\nMerkle Hash: %s" , root->hash);
 
  printf("\n\n OPERATION SUCCESSFUL. Merkle Hash Created and written\n\n");
  return 0;

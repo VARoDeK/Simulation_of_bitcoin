@@ -24,7 +24,7 @@ struct block
 /*----------------------------------------------------------------------------------------------------------*/
 struct transaction
 {
- unsigned char t_id[FILE_SIZE];                     //It is the name of transaction file (*.transaction) which is string concat of wallet_id+timestamp;                  
+ char t_id[FILE_SIZE];                     //It is the name of transaction file (*.transaction) which is string concat of wallet_id+timestamp;                  
  long double amount;                                //amount to be debited from account
  unsigned char transaction_fee;                     //char can be used a integer with range 0-255. Transaction fee will not be greater than that.
  unsigned long timestamp;
@@ -61,11 +61,12 @@ int main()
  struct timeval tv;
  unsigned long time1 , time2;
  
- printf("\n\n\n\n Creating Block..\n\n\n\n");
+ printf("\n\n Creating Block..\n");
+
+ system("~/betacoin/binary/merkle_tree");
 
  prerun_setup();
  
- system("~/betacoin/binary/merkle_tree");
 
  read_transaction_files();
 
@@ -93,8 +94,12 @@ int main()
            exit(1);
             }
   fwrite(&block_global , sizeof(struct block) , 1 , fp);
-  for(i = 0 ; i < block_global.no_of_transaction ; i++);
+  printf("\n Written Block Header to %s.." , filename);
+  for(i = 0 ; i < block_global.no_of_transaction ; i++)
+  {
    fwrite(&(trans_global[i]) , sizeof(struct transaction) , 1 , fp);
+   printf("\n Written %s to %s.." , trans_global[i].t_id , filename);
+   }
   fclose(fp);
 
   printf("\nNew Block Created at %s.." , filename);
