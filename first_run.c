@@ -97,8 +97,24 @@ int main()
  printf("\n Created folder %s.." , tempname);
 
  
- system("cp ./SHA_function.py ~/betacoin/binary/SHA_function_DUP.py");
- printf("\n Copied ./SHA_function.py to ~/betacoin/binary/SHA_function_DUP.py..");
+ if(system("cp ./SHA_function.py ~/betacoin/binary/SHA_function_DUP.py") == 0)
+   printf("\n Copied ./SHA_function.py to ~/betacoin/binary/SHA_function_DUP.py..");
+ else
+ {
+  printf("\n\tERROR: Could not copy ./SHA_function.py to ~/betacoin/binary/SHA_function_DUP.py..");
+  exit(1);
+  }
+
+ if(system("cp ./MD5_function.py ~/betacoin/binary/MD5_function_DUP.py") == 0)
+   printf("\n Copied ./MD5_function.py to ~/betacoin/binary/MD5_function_DUP.py..");
+ else
+ {
+  printf("\n\tERROR: Could not copy ./MD5_function.py to ~/betacoin/binary/MD5_function_DUP.py..");
+  exit(1);
+  }
+
+
+
 
  //Creating ~/betacoin/miner/difficulty_target.txt
  strcpy(tempname , static_path);
