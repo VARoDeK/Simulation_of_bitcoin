@@ -60,13 +60,15 @@ int main()
  short i;
  struct timeval tv;
  unsigned long time1 , time2;
- 
- printf("\n\n Creating Block..\n");
 
  system("~/betacoin/binary/merkle_tree");
 
  prerun_setup();
+
+ printf("\n\n\n\n Creating Block..\n\n\n\n");
  
+
+ prerun_setup();
 
  read_transaction_files();
 
@@ -94,6 +96,7 @@ int main()
            exit(1);
             }
   fwrite(&block_global , sizeof(struct block) , 1 , fp);
+
   printf("\n Written Block Header to %s.." , filename);
   for(i = 0 ; i < block_global.no_of_transaction ; i++)
   {
