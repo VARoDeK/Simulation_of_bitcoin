@@ -62,10 +62,10 @@ int main()
  unsigned long time1 , time2;
  
  printf("\n\n\n\n Creating Block..\n\n\n\n");
-
- prerun_setup();
  
  system("~/betacoin/binary/merkle_tree");
+
+ prerun_setup();
 
  read_transaction_files();
 
@@ -93,7 +93,7 @@ int main()
            exit(1);
             }
   fwrite(&block_global , sizeof(struct block) , 1 , fp);
-  for(i = 0 ; i < block_global.no_of_transaction ; i++);
+  for(i = 0 ; i < block_global.no_of_transaction ; i++)
    fwrite(&(trans_global[i]) , sizeof(struct transaction) , 1 , fp);
   fclose(fp);
 
