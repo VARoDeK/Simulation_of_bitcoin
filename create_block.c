@@ -61,13 +61,12 @@ int main()
  struct timeval tv;
  unsigned long time1 , time2;
 
+ printf("\n\n CREATING BLOCK..");
+
  system("~/betacoin/binary/merkle_tree");
 
  prerun_setup();
-
- printf("\n\n\n\n Creating Block..\n\n\n\n");
  
-
  prerun_setup();
 
  read_transaction_files();

@@ -71,7 +71,7 @@ int main()
 {
  unsigned short i;
 
- printf("\n\n\n\n Creating Merkle Hash..\n");
+ printf("\n\n GENERATING MERKLE HASH..\n");
 
  prerun_setup();               //to assign folder path, count no of files. 
  height_global = ceil(log2(count_global));  
