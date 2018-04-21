@@ -2,6 +2,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<sys/time.h>
+#include<unistd.h>
 
 #define FOLDER_SIZE 51
 #define FILE_SIZE 201
@@ -21,12 +22,18 @@ struct user
  char user_and_hostname[51];
  char email[51];
  }user_global;
+
+struct pass
+{
+ char password[FOLDER_SIZE];
+ }pass_global;
 /*------------------------------------------------------------------------------*/
 char folder[FOLDER_SIZE];
 char filename[FILE_SIZE];
 short temp;
 char ch;
-char time[51];
+char tempstring[51];       
+char account;              //flag to  tell if account is created or not.
 
 //short char_to_int(char[]);
 void input();
@@ -42,9 +49,59 @@ int main()
 {
  FILE *fp;
  struct timeval tv;
+ char temp[FOLDER_SIZE];
 
  strcpy(folder , getenv("HOME"));
  strcat(folder , "/betacoin");
+
+ strcpy(filename , folder);
+ strcat(filename , "/binary/md.5");
+
+ fp = fopen(filename , "rb");
+  if(fp != NULL)
+   goto acc;
+
+ line();
+ printf("\t\t\tSET PASSWORD");
+ line();
+ rep:
+  printf("\n\tEnter Password:\t\t");
+   fflush(stdin);
+   scanf("%[^\n]s" , pass_global.password);  
+   getchar();
+
+  printf("\n\tRe-Enter Password to confirm: ");
+   fflush(stdin);
+   scanf("%[^\n]s" , temp);
+   getchar();
+
+  if(strcmp(pass_global.password , temp) != 0)
+  {
+   printf("\n\t\tPassword mis-match.");
+   getchar();
+   goto rep;
+   }
+  
+  fp = fopen(filename , "wb");
+          if(fp == NULL)
+          {
+           printf("\n\tERROR: CANNOT OPEN %s.." , filename);
+           exit(1);
+            }
+  fwrite(&user_global , sizeof(struct pass) , 1 , fp);
+  fclose(fp);
+
+ line();
+ printf("\tPASSWORD SUCCESSFULLY CREATED.");
+ line();
+
+
+
+
+
+
+/*-------Account--------------------------------------*/
+acc:
  strcpy(filename , folder);
  strcat(filename , "/binary/sha.256");
 
@@ -56,14 +113,18 @@ int main()
    return 0;
    } 
 
+account = 0;
+
 re1:
  input();
  line();
   printf("\t\tCONFIRM");
  line();
+  display_details();
+ line();
   printf("\n\n\tEnter 'C' to confirm.");
   printf("\n\n\tEnter 'R' to re-enter.");
-  printf("\n\n\tEnter 'E' to discard and exit.");
+  printf("\n\n\tEnter 'E' to discard and exit.\n");
  re2:
   printf("\n\t\tEnter your choice: ");
   fflush(stdin);
@@ -128,10 +189,10 @@ re1:
            exit(1);
             }
 
-  fscanf(fp , "%s" , time);
+  fscanf(fp , "%s" , tempstring);
   fclose(fp);
 
- strcat(user_global.wallet_id , time);
+ strcat(user_global.wallet_id , tempstring);
 
 /*-writing user details------------------------------*/
   strcpy(filename , folder);
@@ -148,6 +209,7 @@ re1:
 line();
 line();
 printf("\n\tACCOUNT SUCCESSFULLY CREATED.");
+account = 1;
 line();
 line();
 
@@ -181,7 +243,7 @@ void input()
  char c;
 
  line();
- printf("\t\tENTER DETAILS");
+ printf("\t\tACCOUNT CREATION: ENTER DETAILS");
  line();
  printf("\n\tEnter your name: ");
  fflush(stdin);
@@ -195,24 +257,26 @@ void input()
  correction(user_global.location);
  
 // getchar();
- printf("\n\tEnter username and hostname (user@hostname): ");
- fflush(stdin);
- fgets(user_global.user_and_hostname , 51 ,stdin);
- correction(user_global.user_and_hostname);
-
-// getchar();
  printf("\n\tEnter email-id: ");
  fflush(stdin);
  fgets(user_global.email , 51 ,stdin);
  correction(user_global.email);
+
+ getlogin_r(user_global.user_and_hostname, 51);
+ strcat(user_global.user_and_hostname , "@");
+ gethostname(tempstring , 51);
+ strcat(user_global.user_and_hostname , tempstring);
+ strcat(user_global.user_and_hostname , ".local");
  }
 
 /*------------------------------------------------------------------------------*/
 void display_details()
 {
- printf("\nWallet id: %s" , user_global.wallet_id);
+ if(account != 0)
+  printf("\nWallet id: %s" , user_global.wallet_id);
  printf("\nName: %s" , user_global.name);
- printf("\ntimestamp: %lu" , user_global.timestamp);
+ if(account != 0)
+  printf("\ntimestamp: %lu" , user_global.timestamp);
  printf("\nlocation: %s" , user_global.location);
  printf("\nuser and hostname: %s" , user_global.user_and_hostname);
  printf("\nemail: %s" , user_global.email);

@@ -113,6 +113,15 @@ int main()
   exit(1);
   }
 
+ if(system("cp ./PASS_function.py ~/betacoin/binary/PASS_function_DUP.py") == 0)
+   printf("\n Copied ./PASS_function.py to ~/betacoin/binary/PASS_function_DUP.py..");
+ else
+ {
+  printf("\n\tERROR: Could not copy ./PASS_function.py to ~/betacoin/binary/PASS_function_DUP.py..");
+  exit(1);
+  }
+
+
 
 
 
@@ -129,6 +138,8 @@ int main()
  fclose(fp);
  printf("\n Created file %s to set difficulty target.." , tempname);
 
+
+ system("gcc create_account.c -o ~/betacoin/binary/create_account");
  
  #ifdef __linux__ 
   system("gcc merkle_tree.c -o  ~/betacoin/binary/merkle_tree -lm");
