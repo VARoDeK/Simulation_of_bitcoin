@@ -1,4 +1,4 @@
-from hashlib import sha265
+from hashlib import sha256
 from os import environ
 from sys import exit
 
