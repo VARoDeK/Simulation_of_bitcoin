@@ -22,6 +22,19 @@ struct block
  }block_global;
 
 /*----------------------------------------------------------------------------------------------------------*/
+
+struct user
+{
+ char wallet_id[71];              //strcat(timestamp + md5(name,timestamp,location,user_and_hostname,email))
+ char name[51];
+ unsigned long timestamp;
+ char location[51];
+ char user_and_hostname[51];      //for my system: varodek@varodek.local
+ char email[51];
+ }user_global;
+
+
+/*----------------------------------------------------------------------------------------------------------*/
 struct transaction
 {
  char t_id[FILE_SIZE];                     //It is the name of transaction file (*.transaction) which is string concat of wallet_id+timestamp;                  
@@ -38,6 +51,7 @@ char filename[FILE_SIZE];                                                   //wi
 
 char miner[] = "/miner/";
 char sha[] = "/sha/";
+char binary[] = "/binary/";
 char blockchain[] = "/BLOCKCHAIN/";
 void full_path(char[],char[]); 
 
@@ -84,7 +98,10 @@ int main()
  printf("\nNonce code: %lu" , block_global.nonce); 
  printf("\nTime Taken: %u sec" , block_global.time_taken);
  printf("\nTimestap: %lu sec" , block_global.timestamp);
-  strcpy(filename , "NEW_BLOCK.block");
+
+
+  strcpy(filename , user_global.wallet_id);
+  strcat(filename , ".newblock");
   full_path(miner , filename);
   fp = fopen(filename , "wb");
           if(fp == NULL)
@@ -176,6 +193,25 @@ void prerun_setup()
  block_global.previous_block_hash[0] = '\0';
 
  block_global.time_taken = 0;
+
+
+
+/*--read user details-----------------------------------------------------*/
+ strcpy(filename , "sha.256");
+ full_path(binary , filename);
+ fp = fopen(filename , "rb");
+       if(fp == NULL)
+       {
+        printf("\n\tERROR: COULD NOT OPEN %s TO READ USER DETAILS." , filename);
+        exit(1);
+        }
+ printf("\n Reading User Details From %s.." , filename);
+ fread(&user_global , sizeof(struct user) , 1 , fp);
+ fclose(fp);
+
+
+
+
  }
 /*----------------------------------------------------------------------------------------------------------*/
 void full_path(char subd[],char a[])

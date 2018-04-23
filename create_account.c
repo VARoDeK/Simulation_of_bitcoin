@@ -23,22 +23,16 @@ struct user
  char email[51];
  }user_global;
 
-struct pass
-{
- char password[FOLDER_SIZE];
- }pass_global;
+
 /*------------------------------------------------------------------------------*/
 char folder[FOLDER_SIZE];
 char filename[FILE_SIZE];
-short temp;
 char ch;
-char tempstring[51];       
-char account;              //flag to  tell if account is created or not.
-
-//short char_to_int(char[]);
+char account;           //to know if account exists or not.
+char tempstring[51];
 void input();
 void display_details();
-void correction(char []);
+void correction(char []); 
 /*------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------*/
@@ -53,55 +47,8 @@ int main()
 
  strcpy(folder , getenv("HOME"));
  strcat(folder , "/betacoin");
-
- strcpy(filename , folder);
- strcat(filename , "/binary/md.5");
-
- fp = fopen(filename , "rb");
-  if(fp != NULL)
-   goto acc;
-
- line();
- printf("\t\t\tSET PASSWORD");
- line();
- rep:
-  printf("\n\tEnter Password:\t\t");
-   fflush(stdin);
-   scanf("%[^\n]s" , pass_global.password);  
-   getchar();
-
-  printf("\n\tRe-Enter Password to confirm: ");
-   fflush(stdin);
-   scanf("%[^\n]s" , temp);
-   getchar();
-
-  if(strcmp(pass_global.password , temp) != 0)
-  {
-   printf("\n\t\tPassword mis-match.");
-   getchar();
-   goto rep;
-   }
-  
-  fp = fopen(filename , "wb");
-          if(fp == NULL)
-          {
-           printf("\n\tERROR: CANNOT OPEN %s.." , filename);
-           exit(1);
-            }
-  fwrite(&user_global , sizeof(struct pass) , 1 , fp);
-  fclose(fp);
-
- line();
- printf("\tPASSWORD SUCCESSFULLY CREATED.");
- line();
-
-
-
-
-
-
 /*-------Account--------------------------------------*/
-acc:
+ account = 0;
  strcpy(filename , folder);
  strcat(filename , "/binary/sha.256");
 
@@ -110,13 +57,12 @@ acc:
   {
    printf("\n\n\t\tERROR: USER ACCOUNT ALREADY EXISTS.");
    fclose(fp);
-   return 0;
-   } 
-
-account = 0;
-
+   return 1;
+   }
+ 
 re1:
- input();
+ line();
+   input();
  line();
   printf("\t\tCONFIRM");
  line();
@@ -206,10 +152,11 @@ re1:
   fwrite(&user_global , sizeof(struct user) , 1 , fp);
   fclose(fp);
 
+ account = 1;
+
 line();
 line();
 printf("\n\tACCOUNT SUCCESSFULLY CREATED.");
-account = 1;
 line();
 line();
 
@@ -224,19 +171,8 @@ return 0;
 /*------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------*/
-short char_to_int( char a[])
-{
- short i;
- short k = 0;
- for(i = 0; a[i] != '\0' ; i++)
- {
-  k*= 10;
-  k+= (a[i] - 48);
-  }
- 
- return k;
- }
 /*------------------------------------------------------------------------------*/
+
 void input()
 {
  short temp;

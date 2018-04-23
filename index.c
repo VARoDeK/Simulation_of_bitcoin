@@ -12,8 +12,6 @@ void line()
 
 char ch;                         //variable to store user options
 char account;                    //flag to check if account is created or not
-char password;                   //flag to check if passord is set or not
-char pass[FILE_SIZE];            //to in put password
 char folder[FOLDER_SIZE];
 char filename[FILE_SIZE];
 FILE *fp;
@@ -26,7 +24,6 @@ void display_options();           //displays all options to the user
 void read_user_details();         //reads user details from the system
 void full_path(char[],char[]);    //gives full path to the file
 void call_create_account();       //to run the program for creating account
-short security_check();
 /*----------------------------------------------------------------------------------*/
 struct user
 {
@@ -35,7 +32,7 @@ struct user
  unsigned long timestamp;
  char location[51];
  char user_and_hostname[51];      //for my system: varodek@varodek.local
- char email[51];      
+ char email[51]; 
  }user_global;
 
 
@@ -44,14 +41,6 @@ struct user
 int main()
 {
  prerun_setup();
-
- if(password == 0)
- {
-  if(system("~/betacoin/binary/create_account") != 0)
-   exit(1);
-  prerun_setup();
-  }
-
 
  if(account == 0)
   call_create_account();
@@ -102,6 +91,7 @@ char option()
  return a;
  }
 /*----------------------------------------------------------------------------------*/
+
 void prerun_setup()
 {
  strcpy(folder , getenv("HOME"));
@@ -119,20 +109,6 @@ void prerun_setup()
    account = 1;
    fclose(fp);
    }
-
- strcpy(filename , folder);
- strcat(filename , "md.5");
- fp = fopen(filename , "r");
-  if(fp == NULL)
-   password = 0;
-  else
-  {
-   password = 1;
-   fclose(fp);
-   }
-
-
-
 
 
  }
@@ -162,7 +138,7 @@ line();
 
 printf("\n\n\tEnter 'A' to check your balance.");
 printf("\n\n\tEnter 'B' to check your user details.");
-printf("\n\n\tEnter 'C' to mkae a transaction.");
+printf("\n\n\tEnter 'C' to make a transaction.");
 printf("\n\n\tEnter 'D' to mine.");
 printf("\n\n\tEnter 'E' to delte your account.");
 printf("\n\n\tEnter 'Q' to leave this portal and exit.");
@@ -229,6 +205,10 @@ void full_path(char subd[],char a[])
 /*----------------------------------------------------------------------------------*/
 short security_check()
 {
+ char p[51];
+ char command[101];
+
+ 
 
  }
 /*----------------------------------------------------------------------------------*/
