@@ -2,60 +2,9 @@
 #include<string.h>
 #include<stdlib.h>
 #include<sys/time.h>
-
-#define FILE_SIZE 201                                                  //maximum length of filename
-#define FOLDER_SIZE 51
+#include"betacoin.h"
 
 /*----------------------------------------------------------------------------------------------------------*/
-struct block
-{
- unsigned int magic_number;                    //to define that the file is a block of blockchain.
- unsigned int time_taken;                      //no of seconds required to calculate hash.
- unsigned int block_size;                      //block size.
- unsigned char previous_block_hash[65]; 
- unsigned char current_block_hash[65];       
- unsigned char merkle_hash[65];                
- unsigned long timestamp;                      
- unsigned long difficulty_target; //no_of_zeros
- unsigned long nonce;
- unsigned short no_of_transaction;
- }block_global;
-
-/*----------------------------------------------------------------------------------------------------------*/
-
-struct user
-{
- char wallet_id[71];              //strcat(timestamp + md5(name,timestamp,location,user_and_hostname,email))
- char name[51];
- unsigned long timestamp;
- char location[51];
- char user_and_hostname[51];      //for my system: varodek@varodek.local
- char email[51];
- }user_global;
-
-
-/*----------------------------------------------------------------------------------------------------------*/
-struct transaction
-{
- char t_id[FILE_SIZE];                     //It is the name of transaction file (*.transaction) which is string concat of wallet_id+timestamp;                  
- long double amount;                                //amount to be debited from account
- unsigned char transaction_fee;                     //char can be used a integer with range 0-255. Transaction fee will not be greater than that.
- unsigned long timestamp;
- /* data types for 'public key' of reciever,
-    'digital signature' of sender and         */
- }*trans_global;
-
-/*----------------------------------------------------------------------------------------------------------*/
-char folder[FOLDER_SIZE];
-char filename[FILE_SIZE];                                                   //will save the name of transaction file, which is read from "a.txt", which is to be opened.
-
-char miner[] = "/miner/";
-char sha[] = "/sha/";
-char binary[] = "/binary/";
-char blockchain[] = "/BLOCKCHAIN/";
-void full_path(char[],char[]); 
-
-
 FILE *fpg, *fp;                                                                 //"fpg" to open list.txt, "fp" to open transaction files.
 void prerun_setup();
 void read_transaction_files();
@@ -63,9 +12,10 @@ void create_current_block_hash();
 /*----------------------------------------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------------------------------------*/
-
-
-
+char tempstring[FILE_SIZE];
+struct transaction *trans_global;
+struct block block_global;
+struct user user_global;
 /*----------------------------------------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------------------------------------*/
 int main()
@@ -98,9 +48,37 @@ int main()
  printf("\nNonce code: %lu" , block_global.nonce); 
  printf("\nTime Taken: %u sec" , block_global.time_taken);
  printf("\nTimestap: %lu sec" , block_global.timestamp);
+ printf("\nMiner id: %s", block_global.miner_id);
 
 
-  strcpy(filename , user_global.wallet_id);
+
+ /*--Naming the newly created block----------------------------------*/
+ strcpy(filename , "input.txt");
+ full_path(sha , filename);
+ fp = fopen(filename , "w");
+         if(fp == NULL)
+          {
+           printf("\n\tERROR: CANNOT OPEN %s FOR WRITING." , filename);
+           exit(1);
+            }
+ fprintf(fp , "%lu" , block_global.timestamp);
+ fclose(fp);
+
+ 
+  fp = fopen(filename , "r");
+         if(fp == NULL)
+          {
+           printf("\n\tERROR: CANNOT OPEN %s FOR WRITING." , filename);
+           exit(1);
+            }
+ fscanf(fp , "%s" , filename);
+ fclose(fp);
+
+
+
+
+/*--Writng-------------------------------------------------------*/
+  strcat(filename , user_global.wallet_id);
   strcat(filename , ".newblock");
   full_path(miner , filename);
   fp = fopen(filename , "wb");
@@ -121,6 +99,7 @@ int main()
 
   printf("\nNew Block Created at %s.." , filename);
 
+ free(trans_global);
  }
 /*----------------------------------------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------------------------------------*/
@@ -208,32 +187,13 @@ void prerun_setup()
  printf("\n Reading User Details From %s.." , filename);
  fread(&user_global , sizeof(struct user) , 1 , fp);
  fclose(fp);
+/*--Miner ID-------------------------------------------------------------*/
+strcpy(block_global.miner_id , user_global.wallet_id);
 
+}
 
-
-
- }
+ 
 /*----------------------------------------------------------------------------------------------------------*/
-void full_path(char subd[],char a[])
-{
- unsigned short i;
- char temp[FILE_SIZE];
-
- for(i=0; ;i++)
- {
-  if(a[i]=='\0')
-  {
-   if(a[i-1] == '\n')
-    a[i-1] = '\0';
-   break;
-   }
-  }
-
- strcpy(temp , folder);
- strcat(temp , subd);
- strcat(temp , a);
- strcpy(a , temp);
- }
 /*----------------------------------------------------------------------------------------------------------*/
 void read_transaction_files()
 {

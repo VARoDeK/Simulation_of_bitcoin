@@ -3,9 +3,7 @@
 #include<string.h>
 #include<sys/time.h>
 #include<unistd.h>
-
-#define FOLDER_SIZE 51
-#define FILE_SIZE 201
+#include"betacoin.h"
 
 void line()
 { 
@@ -13,23 +11,13 @@ void line()
  }
 
 
-struct user
-{
- char wallet_id[71];
- char name[51];
- unsigned long timestamp;
- char location[51];
- char user_and_hostname[51];
- char email[51];
- }user_global;
+struct user user_global;
 
 
 /*------------------------------------------------------------------------------*/
-char folder[FOLDER_SIZE];
-char filename[FILE_SIZE];
 char ch;
 char account;           //to know if account exists or not.
-char tempstring[51];
+char tempstring[71];
 void input();
 void display_details();
 void correction(char []); 
@@ -120,7 +108,7 @@ re1:
            exit(1);
             }
 
-  fscanf(fp , "%s" , user_global.wallet_id);
+  fscanf(fp , "%s" , tempstring);
   fclose(fp);
 
 
@@ -135,11 +123,13 @@ re1:
            exit(1);
             }
 
-  fscanf(fp , "%s" , tempstring);
+  fscanf(fp , "%s" , user_global.wallet_id);
   fclose(fp);
 
  strcat(user_global.wallet_id , tempstring);
 
+
+ user_global.miner_flag = 0;
 /*-writing user details------------------------------*/
   strcpy(filename , folder);
   strcat(filename , "/binary/sha.256");
@@ -202,7 +192,9 @@ void input()
  strcat(user_global.user_and_hostname , "@");
  gethostname(tempstring , 51);
  strcat(user_global.user_and_hostname , tempstring);
+#ifdef __LINUX__
  strcat(user_global.user_and_hostname , ".local");
+#endif
  }
 
 /*------------------------------------------------------------------------------*/

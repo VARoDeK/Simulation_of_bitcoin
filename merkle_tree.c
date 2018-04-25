@@ -6,47 +6,13 @@
 #include<math.h>
 #include<string.h>
 #include<dirent.h>
-
-#define FILE_SIZE 201                                                  //maximum length of filename
-#define FOLDER_SIZE 51
-
-/*------------------------------------------------------------------------------------*/
-// structure for transaction record.
-
-struct transaction
-{
- char t_id[FILE_SIZE];                     //It is the name of transaction file (*.transaction) which is string concat of wallet_id+timestamp;                  
- long double amount;                                                  //amount to be debited from account
- unsigned char transaction_fee;                                       //char can be used a integer with range 0-255. Transaction fee will not be greater than that.
- unsigned long timestamp;                                             // number of seconds passed since 1970-01-01 00:00:00 UTC
-
- /* data types for 'public key' of reciever,
-    'digital signature' of sender and          */
- }; 
-
-/*------------------------------------------------------------------------------------*/
-//structure for hash node;
-
-struct merkle
-{
- unsigned char copy;                             //The need of this memeber is explained in the code of binary_correct() and delete_tree() function.
- char hash[65];                                  //hash is 64 characters long. 1 byte for NULL charactere.
- struct transaction *data;
- struct merkle *left;
- struct merkle *right;
- } *root;
+#include"betacoin.h"
 
 
 /*------------------------------------------------------------------------------------*/
 unsigned short height_global;                                                           //stores the height of the binary tree
 unsigned short count_global;          //counts the total number of transactions. The ceil() of log of count, with base 2, will give the height of binary tree.
 unsigned short c_global;
-
-char folder[FOLDER_SIZE];
-char filename[FILE_SIZE];                                                   //will save the name of transaction file, which is read from "a.txt", which is to be opened.
-
-char miner[] = "/miner/";
-char sha[] = "/sha/";
 
 FILE *fpg, *fp;                                                                 //"fpg" to open list.txt, "fp" to open transaction files.
 
@@ -62,8 +28,9 @@ void delete_tree(struct merkle*,unsigned short,unsigned short);
 void prerun_setup();                                                            //initializes some important values, like path to the bitcoin folder.
 
 void char_refresh(char[],unsigned short);
-void full_path(char[],char[]);                                                  //gives the path to a file from the root location.
 /*------------------------------------------------------------------------------------*/
+
+struct merkle *root;
 /*------------------------------------------------------------------------------------*/
 
 
@@ -247,36 +214,6 @@ struct merkle* binary_make(struct merkle *head, unsigned short height_local, uns
 
 
 /*------------------------------------------------------------------------------------*/
-
-void char_refresh(char a[], unsigned short n)
-{
- unsigned short i;
- for(i=0; i<n; i++)
-  a[i]='\0';                 //initializes each element of string with NULL character, so as no garbage value is there.
- }
-/*------------------------------------------------------------------------------------*/
-
-void full_path(char subd[],char a[])
-{
- unsigned short i;
- char temp[FILE_SIZE];
-
- for(i=0; ;i++)
- {
-  if(a[i]=='\0')
-  {
-   if(a[i-1] == '\n')
-    a[i-1] = '\0';
-   break;
-   }
-  }
-
- strcpy(temp , folder);
- strcat(temp , subd);
- strcat(temp , a);
- strcpy(a , temp);
- }
-
 /*------------------------------------------------------------------------------------*/
 
 void prerun_setup()
@@ -300,7 +237,7 @@ void prerun_setup()
 
  strcpy(tempfile , folder);
  strcat(tempfile , "/miner/");
-
+ 
  dr = opendir(tempfile);
 
  if(dr == NULL)

@@ -2,23 +2,12 @@
 #include<string.h>
 #include<stdlib.h>
 #include<sys/time.h>
-
-#define FILE_SIZE 201
-
-struct transaction
-{
- char t_id[FILE_SIZE];                     //It is the name of transaction file (*.transaction) which is string concat of wallet_id+timestamp;                  
- long double amount;                                                  //amount to be debited from account
- unsigned char transaction_fee;                                       //char can be used a integer with range 0-255. Transaction fee will not be greater than that.
- unsigned long timestamp;
- /* data types for 'public key' of reciever,
-    'digital signature' of sender and         */
- }temp;
-
+#include"betacoin.h"
 
 
 int main()
 {
+ struct transaction temp;
  FILE *fp;
  short i;
  char name[201];

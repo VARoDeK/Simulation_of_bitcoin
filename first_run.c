@@ -3,8 +3,9 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<errno.h>                   //for errno and error values
+#include"betacoin.h"
 
- char static_path[51];
+ char static_path[FOLDER_SIZE];
 
 
 int main()

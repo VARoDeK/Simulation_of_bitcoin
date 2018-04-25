@@ -2,8 +2,6 @@
 #include<stdlib.h>
 #include<string.h>
 
-#define FOLDER_SIZE 51
-#define FILE_SIZE 201
 
 void line()
 { 
@@ -12,29 +10,20 @@ void line()
 
 char ch;                         //variable to store user options
 char account;                    //flag to check if account is created or not
-char folder[FOLDER_SIZE];
-char filename[FILE_SIZE];
 FILE *fp;
-char miner[] = "/miner/";
-char sha[] = "/sha/";
 
 char option();
 void prerun_setup();              //defines some specific values to variables before running program
 void display_options();           //displays all options to the user
 void read_user_details();         //reads user details from the system
-void full_path(char[],char[]);    //gives full path to the file
-void call_create_account();       //to run the program for creating account
-/*----------------------------------------------------------------------------------*/
-struct user
-{
- char wallet_id[71];              //strcat(timestamp + md5(name,timestamp,location,user_and_hostname,email))
- char name[51];
- unsigned long timestamp;
- char location[51];
- char user_and_hostname[51];      //for my system: varodek@varodek.local
- char email[51]; 
- }user_global;
 
+
+
+/*-------options--------------------------*/
+void call_create_account();       //to run the program for creating account
+void mine();                      //to mine
+
+/*----------------------------------------------------------------------------------*/
 
 /*----------------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------------*/
@@ -70,6 +59,14 @@ re1:
    getchar();
    goto re1;
    }  
+
+  else if(ch == 'D' || ch == 'd')
+  {
+   mine();
+   getchar();
+   goto re1;
+   }
+
 
   else
   {
@@ -140,7 +137,8 @@ printf("\n\n\tEnter 'A' to check your balance.");
 printf("\n\n\tEnter 'B' to check your user details.");
 printf("\n\n\tEnter 'C' to make a transaction.");
 printf("\n\n\tEnter 'D' to mine.");
-printf("\n\n\tEnter 'E' to delte your account.");
+printf("\n\n\tEnter 'E' to become a new miner.");
+printf("\n\n\tEnter 'F' to delte your account.");
 printf("\n\n\tEnter 'Q' to leave this portal and exit.");
 
  }
@@ -181,33 +179,17 @@ void call_create_account()
  }
 /*------------------------------------------------------------------------------------*/
 
-void full_path(char subd[],char a[])
-{
- unsigned short i;
- char temp[FILE_SIZE];
-
- for(i=0; ;i++)
- {
-  if(a[i]=='\0')
-  {
-   if(a[i-1] == '\n')
-    a[i-1] = '\0';
-   break;
-   }
-  }
-
- strcpy(temp , folder);
- strcat(temp , subd);
- strcat(temp , a);
- strcpy(a , temp);
- }
-
 /*----------------------------------------------------------------------------------*/
-short security_check()
+void mine()
 {
- char p[51];
- char command[101];
-
+ if(user_global.miner_flag == 0)
+ {
+  line();
+  printf("\n\n\tYOU ARE NOT A MINER.");
+  printf("\n\n\t\tPLEASE APPLY TO BECOME A MINER.");
+  line();
+  return;
+  }
  
 
  }
