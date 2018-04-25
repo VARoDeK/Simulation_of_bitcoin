@@ -2,6 +2,7 @@
 #define FOLDER_SIZE 51                                                 //maximum length of folder name
 #define SHA_HASH 65                                                    //64 characters of sha, and one space extra for NULL character
 #define NAME_SIZE 101                                                  //max length for name
+#define COMMAND_SIZE 501                                               //max length of command to be run on terminal
 /*----------------------------------------------------------------------------------------*/
 
 struct block
@@ -12,7 +13,7 @@ struct block
  char previous_block_hash[SHA_HASH];           //hash of previous block
  char current_block_hash[SHA_HASH];            //hash of current block
  char merkle_hash[SHA_HASH];                   //hash of merkle tree of transactions
- char miner_id[71];                            //miner_id will be same as wallet_id of user
+ char miner_id[NAME_SIZE];                     //miner_id will be same as wallet_id of user
  unsigned long timestamp;                      //timestamp of moment the block started forming
  unsigned long difficulty_target;              //no of characters, from starting, that should be zero in SHA
  unsigned long nonce;                          //nonce code, responsible to achieve difficulty target
@@ -38,6 +39,8 @@ struct user
 struct transaction
 {
  char t_id[FILE_SIZE];                             //It is the name of transaction file (*.transaction) which is string concat of timestamp+wallet_id;   
+ char sender_id[NAME_SIZE];
+ char reciever_id[NAME_SIZE];
  long double amount;                               //amount to be debited from account
  unsigned char transaction_fee;                    //char can be used a integer with range 0-255. Transaction fee will not be greater than that.
  unsigned long timestamp;
@@ -49,12 +52,16 @@ struct transaction
 
 char folder[FOLDER_SIZE];                  //will save the name of folder.
 char filename[FILE_SIZE];                  //will save the name of files that we need to open.
+char command[COMMAND_SIZE];                //will save the command that we will run using system();
 
 char miner[] = "/miner/";
 char sha[] = "/sha/";
 char binary[] = "/binary/";
 char blockchain[] = "/BLOCKCHAIN/";
 
+char trans_extension[] = ".transaction";   //extension for transaction files
+char newblock_extension[] = ".newblock";   //extension for newblock
+char block_extension[] = ".block";         //extension of block once it is verified
 /*----------------------------------------------------------------------------------------*/
 void full_path(char subd[],char a[])
 {
@@ -90,6 +97,11 @@ struct merkle
 
 
 /*----------------------------------------------------------------------------------------*/
+
+void line()
+{
+ printf("\n------------------------------------------------------------------");
+ }
 /*----------------------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------------------*/

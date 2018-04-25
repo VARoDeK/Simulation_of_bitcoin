@@ -2,10 +2,12 @@
 #include<stdlib.h>
 #include<string.h>
 #include<sys/time.h>
+#include"betacoin.h"
 
 void create_genesis_block_hash();
 
 FILE *fpg, *fp;                                                                 //"fpg" to open list.txt, "fp" to open transaction files.
+struct block block_global;
 
 /*----------------------------------------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------------------------------------*/
@@ -38,6 +40,7 @@ int main()
   fprintf(fp , "%s\n" , filename);
   fclose(fp);
 
+ printf("\n Written record for genesis block in blocklist.txt..");
 
  printf("\n Assigning Values to Variables in the Block..");
   block_global.magic_number = 0x54fc7f8e;
@@ -94,7 +97,7 @@ int main()
   printf("\n Written Block Header to %s.." , filename);
   fclose(fp);
 
-  printf("\nNew Block Created at %s.." , filename);
+  printf("\n New Block Created at %s.." , filename);
 
 
  }

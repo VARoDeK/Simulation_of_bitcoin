@@ -9,6 +9,7 @@ FILE *fpg, *fp;                                                                 
 void prerun_setup();
 void read_transaction_files();
 void create_current_block_hash();
+void display_block();
 /*----------------------------------------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------------------------------------*/
@@ -99,7 +100,11 @@ int main()
 
   printf("\nNew Block Created at %s.." , filename);
 
+line();
+// display_block();
+
  free(trans_global);
+ printf("\n Freed the dynamic array, created for storing transaction records.");
  }
 /*----------------------------------------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------------------------------------*/
@@ -169,7 +174,7 @@ void prerun_setup()
  printf("\n Allocated Memory For Array Of struct transaction..");
 
 //different algo will be written to create previous block hash after creation of genesis block.
- block_global.previous_block_hash[0] = '\0';
+ strcpy(block_global.previous_block_hash , "temp");
 
  block_global.time_taken = 0;
 
@@ -303,14 +308,42 @@ void create_current_block_hash()
 
   for(i = 0 ; i < block_global.difficulty_target ; i++)
    if(block_global.current_block_hash[i] != '0')
-    {
      flag = 0;
-     block_global.nonce = nonce;
-     }
+
+  if(flag == 1)
+   block_global.nonce = nonce;
+
 
   }
  }
 /*----------------------------------------------------------------------------------------------------------*/
+
+void display_block()
+{
+ short i;
+ printf("\nMagic number: %u", block_global.magic_number);
+ printf("\nTime taken: %u" , block_global.time_taken);
+ printf("\nBlock Size: %u" , block_global.block_size);
+ printf("\nPrevious Hash: %s" , block_global.previous_block_hash);
+ printf("\nCurrent Hash: %s" , block_global.current_block_hash);
+ printf("\nMerkle Hash: %s" , block_global.merkle_hash);
+ printf("\nMiner id: %s" , block_global.miner_id);
+ printf("\nTimestamp: %lu", block_global.timestamp);
+ printf("\nDifficulty target: %lu", block_global.difficulty_target);
+ printf("\nnonce: %lu" , block_global.nonce);
+ printf("\nnumber of transaction: %hu\n\n", block_global.no_of_transaction);
+
+ for(i = 0; i< block_global.no_of_transaction; i++)
+ {
+  printf("\n\ntid: %s", trans_global[i].t_id);
+  printf("\nsender id: %s", trans_global[i].sender_id);
+  printf("\nreciever id: %s", trans_global[i].reciever_id);
+  printf("\namount %LF" ,trans_global[i].amount);
+  printf("\nt fee: %c" , trans_global[i].transaction_fee);
+  printf("\ntime stamp %lu" , trans_global[i].timestamp);
+  }
+ }
+
 /*----------------------------------------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------------------------------------*/

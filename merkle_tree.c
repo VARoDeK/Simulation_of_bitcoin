@@ -26,7 +26,7 @@ void binary_correct(struct merkle*, unsigned short, unsigned short);            
 void binary_traverse(struct merkle*, unsigned short, unsigned short);
 void delete_tree(struct merkle*,unsigned short,unsigned short);
 void prerun_setup();                                                            //initializes some important values, like path to the bitcoin folder.
-
+void display_transaction(struct transaction*);
 void char_refresh(char[],unsigned short);
 /*------------------------------------------------------------------------------------*/
 
@@ -198,7 +198,7 @@ struct merkle* binary_make(struct merkle *head, unsigned short height_local, uns
             }
   printf("\n Reading Transaction Record %s.." , filename);
   fread(head->data , sizeof(struct transaction) , 1 , fp);
-//  printf("\nAmount inserted: %Lf",head->data->amount);
+//  display_transaction(head->data);
   fclose(fp);
   c_global++;
  
@@ -223,6 +223,7 @@ void prerun_setup()
  FILE *fp;                        //FILE pointr to open list.txt which will save names of transaction files.
  struct dirent *de;              
  unsigned short len;
+ unsigned short ext_len = strlen(trans_extension);
  char **name, *tempo;
  unsigned short i,j;
 
@@ -264,7 +265,7 @@ void prerun_setup()
 
  len = strlen(de->d_name);
 
- if(strncmp(de->d_name + len - 12, ".transaction",12) == 0)                        //length of string ".transaction" is 12.
+ if(strncmp(de->d_name + len - ext_len , trans_extension , 12) == 0)                        //length of string ".transaction" is 12.
  {
   fprintf(fp , "%s\n" , de->d_name);
   count_global++;
@@ -276,7 +277,7 @@ void prerun_setup()
 
  name = (char**)malloc(sizeof(char*)*count_global);
  for(i = 0; i < count_global; i++)
-  name[i] = (char*)malloc(sizeof(char*)*50);
+  name[i] = (char*)malloc(sizeof(char*)*NAME_SIZE);
 
  fp = fopen(filename,"r");
           if(fp == NULL)
@@ -316,8 +317,14 @@ void prerun_setup()
             }
  printf("\n Writing to %s.." , tempfile);
    for(i=0 ; i<count_global ; i++)
+   { 
     fprintf(fp,"%s\n",name[i]);
+    free(name[i]);
+    }
+  
+   free(name);
 
+printf("\n Freed Memory Given to name..");
    fclose(fp);
 
 
@@ -421,8 +428,10 @@ void merkle_hash(struct merkle *head, unsigned short height_local, unsigned shor
            exit(1);
             }
 
-//  printf("\n\nname: %s",head->data->t_id);
+  printf("\n\nname: %s",head->data->t_id);
   fprintf(fp , "%s" , head->data->t_id);
+  fprintf(fp , "%s" , head->data->sender_id);
+  fprintf(fp , "%s" , head->data->reciever_id);
   fprintf(fp , "%Lf" , head->data->amount);
   fprintf(fp , "%c" , head->data->transaction_fee);
   fprintf(fp , "%ld" , head->data->timestamp);
@@ -484,3 +493,15 @@ void merkle_hash(struct merkle *head, unsigned short height_local, unsigned shor
   
  }
 /*------------------------------------------------------------------------------------*/
+
+
+void display_transaction(struct transaction *trans)
+{
+   printf("\n\ntid: %s", trans->t_id);
+  printf("\nsender id: %s", trans->sender_id);
+  printf("\nreciever id: %s", trans->reciever_id);
+  printf("\namount %LF" ,trans->amount);
+  printf("\nt fee: %c" , trans->transaction_fee);
+  printf("\ntime stamp %lu" , trans->timestamp);
+
+ }

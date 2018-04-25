@@ -5,12 +5,6 @@
 #include<unistd.h>
 #include"betacoin.h"
 
-void line()
-{ 
- printf("\n------------------------------------------------------------------\n"); 
- }
-
-
 struct user user_global;
 
 
@@ -32,6 +26,7 @@ int main()
  FILE *fp;
  struct timeval tv;
  char temp[FOLDER_SIZE];
+ char t;
 
  strcpy(folder , getenv("HOME"));
  strcat(folder , "/betacoin");
@@ -62,24 +57,21 @@ re1:
  re2:
   printf("\n\t\tEnter your choice: ");
   fflush(stdin);
-  ch = fgetc(stdin);
+  ch = getchar();
+    t = 0;
+   while(t != '\n')
+     t = getchar();
    if(ch == 'C' || ch == 'c')
     goto write;
 
    else if(ch == 'R' || ch == 'r')
-   {
-    getchar();
     goto re1;
-    }
 
    else if(ch == 'E' || ch == 'e')
     exit(1);
 
    else 
-   {
-    getchar();
     goto re2;
-    }
 
  write:
   gettimeofday(&tv , NULL);
@@ -166,33 +158,43 @@ return 0;
 void input()
 {
  short temp;
- char c;
+ char c,t;
 
  line();
  printf("\t\tACCOUNT CREATION: ENTER DETAILS");
  line();
  printf("\n\tEnter your name: ");
  fflush(stdin);
- fgets(user_global.name , 51 ,stdin);
- correction(user_global.name);
+ scanf("%[^\n]" , user_global.name);
+     t = 0;
+   while(t != '\n')
+     t = getchar();
+
 
 // getchar();
  printf("\n\tEnter location: ");
  fflush(stdin);
- fgets(user_global.location , 51 ,stdin);
- correction(user_global.location);
+ scanf("%[^\n]" , user_global.location);
+
+     t = 0;
+   while(t != '\n')
+     t = getchar();
  
 // getchar();
  printf("\n\tEnter email-id: ");
  fflush(stdin);
- fgets(user_global.email , 51 ,stdin);
- correction(user_global.email);
+ scanf("%[^\n]", user_global.email);
 
- getlogin_r(user_global.user_and_hostname, 51);
+    t = 0;
+   while(t != '\n')
+     t = getchar();
+
+ getlogin_r(user_global.user_and_hostname, NAME_SIZE);
  strcat(user_global.user_and_hostname , "@");
- gethostname(tempstring , 51);
+ gethostname(tempstring , NAME_SIZE);
  strcat(user_global.user_and_hostname , tempstring);
-#ifdef __LINUX__
+
+#ifdef __linux__
  strcat(user_global.user_and_hostname , ".local");
 #endif
  }

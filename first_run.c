@@ -97,7 +97,8 @@ int main()
   }
  printf("\n Created folder %s.." , tempname);
 
- 
+
+   printf("\n Running command: \n\tcp ./SHA_function.py ~/betacoin/binary/SHA_function_DUP.py .."); 
  if(system("cp ./SHA_function.py ~/betacoin/binary/SHA_function_DUP.py") == 0)
    printf("\n Copied ./SHA_function.py to ~/betacoin/binary/SHA_function_DUP.py..");
  else
@@ -106,6 +107,7 @@ int main()
   exit(1);
   }
 
+  printf("\n Running command: \n\tcp ./MD5_function.py ~/betacoin/binary/MD5_function_DUP.py ..");
  if(system("cp ./MD5_function.py ~/betacoin/binary/MD5_function_DUP.py") == 0)
    printf("\n Copied ./MD5_function.py to ~/betacoin/binary/MD5_function_DUP.py..");
  else
@@ -132,14 +134,71 @@ int main()
  fclose(fp);
  printf("\n Created file %s to set difficulty target.." , tempname);
 
+ printf("\n Running command: \vgcc create_account.c -o ~/betacoin/binary/create_account ..");
+ if(system("gcc create_account.c -o ~/betacoin/binary/create_account") == 0)
+  printf("\n\tCompiled create_account.c..");
+ else
+  {
+   printf("\n\tERROR: Could not compile create_account.c ..");
+   exit(1);
+   }
 
- system("gcc create_account.c -o ~/betacoin/binary/create_account");
+
+ printf("\n Running command: \vgcc create_genesis_block.c -o ~/betacoin/binary/create_genesis_block ..");
+ if(system("gcc create_genesis_block.c -o ~/betacoin/binary/create_genesis_block") == 0)
+  printf("\n\tCompiled create_genesis_block.c..");
+ else
+  {
+   printf("\n\tERROR: Could not compile create_genesis_block.c ..");
+   exit(1);
+   }
+
+
+  printf("\n Running command: \vgcc create_block.c -o ~/betacoin/binary/create_block ..");
+ if(system("gcc create_block.c -o ~/betacoin/binary/create_block") == 0)
+  printf("\n\tCompiled create_block.c..");
+ else
+  {
+   printf("\n\tERROR: Could not compile create_block.c ..");
+   exit(1);
+   }
+
+
+  printf("\n Running command: \vgcc create_list_of_new_blocks.c -o ~/betacoin/binary/create_list_of_new_blocks ..");
+ if(system("gcc create_list_of_new_blocks.c -o ~/betacoin/binary/create_list_of_new_blocks") == 0)
+  printf("\n\tCompiled create_list_of_new_blocks.c..");
+ else
+  {
+   printf("\n\tERROR: Could not compile create_list_of_new_blocks.c ..");
+   exit(1);
+   }
+
+
+
+
+
+
  
  #ifdef __linux__ 
-  system("gcc merkle_tree.c -o  ~/betacoin/binary/merkle_tree -lm");
+  printf("\n Running command: \vgcc merkle_tree.c -o  ~/betacoin/binary/merkle_tree -lm ..");
+  if(system("gcc merkle_tree.c -o  ~/betacoin/binary/merkle_tree -lm") == 0)
+   printf("\n\tCompiled merkle_tree.c ..");
+  else
+  {
+   printf("\n\tERROR: Could not compile merkle_tree.c ..");   
+   exit(1);
+   }
+
 
  #elif __APPLE__ 
-  system("gcc merkle_tree.c -o ~/betacoin/binary/merkle_tree");
+  printf("\n Running command: \vgcc merkle_tree.c -o  ~/betacoin/binary/merkle_tree ..");
+  if(system("gcc merkle_tree.c -o  ~/betacoin/binary/merkle_tree") == 0)
+   printf("\n\tCompiled merkle_tree.c ..");
+  else
+  {
+   printf("\n\tERROR: Could not compile merkle_tree.c ..");
+   exit(1);
+   }
   
  #endif 
 

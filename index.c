@@ -1,12 +1,8 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include"betacoin.h"
 
-
-void line()
-{ 
- printf("\n------------------------------------------------------------------");
- }
 
 char ch;                         //variable to store user options
 char account;                    //flag to check if account is created or not
@@ -24,11 +20,13 @@ void call_create_account();       //to run the program for creating account
 void mine();                      //to mine
 
 /*----------------------------------------------------------------------------------*/
+struct user user_global;
 
 /*----------------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------------*/
 int main()
 {
+ char t;
  prerun_setup();
 
  if(account == 0)
@@ -44,10 +42,12 @@ re1:
    printf("\n\t\tEnter your option: ");
    fflush(stdin);  
    ch = getchar();
-
-  if(ch == 'A' || ch == 'a')
-  {}
-  else if (ch == 'B' || ch == 'b')
+    
+   t = 0;
+    while(t != '\n')
+     t = getchar();
+  
+  if (ch == 'B' || ch == 'b')
   {
    line();
    printf("\n\tName: %s" , user_global.name);
@@ -56,23 +56,18 @@ re1:
    printf("\n\tEmail: %s" , user_global.email);
    printf("\n\tTime of creation: %ld seconds since 1970-01-01 00:00:00 UTC" , user_global.timestamp);
    line();
-   getchar();
    goto re1;
    }  
 
   else if(ch == 'D' || ch == 'd')
   {
    mine();
-   getchar();
    goto re1;
    }
 
 
   else
-  {
-   getchar();
    goto re2;
-   }
 
  }
 
@@ -146,6 +141,7 @@ printf("\n\n\tEnter 'Q' to leave this portal and exit.");
 /*----------------------------------------------------------------------------------*/
 void call_create_account()
 {
+ char t;
    line();
   printf("\n\tPLEASE CREATE AN BETACOIN ACCOUNT.");
   printf("\n\t\tEnter 'A' to create.");
@@ -155,6 +151,9 @@ void call_create_account()
    printf("\n\t\t\tEnter your choice: ");
    fflush(stdin);
    ch = getchar();
+     t = 0;
+    while(t != '\n')
+     t = getchar();
 
     if(ch == 'A' || ch == 'a')
     {
@@ -171,10 +170,7 @@ void call_create_account()
      exit(1);
 
     else
-    {
-     getchar();
      goto re;
-     }
 
  }
 /*------------------------------------------------------------------------------------*/
