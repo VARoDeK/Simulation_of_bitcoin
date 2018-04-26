@@ -47,7 +47,7 @@ re1:
  line();
    input();
  line();
-  printf("\t\tCONFIRM");
+  printf("\n\t\tCONFIRM");
  line();
   display_details();
  line();
@@ -76,7 +76,7 @@ re1:
  write:
   gettimeofday(&tv , NULL);
   user_global.timestamp = (unsigned long)tv.tv_sec;
-
+  user_global.account_balance = (long double)1000;
 /*-writing input.txt--------------------------------*/
   strcpy(filename , folder);
   strcat(filename , "/sha/input.txt");
@@ -161,7 +161,7 @@ void input()
  char c,t;
 
  line();
- printf("\t\tACCOUNT CREATION: ENTER DETAILS");
+ printf("\n\t\tACCOUNT CREATION: ENTER DETAILS");
  line();
  printf("\n\tEnter your name: ");
  fflush(stdin);
@@ -210,6 +210,8 @@ void display_details()
  printf("\nlocation: %s" , user_global.location);
  printf("\nuser and hostname: %s" , user_global.user_and_hostname);
  printf("\nemail: %s" , user_global.email);
+ if(account != 0)
+  printf("\naccount balance: %LF" , user_global.account_balance);
  }
 
 /*------------------------------------------------------------------------------*/

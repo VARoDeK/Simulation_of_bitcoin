@@ -27,6 +27,7 @@ struct user
 {
  char wallet_id[NAME_SIZE];              //strcat(md5(name,timestamp,location,user_and_hostname,email) + timestamp)
  char name[NAME_SIZE];
+ long double account_balance;               
  unsigned long timestamp;
  char location[NAME_SIZE];
  char user_and_hostname[NAME_SIZE];      //for my system: varodek@varodek.local
@@ -58,6 +59,7 @@ char miner[] = "/miner/";
 char sha[] = "/sha/";
 char binary[] = "/binary/";
 char blockchain[] = "/BLOCKCHAIN/";
+char verify[] = "/verify/";
 
 char trans_extension[] = ".transaction";   //extension for transaction files
 char newblock_extension[] = ".newblock";   //extension for newblock

@@ -98,6 +98,24 @@ int main()
  printf("\n Created folder %s.." , tempname);
 
 
+ //Making ~/betacoin/verify
+ strcpy(tempname , static_path);
+ strcat(tempname , "/verify");
+
+ if(mkdir(tempname , S_IRWXU) !=0)
+ {
+  if(errno != EEXIST)
+  {
+   printf("\n\n\t\tCANNOT CREATE DIRECTORY %s." , tempname);
+   exit(1);
+   }
+  }
+ printf("\n Created folder %s.." , tempname);
+
+
+
+
+
    printf("\n Running command: \n\tcp ./SHA_function.py ~/betacoin/binary/SHA_function_DUP.py .."); 
  if(system("cp ./SHA_function.py ~/betacoin/binary/SHA_function_DUP.py") == 0)
    printf("\n Copied ./SHA_function.py to ~/betacoin/binary/SHA_function_DUP.py..");
@@ -174,8 +192,24 @@ int main()
    }
 
 
+  printf("\n Running command: \vgcc add_a_new_miner.c -o ~/betacoin/binary/add_a_new_miner ..");
+ if(system("gcc add_a_new_miner.c -o ~/betacoin/binary/add_a_new_miner") == 0)
+  printf("\n\tCompiled add_a_new_miner.c..");
+ else
+  {
+   printf("\n\tERROR: Could not compile add_a_new_miner.c ..");
+   exit(1);
+   }
 
 
+ printf("\n Running command: \vgcc first-run.c -o ~/betacoin/binary/first_run ..");
+ if(system("gcc first_run.c -o ~/betacoin/binary/first_run") == 0)
+  printf("\n\tCompiled first_run.c..");
+ else
+  {
+   printf("\n\tERROR: Could not compile first_run.c ..");
+   exit(1);
+   }
 
 
  
@@ -190,6 +224,28 @@ int main()
    }
 
 
+  printf("\n Running command: \vgcc verify_transaction.c -o  ~/betacoin/binary/verify_transaction -lm ..");
+  if(system("gcc verify_transaction.c -o  ~/betacoin/binary/verify_transaction -lm") == 0)
+   printf("\n\tCompiled verify_transaction.c ..");
+  else
+  {
+   printf("\n\tERROR: Could not compile verify_transaction.c ..");
+   exit(1);
+   }
+
+  printf("\n Running command: \vgcc make_transaction.c -o  ~/betacoin/binary/make_transaction ..");
+  if(system("gcc make_transaction.c -o  ~/betacoin/binary/make_transaction") == 0)
+   printf("\n\tCompiled make_transaction.c ..");
+  else
+  {
+   printf("\n\tERROR: Could not compile make_transaction.c ..");
+   exit(1);
+   }
+
+
+
+
+
  #elif __APPLE__ 
   printf("\n Running command: \vgcc merkle_tree.c -o  ~/betacoin/binary/merkle_tree ..");
   if(system("gcc merkle_tree.c -o  ~/betacoin/binary/merkle_tree") == 0)
@@ -199,6 +255,19 @@ int main()
    printf("\n\tERROR: Could not compile merkle_tree.c ..");
    exit(1);
    }
+
+  printf("\n Running command: \vgcc verify_transaction.c -o  ~/betacoin/binary/verify_transaction ..");
+  if(system("gcc verify_transaction.c -o  ~/betacoin/binary/verify_transaction") == 0)
+   printf("\n\tCompiled verify_transaction.c ..");
+  else
+  {
+   printf("\n\tERROR: Could not compile verify_transaction.c ..");
+   exit(1);
+   }
+
+
+
+
   
  #endif 
 

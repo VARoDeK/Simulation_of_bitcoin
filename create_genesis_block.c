@@ -23,7 +23,7 @@ int main()
 
 
 
- strcpy(filename , "blocklist.txt");
+ strcpy(filename , "block_list.txt");
  full_path(blockchain , filename);
 
  fp = fopen(filename , "r");
@@ -36,11 +36,33 @@ int main()
  
  printf("\n Writing record for genesis block in blocklist.txt..");
  fp = fopen(filename , "w");
+      if(fp == NULL)
+      {
+       printf("\n\n ERROR: Could not open %s...\n", filename);
+       return 1;
+       }
+
   strcpy(filename , "0.block");
   fprintf(fp , "%s\n" , filename);
   fclose(fp);
 
  printf("\n Written record for genesis block in blocklist.txt..");
+
+
+
+ strcpy(filename , "no_of_blocks.txt");
+ full_path(blockchain , filename);
+ fp = fopen(filename , "w");
+      if(fp == NULL)
+      {
+       printf("\n\n ERROR: Could not open %s...\n", filename);
+       return 1;
+       }
+  fprintf(fp , "%lu" , (unsigned long)0);
+  fclose(fp);
+
+
+
 
  printf("\n Assigning Values to Variables in the Block..");
   block_global.magic_number = 0x54fc7f8e;

@@ -49,12 +49,14 @@ void display_block();
 int main()
 {
  short i;
+ unsigned long num;
+ unsigned char tempstring[FILE_SIZE];
  strcpy(folder , getenv("HOME"));
  strcat(folder , "/betacoin");
 
 /*--reading file to know how many newblocks are created.-----------*/
   strcpy(filename , "list_of_new_blocks.txt");
-  full_path(miner , filename);
+  full_path(verify , filename);
   printf("\n Opening: %s..", filename);
   fp = fopen(filename , "r");
          if(fp == NULL)
@@ -62,18 +64,19 @@ int main()
           printf("\n ERROR: Could not open %s to read list of new blocks" , filename);
           exit(1);
            }
-  fscanf(fp , "%s" , filename);
+  fscanf(fp , "%s" , tempstring);
    fclose(fp);
 
-/*--now 'filename contains name of newblock---------------------'*/
-  full_path(miner , filename);
+/*--now 'tempstring contains name of newblock---------------------'*/
+  strcpy(filename , tempstring);
+  full_path(verify , filename);
   printf("\n Opening: %s..", filename);
   fpg = fopen(filename , "rb");
 
   //Reading block header and transactions
   if (fpg == NULL)
   {
-    printf("\n ERROR: COULDN'T READ BLOCK RECORDS FROM %s. ABORTING PROCESS", filename);
+    printf("\n ERROR: COULDN'T READ BLOCK RECORDS FROM %s. ABORTING PROCESS", tempstring);
     exit(1);
   }
 
@@ -119,6 +122,7 @@ int main()
   else
   {
    printf("\n\n\t Transaction records of block has been tampered with. Regeneration of chain required..");
+   exit(1);
    }
 
   //Deletes tree after use
@@ -136,8 +140,65 @@ int main()
   else
   {
    printf("\n\n\t Block has been tampered with. Regeneration of chain required..");
+   exit(1);
    }
 
+ strcpy(command , "mv ~/betacoin/verify/");
+ strcat(command , tempstring);
+ 
+ strcpy(filename , "no_of_blocks.txt");
+ full_path(blockchain , filename);
+ fp = fopen(filename , "r");
+         if(fp == NULL)
+         {
+          printf("\n ERROR: Could not open %s to read in long format" , filename);
+          exit(1);
+           }
+  fscanf(fp , "%lu" , &num);
+ fclose(fp);
+
+ num++;
+
+ fp = fopen(filename , "w");
+         if(fp == NULL)
+         {
+          printf("\n ERROR: Could not open %s to write." , filename);
+          exit(1);
+           }
+  fprintf(fp , "%lu" , num);
+ fclose(fp);
+
+ fp = fopen(filename , "r");
+         if(fp == NULL)
+         {
+          printf("\n ERROR: Could not open %s to read in string format." , filename);
+          exit(1);
+           }
+  fscanf(fp , "%s" , tempstring);
+ fclose(fp);
+
+ strcat(command , " ~/betacoin/BLOCKCHAIN/");
+ strcat(tempstring , ".block");
+ strcat(command , tempstring);
+
+ strcpy(filename , "block_list.txt");
+ full_path(blockchain , filename);
+ fp = fopen(filename , "a");
+         if(fp == NULL)
+         {
+          printf("\n ERROR: Could not open %s to write." , filename);
+          exit(1);
+           }
+  fprintf(fp , "%s\n" , tempstring);
+ fclose(fp);
+ 
+ printf("\n %s",command);
+ system(command);
+
+ system("rm ~/betacoin/verify/*");           //remove local files that were present to verify block
+
+ for(i = 0 ; i < count_global ; i++)
+  remove(test_trans[i].t_id);
 
  
   free(test_trans);
