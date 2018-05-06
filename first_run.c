@@ -145,6 +145,43 @@ int main()
      }
 
 
+/*--COPY NUMBER OF BLOCKS----------------------------------------------------------*/
+ strcpy(command , "cp ./no_of_blocks.txt ~/betacoin/BLOCKCHAIN/no_of_blocks.txt");
+ printf("\n Running command: \n\t%s .." , command);
+    if(system(command) == 0)
+     printf("\n Copied ./no_of_blocks.txt ~/betacoin/BLOCKCHAIN/no_of_blocks.txt..");
+    else
+    {
+     printf("\n\tERROR: Could not run %s.." , command);
+     exit(1);
+     }
+
+
+
+/*--COPY 0.block----------------------------------------------------------*/
+ strcpy(command , "cp ./0.block ~/betacoin/BLOCKCHAIN/0.block");
+ printf("\n Running command: \n\t%s .." , command);
+    if(system(command) == 0)
+     printf("\n Copied ./0.block to ~/betacoin/BLOCKCHAIN/0.block..");
+    else
+    {
+     printf("\n\tERROR: Could not run %s.." , command);
+     exit(1);
+     }
+
+
+/*--COPY BLOCK LIST----------------------------------------------------------*/
+ strcpy(command , "cp ./block_list.txt ~/betacoin/BLOCKCHAIN/block_list.txt");
+ printf("\n Running command: \n\t%s .." , command);
+    if(system(command) == 0)
+     printf("\n Copied ./block_list.txt to ~/betacoin/BLOCKCHAIN/block_list.txt..");
+    else
+    {
+     printf("\n\tERROR: Could not run %s.." , command);
+     exit(1);
+     }
+
+
 /*--SET DIFFICULTY TARGET----------------------------------------------------------*/ 
  strcpy(tempname , static_path);
  strcat(tempname , "/miner/difficulty_target.txt");
