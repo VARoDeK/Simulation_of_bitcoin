@@ -1,4 +1,4 @@
-from hashlib import sha256
+from hashlib import md5
 from os import environ
 from sys import exit
 
@@ -16,7 +16,7 @@ a = f.read()
 a = a[:-1].encode(encoding="utf-8")
 f.close()
 
-m = sha256()
+m = md5()
 m.update(a)
 
 path = homedir + "/betacoin/sha/" + "output.txt"
