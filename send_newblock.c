@@ -26,7 +26,7 @@ int main()
   {
    generate_command(i ,j);
    printf("\n%s", command);
-//   system(command);
+   system(command);
    }
 
   }

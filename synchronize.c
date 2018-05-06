@@ -20,18 +20,20 @@ struct block block_global;
 struct transaction trans_global;
 /*------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------*/
+
+
 int main()
 {
 unsigned long i , j , temp1, temp2;
-
+system("rm ~/betacoin/verify/*");       //to delete all useless files, if present, inside verify folder
 prerun_setup();
 
 srand(time(0));
-i = rand()%no_of_hosts;
+i = rand()%no_of_hosts;//call files from ay random miner
 
 generate_command( i , 1);
 printf("\n %s",command);
-//system(command);
+system(command);
 
 strcpy(filename , "no_of_blocks.txt");
 full_path(verify , filename);
@@ -60,7 +62,7 @@ if(temp1 == temp2)
  line();
  printf("\n\t\t\tYOUR CHAIN IS UP TO DATE");
  line();
- return 0;
+ exit(0);
  }
 
 
@@ -127,10 +129,8 @@ system("mv ~/betacoin/verify/block_list.txt ~/betacoin/BLOCKCHAIN/block_list.txt
 
  }
 
-read_block();
-
-
- }
+}
+ 
 /*------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------*/
@@ -182,23 +182,6 @@ void prerun_setup()
   }
 fclose(fp);
 
-
-/*--read name of block to be sent.------------------------------------*/
- printf("\n Reading name of block..");
-
- strcpy(filename , "list_of_new_blocks.txt");
- full_path(miner , filename);
-
- fp = fopen(filename , "r");
-         if(fp == NULL)
-         {
-          printf("\n ERROR: Could not open: %s." , filename);
-          exit(1);
-          }
-  fscanf(fp , "%s" , block_name);
-fclose(fp);
-
-
  }
 
 /*------------------------------------------------------------------------------*/
@@ -220,36 +203,7 @@ void generate_command(unsigned short i, unsigned short flag)
  }
 
 /*------------------------------------------------------------------------------*/
-void read_block()
-{
- unsigned short i;
- FILE *fp;
 
- strcpy(filename , block_name);
- full_path(blockchain , filename);
-
- fp = fopen(filename , "rb");
-        if(fp == NULL)
-        {
-         printf("\n ERROR: could not open %s", filename);
-         exit(1);
-         }
-
-  fread(&block_global, sizeof(struct block), 1, fp);
-
-  for (i = 0; i < block_global.no_of_transaction; i++)
-  {
-    fread(&trans_global, sizeof(struct transaction), 1, fp); //storing in test_trans
-     remove(trans_global.t_id);
-  }
-
-
-fclose(fp);
-
-
-
-
- }
 /*------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------*/

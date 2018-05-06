@@ -199,10 +199,18 @@ int main()
 
  system("rm ~/betacoin/verify/*");           //remove local files that were present to verify block
 
- for(i = 0 ; i < count_global ; i++)
-  remove(test_trans[i].t_id);
 
- 
+/*
+This is to do after verification, if this miner contain those transaction files, whose block has been created, should be deleted.
+*/
+ for(i = 0 ; i < count_global ; i++)
+ { 
+  strcpy(filename , test_trans[i].t_id);
+  strcat(filename , ".transaction");
+  full_path(miner , filename);
+  remove(filename);
+  }
+
   free(test_trans);
 
 }

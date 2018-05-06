@@ -209,7 +209,7 @@ int main()
 
 
 /*--COMPILE PROGRAM TO ADD A NEW MINER----------------------------------------------------------*/ 
- strcpy(command , "gcc miner_list.c -o ~/betacoin/binary/miner_list");
+ strcpy(command , "gcc miner_menu.c -o ~/betacoin/binary/miner_menu");
   printf("\n Running command: \n\t%s .." , command);
  if(system(command) == 0)
   printf("\n\tCompiled add_a_new_miner.c..");
@@ -243,6 +243,55 @@ int main()
    exit(1);
    }
 
+/*--COMPILE PROGRAM TO SEND NEW BLOCK----------------------------------------------------------*/
+  strcpy(command , "gcc send_newblock.c -o  ~/betacoin/binary/send_newblock");
+   printf("\n Running command: \n\t%s .." , command);
+  if(system(command) == 0)
+   printf("\n\tCompiled send_newblock.c ..");
+  else
+  {
+   printf("\n\tERROR: Could not run %s .." , command);
+   exit(1);
+   }
+
+
+/*--COMPILE PROGRAM TO RECALCULATE BALANCE----------------------------------------------------------*/
+  strcpy(command , "gcc recalculate_balance.c -o  ~/betacoin/binary/recalculate_balance");
+   printf("\n Running command: \n\t%s .." , command);
+  if(system(command) == 0)
+   printf("\n\tCompiled recalculate_balance.c ..");
+  else
+  {
+   printf("\n\tERROR: Could not run %s .." , command);
+   exit(1);
+   }
+
+
+/*--COMPILE PROGRAM TO MAKE TRANSACTION----------------------------------------------------------*/
+  strcpy(command , "gcc synchronize.c -o  ~/betacoin/binary/synchronize");
+   printf("\n Running command: \n\t%s .." , command);
+  if(system(command) == 0)
+   printf("\n\tCompiled synchronize.c ..");
+  else
+  {
+   printf("\n\tERROR: Could not run %s .." , command);
+   exit(1);
+   }
+
+
+/*--COMPILE INDEX----------------------------------------------------------*/
+  strcpy(command , "gcc index.c -o  ~/index");
+   printf("\n Running command: \n\t%s .." , command);
+  if(system(command) == 0)
+   printf("\n\tCompiled index.c ..");
+  else
+  {
+   printf("\n\tERROR: Could not run %s .." , command);
+   exit(1);
+   }
+
+
+
 /*------------------------------------------------------------*/ 
 
  #ifdef __linux__ 
@@ -259,7 +308,7 @@ int main()
 
 /*------------------------------------------------------------*/ 
 
-  strcpy(command , "gcc verify_transaction.c -o  ~/betacoin/binary/verify_transaction -lm");
+  strcpy(command , "gcc verify_block.c -o  ~/betacoin/binary/verify_block -lm");
    printf("\n Running command: \n\t%s .." , command);
   if(system(command) == 0)
    printf("\n\tCompiled verify_transaction.c ..");
@@ -287,7 +336,7 @@ int main()
 
 /*------------------------------------------------------------*/
 
-  strcpy(command , "gcc verify_transaction.c -o  ~/betacoin/binary/verify_transaction");
+  strcpy(command , "gcc verify_block.c -o  ~/betacoin/binary/verify_block");
    printf("\n Running command: \n\t%s .." , command);
   if(system(command) == 0)
    printf("\n\tCompiled verify_transaction.c ..");

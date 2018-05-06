@@ -1,3 +1,5 @@
 # Executables
 *.exe
 *.out
+#transfer
+tr.txt

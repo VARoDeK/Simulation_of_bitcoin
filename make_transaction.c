@@ -18,15 +18,24 @@
 struct block block_global;
 struct transaction trans_global;
 struct user user_global;
+struct beneficiary ben, ben2;
+struct timeval tv;
 /*------------------------------------------------------------------------*/
 
 char tempstring[FILE_SIZE];     //use to store temporary filename.
+char filename[FILE_SIZE], tempfile1[FILE_SIZE], tempfile2[FILE_SIZE];
+char ch, t;
 FILE *fp;
+unsigned short i;
+unsigned long num;
 /*------------------------------------------------------------------------*/
 
 void display_user_details();
 void display_transaction_details();
-
+void add_beneficiary();
+void display_beneficiary();
+void delete_beneficiary();
+void transaction();
 /*
 We made functions to display user details and transaction details, each of them having seperate lines of code to read details from file,
 so as we can confirm that data was properly written on file.
@@ -50,22 +59,104 @@ so as we can confirm that data was properly written on file.
 int main()
 {
  char t, ch;
- struct timeval tv;
 
  strcpy(folder , getenv("HOME"));
  strcat(folder , "/betacoin");
 
+ system("~/betacoin/binary/recalculate_balance");
  display_user_details();                                         //display_user_details
 
-start:
+ strcpy(filename , "no_of_beneficiary.txt");
+ full_path(binary , filename);
+
+ fp = fopen(filename , "rb");
+ if(fp == NULL)
+  num = 0;
+ else
+ {
+  fscanf(fp , "%lu" , &num);
+  fclose(fp);
+  }
+
+
+ start:
+  line();
+  printf("\n\t\tMINER MENU");
+  line();
+
+  printf("\n\tEnter 'T' to make a transaction.");
+  printf("\n\tEnter 'V' to view Beneficiary ID and their details.");
+  printf("\n\tEnter 'A' to add a Beneficiary.");
+  printf("\n\tEnter 'D' to delete a Beneficiary.");
+  printf("\n\tEnter 'E' to exit.");
+
+   re:
+    printf("\n\t\tEnter your choice: ");
+    fflush(stdin);
+    ch = getchar();
+      t = 0;
+     while(t != '\n')
+      t = getchar();
+
+     if(ch == 'T' || ch == 't')
+     {
+      transaction();
+      goto start;
+      }
+
+     else if(ch == 'V' || ch == 'v')
+     {
+      display_beneficiary();
+      goto start;
+      }
+
+     else if(ch == 'A' || ch == 'a')
+     {
+      add_beneficiary();
+      goto start;
+      }
+
+     else if(ch == 'D' || ch == 'd')
+     {
+      delete_beneficiary();
+      goto start;
+      }
+
+    else if(ch == 'E' || ch == 'e')
+    {
+     return 0;
+     }
+
+    else
+    goto re;
+
+
+
+}
+/*--------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------*/
+void transaction()
+{
+ unsigned short j,i;
+ start:
  line();
  printf("\n\t\t\t\tPAY");
  line();
-  printf("\n\n\tEnter the reciever's wallet id: ");              //asking for reciever's wallet id
-  scanf("%[^\n]s" , trans_global.reciever_id);
+  printf("\n\n\tEnter the Beneficiary's ID: ");              //asking for reciever's wallet id
+  scanf("%hu" , &j);
    t = 0;
    while(t != '\n')
     t = getchar();
+
+     if(j >= num)
+     {
+      printf("\n\tINVALID BENEFICIARY ID.");
+      printf("\n\tYou are requested to opt to \"Display List of beneficiary\" and see BENEFICIARY ID from there.");
+      return;
+      }
 
 re:
   printf("\n\tEnter the amount to be paid: ");                   //amount to be paid
@@ -80,8 +171,19 @@ re:
      t = getchar();
 
 
+ strcpy(filename , "list_of_beneficiary.txt");
+ full_path(binary , filename);
+ fp = fopen(filename , "rb");
+ if(fp == NULL)
+ {
+  printf("\n ERROR: Could not open %s to read." , filename);
+  exit(1);
+  }
 
+ for(i = 0 ; i<=j ; i++)
+  fread(&ben , sizeof(struct beneficiary) , 1 , fp);
 
+ strcpy(trans_global.reciever_id , ben.account_no);
  strcpy(trans_global.sender_id , user_global.wallet_id);          //sender's id is same as wallet id of user
   
  gettimeofday(&tv , NULL);
@@ -98,7 +200,7 @@ re:
  line();
   printf("\n\tEnter 'C' to confirm");
   printf("\n\tEnter 'R' to re-enter");
-  printf("\n\tEnter 'E' to discard and exit");
+  printf("\n\tEnter 'E' to discard and return");
  re2:
   printf("\n\t\tEnter your choice: ");
   fflush(stdin);
@@ -113,7 +215,7 @@ re:
     goto start;
 
    else if(ch == 'E' || ch == 'e')
-    exit(1);
+    return;
 
    else
     goto re2;
@@ -224,7 +326,7 @@ void display_transaction_details()
  fp = fopen(tempstring , "rb");
     if(fp == NULL)
     {
-     printf("\n ERROR: Could not open %s to read user details" , filename);
+     printf("\n ERROR: Could not open %s to read user details" , tempstring);
      exit(1);
      }
   fread(&trans_global , sizeof(struct transaction) , 1 , fp);
@@ -241,6 +343,295 @@ line();
 line();
 
  }
+/*------------------------------------------------------------------------*/
+
+void display_beneficiary()
+{
+ if(num == 0)
+ {
+  printf("\n\tNO Beneficiary IN YOUR LIST.");
+  return;
+  }
+
+
+ strcpy(filename , "list_of_beneficiary.txt");
+ full_path(binary , filename);
+
+ fp = fopen(filename , "r");
+  if(fp == NULL)
+  {
+   printf("\n\n\t\tERROR: Could not open %s to read." , filename);
+   exit(1);
+   }
+
+for(i = 0; i < num ; i++)
+{
+ fread(&ben , sizeof(struct beneficiary) , 1 , fp);
+ line();
+  printf("\n Beneficiary ID: %hu" , i);
+  printf("\n Beneficiary name: %s", ben.name);
+  printf("\n Comments: %s" , ben.comment);
+ }
+
+fclose(fp);
+ }
+
+
+
+
+/*------------------------------------------------------------------------*/
+
+void delete_beneficiary()
+{
+FILE *fp1;
+ unsigned short j;
+
+  start:
+ line();
+  printf("\n\tEnter Beneficiary ID to delete: ");
+   scanf("%hu", &j);
+
+      t = 0;
+     while(t != '\n')
+      t = getchar();
+
+
+     if(j >= num)
+     {
+      printf("\n\tINVALID BNEFICIARY ID.");
+      printf("\n\tYou are requested to opt to \"Display List of Beneficiaries\" and see BENEFICIARY ID from there.");
+      return;
+      }
+
+  line();
+  printf("\n\t\tCONFIRM");
+  line();
+//After that it will open file to check list that which miner, user wants to delete.
+ strcpy(filename , "list_of_beneficiary.txt");
+ full_path(binary , filename);
+
+ fp = fopen(filename , "r");
+  if(fp == NULL)
+  {
+   printf("\n\n\t\tERROR: Could not open %s to read." , filename);
+   exit(1);
+   }
+
+for(i = 0; i < num ; i++)
+{
+ fread(&ben , sizeof(struct beneficiary) , 1 , fp);
+  if(i == j)
+    break;
+ }
+
+printf("\n BENEFICIARY record will be deleted");
+printf("\n Beneficiary name: %s" , ben.name);
+printf("\n Beneficiary account number: %s" , ben.account_no);
+
+  printf("\n\tEnter 'C' to confirm and save.");
+  printf("\n\tEnter 'R' to re-enter.");
+  printf("\n\tEnter 'E' to discard and return.");
+
+   re:
+    printf("\n\t\tEnter your choice: ");
+    fflush(stdin);
+    ch = getchar();
+      t = 0;
+     while(t != '\n')
+      t = getchar();
+     if(ch == 'C' || ch == 'c')
+      goto del;
+
+     else if(ch == 'R' || ch == 'r')
+     {
+      line();
+      goto start;
+      }
+
+     else if(ch == 'E' || ch == 'e')
+     {
+      fclose(fp);
+      return;
+      }
+
+    else
+     goto re;
+
+del:
+fseek(fp , 0 , SEEK_SET);
+
+ strcpy(tempfile1 , "temp.txt");
+ full_path(binary , tempfile1);
+
+ fp1 = fopen(tempfile1 , "w");
+  if(fp == NULL)
+  {
+   printf("\n\n\t\tERROR: Could not open %s to write." , tempfile1);
+   exit(1);
+   }
+
+for(i = 0 ; i<num ; i++)
+{
+ fread(&ben , sizeof(struct beneficiary) , 1 , fp);
+ if(i != j)
+ fwrite(&ben , sizeof(struct beneficiary) , 1 , fp1);
+ }
+fclose(fp);
+fclose(fp1);
+
+
+num--;
+ strcpy(tempfile2 , "no_of_beneficiary.txt");
+ full_path(binary , tempfile2);
+
+ fp = fopen(tempfile2 , "w");
+ if(fp == NULL)
+ {
+   printf("\n\n\t\tERROR: Could not open %s to write." , tempfile2);
+   exit(1);
+  }
+
+fprintf(fp , "%lu" , num);
+fclose(fp);
+
+
+remove(filename);
+rename(tempfile1 , filename);
+
+
+printf("\n\tSUCCESSFULLY DELETED");
+
+}
+
+/*------------------------------------------------------------------------*/
+
+void add_beneficiary()
+{
+ start:
+line();
+  printf("\n\tEnter the name of beneficiary: ");
+   scanf("%[^\n]s", ben.name);
+       t = 0;
+     while(t != '\n')
+      t = getchar();
+
+  printf("\n\tEnter the account number/ wallet Id of beneficiary: ");
+   scanf("%[^\n]s", ben.account_no);
+       t = 0;
+     while(t != '\n')
+      t = getchar();
+
+  printf("\n\tEnter any comments (max 500 characters): ");
+   scanf("%[^\n]s", ben.comment);
+       t = 0;
+     while(t != '\n')
+      t = getchar();
+
+
+
+  line();
+  printf("\n\t\tCONFIRM");
+  line();
+
+  printf("\n\tEnter 'C' to confirm and save.");
+  printf("\n\tEnter 'R' to re-enter.");
+  printf("\n\tEnter 'E' to discard and exit.");
+
+   re:
+    printf("\n\t\tEnter your choice: ");
+    fflush(stdin);
+    ch = getchar();
+      t = 0;
+     while(t != '\n')
+      t = getchar();
+     if(ch == 'C' || ch == 'c')
+      goto sav;
+
+     else if(ch == 'R' || ch == 'r')
+     {
+      line();
+      goto start;
+      }
+
+     else if(ch == 'E' || ch == 'e')
+     {
+      exit(1);
+      }
+
+    else
+     goto re;
+
+sav:
+ strcpy(filename , "list_of_beneficiary.txt");
+ full_path(binary , filename);
+
+fp = fopen(filename , "a");
+fclose(fp);
+/*
+The above command was writtten for a purpose.
+as next lines check if hostname already exist in record, the file should be present, or else fp will be NULL and we won't be able to know why.
+so opening in append mode will create file if it does not exist, or if it exists, it will no truncate the data.
+*/
+
+ fp = fopen(filename , "rb");
+  if(fp == NULL)
+  {
+   printf("\n\n\t\tERROR: Could not open %s to read." , filename);
+   exit(1);
+   }
+
+for(i = 0; i < num ; i++)
+{
+ fread(&ben2 , sizeof(struct beneficiary) , 1 , fp);
+ if(strcmp(ben2.account_no , ben.account_no) == 0)
+ {
+  fclose(fp);
+  printf("\n\tBENEFICIARY ACCOUNT NUMBER IS ALREADY IN THE RECORD.\n");
+  line();
+  goto start;
+  }
+ }
+fclose(fp);
+
+
+
+ fp = fopen(filename , "ab");
+  if(fp == NULL)
+  {
+   printf("\n\n\t\tERROR: Could not open %s to append." , filename);
+   fclose(fp);
+   exit(1);
+   }
+ fwrite(&ben , sizeof(struct beneficiary) , 1 , fp);
+ num++;
+fclose(fp);
+
+ strcpy(filename , "no_of_beneficiary.txt");
+ full_path(binary , filename);
+ fp = fopen(filename , "w");
+  if(fp == NULL)
+  {
+   printf("\n\n\t\tERROR: Could not open %s." , filename);
+   fclose(fp);
+   exit(1);
+   }
+ fprintf(fp , "%lu" , num);
+fclose(fp);
+
+
+printf("\n\n");
+line();
+printf("\n\t\tBENEFICIARY SUCCESSFULLY ADDED TO YOUR LIST");
+line();
+printf("\n Beneficiary name: %s" , ben.name);
+printf("\n Beneficiary account no: %s" , ben.account_no);
+printf("\n Comments: %s" , ben.comment);
+printf("\n Beneficiary ID on your system: %lu" , num-1);
+line();
+ }
+
+
+/*------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------*/

@@ -51,6 +51,15 @@ struct transaction
 
 /*----------------------------------------------------------------------------------------*/
 
+struct beneficiary
+{
+ char account_no[NAME_SIZE];
+ char name[NAME_SIZE];
+ char comment[COMMAND_SIZE];
+ };
+
+/*----------------------------------------------------------------------------------------*/
+
 char folder[FOLDER_SIZE];                  //will save the name of folder.
 char filename[FILE_SIZE];                  //will save the name of files that we need to open.
 char command[COMMAND_SIZE];                //will save the command that we will run using system();

@@ -18,7 +18,6 @@ void read_user_details();         //reads user details from the system
 /*-------options--------------------------*/
 void call_create_account();       //to run the program for creating account
 void mine();                      //to mine
-void recalculate_balance();       //it will recalculate balance of user.
 /*----------------------------------------------------------------------------------*/
 struct user user_global;
 struct block block_global;
@@ -47,9 +46,22 @@ re1:
    t = 0;
     while(t != '\n')
      t = getchar();
-  
-  if (ch == 'B' || ch == 'b')
+
+  if(ch == 'A' || ch == 'a')
   {
+   /*
+     - first call the function to recalculate balance
+     - then read the modified user_details from the file
+     - and store in user_global
+    */
+   system("~/betacoin/binary/recalculate_balance");
+   read_user_details();
+   goto re1;
+   }
+  
+  else if (ch == 'B' || ch == 'b')
+  {
+   read_user_details();
    line();
    printf("\n\tName: %s" , user_global.name);
    printf("\n\tLocation: %s" , user_global.location);
@@ -59,6 +71,14 @@ re1:
    line();
    goto re1;
    }  
+
+
+  else if(ch == 'C' || ch == 'c')
+  {
+   system("~/betacoin/binary/make_transaction");
+   goto re1;
+   }
+
 
   else if(ch == 'D' || ch == 'd')
   {
@@ -72,6 +92,7 @@ re1:
 
  else if(ch == 'E' || ch == 'e')
  {
+  read_user_details();
   user_global.miner_flag = 1;
   strcpy(filename , "sha.256");
   full_path(binary , filename);
@@ -84,28 +105,34 @@ re1:
        }
   fwrite(&user_global , sizeof(struct user) , 1 , fp);
   fclose(fp);
+ goto re1;
   } 
 
  else if(ch == 'F' || ch == 'f')
  {
   line();
-  printf("\tAre your sure, you want to delete your account?");
+  printf("\n\tAre your sure, you want to delete your account? YOU WILL LOOSE ALL YOUR BETACOINS FOREVER.");
   printf("\n\tEnter 'C' to confirm.");
   printf("\n\tEnter 'N' to go back to main menu.");
-
+  
   repl:
    fflush(stdin);
+    printf("\n\t\tEnter your choice: ");
+
    ch = getchar();
        t = 0;
     while(t != '\n')
      t = getchar();
 
-    if(ch == 'C' || 'c')
+    if(ch == 'C' || ch == 'c')
     {
        strcpy(filename , "sha.256");
        full_path(binary , filename);
        remove(filename);
-       exit(1);
+       line();
+      printf("\n\tACCOUNT SUCCESSFULLY DELETED");
+       line(); 
+      exit(1);
      }
 
     else if(ch == 'N' || ch == 'n')
@@ -121,13 +148,38 @@ re1:
   line();
   printf("\n\tADD A NEW MINER");
   line();
-  if (system("~/betacoin/binary/add_a_new_miner") != 0)
+  if (system("~/betacoin/binary/miner_menu") != 0)
    exit(1);
+  goto re1;
   }
 
  
+ else if(ch == 'H' || ch == 'h')
+ {
+  if(system("~/betacoin/binary/first_run") != 0)
+   exit(1);
+  goto re1;
+  }
 
- else if(ch == 'Q' || ch == 'q')
+else if(ch == 'I' || ch == 'i')
+{
+ if(system("~/betacoin/binary/synchronize") !=0)
+  exit(1);
+ goto re1;
+ }
+
+
+else if(ch == 'J' || ch == 'j')
+{
+ if(system("~/betacoin/binary/verify_block") !=0)
+  exit(1);
+
+ else
+  system("rm ~/betacoin/verify/*");
+ }
+
+
+ else if(ch == 'K' || ch == 'k')
   exit(0);
 
   else
@@ -151,12 +203,12 @@ char option()
 void prerun_setup()
 {
  strcpy(folder , getenv("HOME"));
- strcat(folder , "/betacoin/binary/");
+ strcat(folder , "/betacoin");
 
  account = 0;
 
- strcpy(filename , folder);
- strcat(filename , "sha.256");
+ strcpy(filename , "sha.256");
+ full_path(binary , filename);
  fp = fopen(filename , "rb");
   if(fp == NULL)
    account = 0;
@@ -173,8 +225,8 @@ void read_user_details()
 {
  FILE *fp;
 
- strcpy(filename , folder);
- strcat(filename , "sha.256");
+ strcpy(filename , "sha.256");
+ full_path(binary , filename);
  fp = fopen(filename , "rb");
   if(fp == NULL)
   {
@@ -198,14 +250,11 @@ printf("\n\n\tEnter 'C' to make a transaction.");
 printf("\n\n\tEnter 'D' to mine.");
 printf("\n\n\tEnter 'E' to become a new miner.");
 printf("\n\n\tEnter 'F' to delte your account.");
-printf("\n\n\tEnter 'G' to add a new miner");
-printf("\n\n\tEnter 'H' to add a benificiary");
-printf("\n\n\tEnter 'I' to check order of benificiary");
-printf("\n\n\tEnter 'J' to re-run first_run setup");
-printf("\n\n\tEnter 'K' to recalculate balance from transaction history.");
-printf("\n\n\tEnter 'L' to synchronize");
-printf("\n\n\tEnter 'M' to verify a miner's block");
-printf("\n\n\tEnter 'Q' to leave this portal and exit.");
+printf("\n\n\tEnter 'G' to add/ delete/ display miners.");
+printf("\n\n\tEnter 'H' to re-run first_run setup");
+printf("\n\n\tEnter 'I' to synchronize");
+printf("\n\n\tEnter 'J' to verify a miner's block");
+printf("\n\n\tEnter 'K' to leave this portal and exit.");
  }
 
 /*----------------------------------------------------------------------------------*/
@@ -260,97 +309,6 @@ void mine()
 
  }
 /*----------------------------------------------------------------------------------*/
-
-void recalculate_balance()
-{
- strcpy(filename , "sha.256");
- full_path(binary , filename);
-
- unsigned long num,i;
- unsigned short j;
- long double user_balance = user_global.account_balance;
-
- printf("\n Reading user Details..");
- fp = fopen(filename , "rb");
-    if(fp == NULL)
-    {
-     printf("\n ERROR: Could not open %s to read user details" , filename);
-     exit(1);
-     }
- fread(&user_global , sizeof(struct user) , 1 , fp);
- fclose(fp);
-
-/*--no of blocks-------------*/
- printf("\n Reading number of blocks present in blockchain..");
- strcpy(filename , "no_of_blocks.txt");
- full_path(blockchain , filename);
- fp = fopen(filename , "rb");
-    if(fp == NULL)
-    {
-     printf("\n ERROR: Could not open %s to read number of blocks." , filename);
-     exit(1);
-     }
-  fscanf(fp , "%lu" , &num);
-  fclose(fp);
-
-/*--calculate balance--------*/
-user_balance = (long double)0;
-
- strcpy(filename , "block_list.txt");
- full_path(blockchain , filename);
-
-  fpg = fopen(filename , "r");
-    if(fpg == NULL)
-    {
-     printf("\n ERROR: Could not open %s to read list of blocks." , filename);
-     exit(1);
-     }
-
-  for(i = 0 ; i < num ; i++)
-  {
-   fscanf(fpg , "%[^\n]s" , filename);
-   full_path(blockchain , filename);
-
-   fp = fopen(filename , "rb");
-       if(fp == NULL)
-       {
-        printf("\n ERROR: Could not open %s to read block." , filename);
-        exit(1);
-        }
-
-   fread(&block_global , sizeof(struct block) , 1 , fp);
-
-   if(strcmp(block_global.miner_id , user_global.wallet_id) == 0)
-    user_balance += (long double)1;
-
-   for(j = 0 ; j< block_global.no_of_transaction ; j++)
-   {
-    fread(&trans_global , sizeof(struct user) , 1, fp);
-    if(strcmp(trans_global.sender_id , user_global.wallet_id) == 0)
-     user_balance -= trans_global.amount;
-
-    if(strcmp(trans_global.reciever_id , user_global.wallet_id) == 0)
-     user_balance -= trans_global.amount;
-    }
-
-   fclose(fp);
-
-   }
-  fclose(fpg);
-
- user_global.account_balance = user_balance;
- strcpy(filename , "sha.256");
- full_path(binary , filename);
- fp = fopen(filename , "wb");
-    if(fp == NULL)
-    {
-     printf("\n ERROR: Could not open %s to write recalculated balance." , filename);
-     exit(1);
-     }
-  fwrite(&user_global , sizeof(struct user) , 1 , fp);
-  fclose(fp);
-
- }
 
 /*----------------------------------------------------------------------------------*/
 
