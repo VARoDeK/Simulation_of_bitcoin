@@ -20,7 +20,7 @@ int main()
 
  strcpy(folder , getenv("HOME"));
  strcat(folder , "/betacoin");
-
+/*-----------------------------------------------------------*/
 
 
  strcpy(filename , "block_list.txt");
@@ -48,6 +48,7 @@ int main()
 
  printf("\n Written record for genesis block in blocklist.txt..");
 
+/*-----------------------------------------------------------*/
 
 
  strcpy(filename , "no_of_blocks.txt");
@@ -58,10 +59,11 @@ int main()
        printf("\n\n ERROR: Could not open %s...\n", filename);
        return 1;
        }
-  fprintf(fp , "%lu" , (unsigned long)0);
+  fprintf(fp , "%lu" , (unsigned long)1);
   fclose(fp);
 
 
+/*-----------------------------------------------------------*/
 
 
  printf("\n Assigning Values to Variables in the Block..");
@@ -85,20 +87,23 @@ int main()
  fscanf(fp , "%lu" , &(block_global.difficulty_target));
  fclose(fp);
 
+/*-----------------------------------------------------------*/
 
  gettimeofday(&tv , NULL);
  block_global.timestamp = (unsigned long)tv.tv_sec;
  printf("\n Calculated timestamp..");
 
-  printf("\n Calculating Hash..");
-   gettimeofday(&tv , NULL);
-   time1 = (unsigned long)tv.tv_sec;
+/*-----------------------------------------------------------*/
+ printf("\n Calculating Hash..");
+ gettimeofday(&tv , NULL);
+  time1 = (unsigned long)tv.tv_sec;
  create_genesis_block_hash();
-   gettimeofday(&tv , NULL);
-   time2 = (unsigned long)tv.tv_sec;
+ gettimeofday(&tv , NULL);
+  time2 = (unsigned long)tv.tv_sec;
 
  block_global.time_taken = (unsigned int)(time2 - time1);
 
+/*-----------------------------------------------------------*/
 
  printf("\n OPERATION SUCCESSFUL. Current Block Hash Calculated..");
  printf("\nCurrent Block Hash: %s" , block_global.current_block_hash);
@@ -106,20 +111,23 @@ int main()
  printf("\nTime Taken: %u sec" , block_global.time_taken);
  printf("\nTimestap: %lu sec" , block_global.timestamp);
 
-   strcpy(filename , "0.block");
-  full_path(blockchain , filename);
-  fp = fopen(filename , "wb");
+/*-----------------------------------------------------------*/
+ strcpy(filename , "0.block");
+ full_path(blockchain , filename);
+
+ fp = fopen(filename , "wb");
           if(fp == NULL)
           {
            printf("\n\tERROR: CANNOT OPEN %s." , filename);
            exit(1);
             }
-  fwrite(&block_global , sizeof(struct block) , 1 , fp);
 
-  printf("\n Written Block Header to %s.." , filename);
+ fwrite(&block_global , sizeof(struct block) , 1 , fp);
+
+ printf("\n Written Block Header to %s.." , filename);
   fclose(fp);
 
-  printf("\n New Block Created at %s.." , filename);
+ printf("\n New Block Created at %s.." , filename);
 
 
  }

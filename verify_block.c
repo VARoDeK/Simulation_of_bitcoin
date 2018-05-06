@@ -155,6 +155,8 @@ int main()
           exit(1);
            }
   fscanf(fp , "%lu" , &num);
+  fseek(fp ,0 , SEEK_SET);
+  fscanf(fp , "%s" , tempstring);
  fclose(fp);
 
  num++;
@@ -167,7 +169,7 @@ int main()
            }
   fprintf(fp , "%lu" , num);
  fclose(fp);
-
+/*
  fp = fopen(filename , "r");
          if(fp == NULL)
          {
@@ -175,11 +177,11 @@ int main()
           exit(1);
            }
   fscanf(fp , "%s" , tempstring);
- fclose(fp);
+ fclose(fp);*/
 
  strcat(command , " ~/betacoin/BLOCKCHAIN/");
  strcat(tempstring , ".block");
- strcat(command , tempstring);
+ strcat(command , tempstring);                  //command created to cutpaste the newblock file after verifictaion.
 
  strcpy(filename , "block_list.txt");
  full_path(blockchain , filename);
@@ -193,7 +195,7 @@ int main()
  fclose(fp);
  
  printf("\n %s",command);
- system(command);
+ system(command);                             //command run to cutpaste the new block file after verifcation
 
  system("rm ~/betacoin/verify/*");           //remove local files that were present to verify block
 

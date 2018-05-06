@@ -24,7 +24,7 @@ void merkle_hash(struct merkle*, unsigned short, unsigned short);
 void binary_correct(struct merkle*, unsigned short, unsigned short);            //in case if no of transactions is less than no of leaves.
 
 void binary_traverse(struct merkle*, unsigned short, unsigned short);
-void delete_tree(struct merkle*,unsigned short,unsigned short);
+void delete_tree(struct merkle*,unsigned short,unsigned short);                 //delete tree
 void prerun_setup();                                                            //initializes some important values, like path to the bitcoin folder.
 void display_transaction(struct transaction*);
 void char_refresh(char[],unsigned short);
@@ -32,6 +32,14 @@ void char_refresh(char[],unsigned short);
 
 struct merkle *root;
 /*------------------------------------------------------------------------------------*/
+/*
+- prerun_setup() is called. This will create list of transaction files and save their name in "list.txt", and their count in "count_no_of_files_in_block.txt".
+- then it sorts the transaction files in alphabetical order and saves them in "temp.txt". deletes "list.txt" and renames "temp.txt" to "list.txt"
+
+*/
+
+
+
 
 
 int main()

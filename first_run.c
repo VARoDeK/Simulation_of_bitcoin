@@ -12,21 +12,21 @@ int main()
 {
  FILE *fp;
  char tempname[101];
- 
+/*--CHECK PYTHON----------------------------------------------------------*/ 
  if(system("python3 -V") != 0)
  {
   printf("\n]tERROR: CANNOT RUN python3. CHECK IF IT IS INSTALLED OR FOR OTHER ERRORS.");
   exit(1);
   }
  
+/*--CHECK GCC----------------------------------------------------------*/ 
  if(system("gcc -v") != 0)
  {
   printf("\n]tERROR: CANNOT RUN gcc. CHECK IF IT IS INSTALLED OR FOR OTHER ERRORS.");
   exit(1);
   }
 
-
- 
+/*--MAKE FOLDER ~/betacoin----------------------------------------------------------*/  
  strcpy(static_path , getenv("HOME"));
  strcat(static_path , "/betacoin");
  //Making ~/betacoin 
@@ -40,8 +40,10 @@ int main()
   }
  printf("\n Created folder %s.." , static_path);
 
- //Making ~/betacoin/miner
- strcpy(tempname , static_path);
+
+
+/*--MAKE FOLDER ~/betacoin/miner----------------------------------------------------------*/ 
+  strcpy(tempname , static_path);
  strcat(tempname , "/miner");
  if(mkdir(tempname , S_IRWXU) !=0)
  {
@@ -53,7 +55,10 @@ int main()
   }
  printf("\n Created folder %s.." , tempname);
 
- //Making ~/betacoin/sha
+
+
+ 
+/*--MAKE FOLDER ~/betacoin/sha----------------------------------------------------------*/ 
  strcpy(tempname , static_path);
  strcat(tempname , "/sha");
 
@@ -68,7 +73,8 @@ int main()
  printf("\n Created folder %s.." , tempname);
 
 
- //Making ~/betacoin/BLOCKCHAIN
+
+/*--MAKE FOLDER ~/betacoin/BLOCKCHAIN----------------------------------------------------------*/ 
  strcpy(tempname , static_path);
  strcat(tempname , "/BLOCKCHAIN");
  
@@ -83,7 +89,8 @@ int main()
  printf("\n Created folder %s.." , tempname);
 
 
- //Making ~/betacoin/binary
+
+/*--MAKE FOLDER ~/betacoin/binary----------------------------------------------------------*/ 
  strcpy(tempname , static_path);
  strcat(tempname , "/binary");
 
@@ -98,7 +105,7 @@ int main()
  printf("\n Created folder %s.." , tempname);
 
 
- //Making ~/betacoin/verify
+/*--MAKE FOLDER ~/betacoin/verify----------------------------------------------------------*/ 
  strcpy(tempname , static_path);
  strcat(tempname , "/verify");
 
@@ -114,32 +121,31 @@ int main()
 
 
 
+/*--COPY SHA FUNCTION----------------------------------------------------------*/ 
+ strcpy(command , "cp ./SHA_function.py ~/betacoin/binary/SHA_function_DUP.py");
+ printf("\n Running command: \n\t%s .." , command); 
+    if(system(command) == 0)
+     printf("\n Copied ./SHA_function.py to ~/betacoin/binary/SHA_function_DUP.py..");
+    else
+    {
+     printf("\n\tERROR: Could not run %s.." , command);
+     exit(1);
+     }
 
 
-   printf("\n Running command: \n\tcp ./SHA_function.py ~/betacoin/binary/SHA_function_DUP.py .."); 
- if(system("cp ./SHA_function.py ~/betacoin/binary/SHA_function_DUP.py") == 0)
-   printf("\n Copied ./SHA_function.py to ~/betacoin/binary/SHA_function_DUP.py..");
- else
- {
-  printf("\n\tERROR: Could not copy ./SHA_function.py to ~/betacoin/binary/SHA_function_DUP.py..");
-  exit(1);
-  }
-
-  printf("\n Running command: \n\tcp ./MD5_function.py ~/betacoin/binary/MD5_function_DUP.py ..");
- if(system("cp ./MD5_function.py ~/betacoin/binary/MD5_function_DUP.py") == 0)
-   printf("\n Copied ./MD5_function.py to ~/betacoin/binary/MD5_function_DUP.py..");
- else
- {
-  printf("\n\tERROR: Could not copy ./MD5_function.py to ~/betacoin/binary/MD5_function_DUP.py..");
-  exit(1);
-  }
+/*--COPY MD5 FUNCTION----------------------------------------------------------*/
+ strcpy(command , "cp ./MD5_function.py ~/betacoin/binary/MD5_function_DUP.py");
+ printf("\n Running command: \n\t%s .." , command);             
+    if(system(command) == 0)
+     printf("\n Copied ./MD5_function.py to ~/betacoin/binary/MD5_function_DUP.py..");
+    else
+    {
+     printf("\n\tERROR: Could not run %s.." , command);
+     exit(1);
+     }
 
 
-
-
-
-
- //Creating ~/betacoin/miner/difficulty_target.txt
+/*--SET DIFFICULTY TARGET----------------------------------------------------------*/ 
  strcpy(tempname , static_path);
  strcat(tempname , "/miner/difficulty_target.txt");
  fp = fopen(tempname , "w");
@@ -152,119 +158,146 @@ int main()
  fclose(fp);
  printf("\n Created file %s to set difficulty target.." , tempname);
 
- printf("\n Running command: \vgcc create_account.c -o ~/betacoin/binary/create_account ..");
- if(system("gcc create_account.c -o ~/betacoin/binary/create_account") == 0)
-  printf("\n\tCompiled create_account.c..");
- else
-  {
-   printf("\n\tERROR: Could not compile create_account.c ..");
-   exit(1);
-   }
 
 
- printf("\n Running command: \vgcc create_genesis_block.c -o ~/betacoin/binary/create_genesis_block ..");
- if(system("gcc create_genesis_block.c -o ~/betacoin/binary/create_genesis_block") == 0)
+/*--COMPILE PROGRAM TO CREATE ACCOUNT----------------------------------------------------------*/
+ strcpy(command , "gcc create_account.c -o ~/betacoin/binary/create_account");
+ printf("\n Running command: \n\t%s .." , command);             
+    if(system(command) == 0)
+     printf("\n Compiled create_account.c..");
+    else
+    {
+     printf("\n\tERROR: Could not run %s.." , command);
+     exit(1);
+     }
+
+
+/*--COMPILE PROGRAM TO CREATE GENESIS BLOCK----------------------------------------------------------*/ 
+ strcpy(command , "gcc create_genesis_block.c -o ~/betacoin/binary/create_genesis_block");
+ printf("\n Running command: \n\t%s .." , command);
+ if(system(command) == 0)
   printf("\n\tCompiled create_genesis_block.c..");
  else
   {
-   printf("\n\tERROR: Could not compile create_genesis_block.c ..");
+   printf("\n\tERROR: Could not run %s.." , command);
    exit(1);
    }
 
 
-  printf("\n Running command: \vgcc create_block.c -o ~/betacoin/binary/create_block ..");
- if(system("gcc create_block.c -o ~/betacoin/binary/create_block") == 0)
+/*--COMPILE PROGRAM TO CREATE BLOCK----------------------------------------------------------*/ 
+ strcpy(command , "gcc create_block.c -o ~/betacoin/binary/create_block");
+  printf("\n Running command: \n\t%s.." , command);
+ if(system(command) == 0)
   printf("\n\tCompiled create_block.c..");
  else
   {
-   printf("\n\tERROR: Could not compile create_block.c ..");
+   printf("\n\tERROR: Could not run %s.." , command);
    exit(1);
    }
 
 
-  printf("\n Running command: \vgcc create_list_of_new_blocks.c -o ~/betacoin/binary/create_list_of_new_blocks ..");
- if(system("gcc create_list_of_new_blocks.c -o ~/betacoin/binary/create_list_of_new_blocks") == 0)
+/*--COMPILE PROGRAM TO CREATE LIST OF NEW BLOCKS----------------------------------------------------------*/ 
+ strcpy(command , "gcc create_list_of_new_blocks.c -o ~/betacoin/binary/create_list_of_new_blocks");
+  printf("\n Running command: \n\t%s .." , command);
+ if(system(command) == 0)
   printf("\n\tCompiled create_list_of_new_blocks.c..");
  else
   {
-   printf("\n\tERROR: Could not compile create_list_of_new_blocks.c ..");
+   printf("\n\tERROR: Could not run %s .." , command);
    exit(1);
    }
 
 
-  printf("\n Running command: \vgcc add_a_new_miner.c -o ~/betacoin/binary/add_a_new_miner ..");
- if(system("gcc add_a_new_miner.c -o ~/betacoin/binary/add_a_new_miner") == 0)
+/*--COMPILE PROGRAM TO ADD A NEW MINER----------------------------------------------------------*/ 
+ strcpy(command , "gcc miner_list.c -o ~/betacoin/binary/miner_list");
+  printf("\n Running command: \n\t%s .." , command);
+ if(system(command) == 0)
   printf("\n\tCompiled add_a_new_miner.c..");
  else
   {
-   printf("\n\tERROR: Could not compile add_a_new_miner.c ..");
+   printf("\n\tERROR: Could not run %s .." , command);
    exit(1);
    }
 
 
- printf("\n Running command: \vgcc first-run.c -o ~/betacoin/binary/first_run ..");
- if(system("gcc first_run.c -o ~/betacoin/binary/first_run") == 0)
+/*--COMPILE PROGRAM FIRST RUN----------------------------------------------------------*/ 
+ strcpy(command , "gcc first_run.c -o ~/betacoin/binary/first_run");
+ printf("\n Running command: \n\t%s .." , command);
+ if(system(command) == 0)
   printf("\n\tCompiled first_run.c..");
  else
   {
-   printf("\n\tERROR: Could not compile first_run.c ..");
+   printf("\n\tERROR: Could not run %s .." , command);
    exit(1);
    }
 
 
- 
- #ifdef __linux__ 
-  printf("\n Running command: \vgcc merkle_tree.c -o  ~/betacoin/binary/merkle_tree -lm ..");
-  if(system("gcc merkle_tree.c -o  ~/betacoin/binary/merkle_tree -lm") == 0)
-   printf("\n\tCompiled merkle_tree.c ..");
-  else
-  {
-   printf("\n\tERROR: Could not compile merkle_tree.c ..");   
-   exit(1);
-   }
-
-
-  printf("\n Running command: \vgcc verify_transaction.c -o  ~/betacoin/binary/verify_transaction -lm ..");
-  if(system("gcc verify_transaction.c -o  ~/betacoin/binary/verify_transaction -lm") == 0)
-   printf("\n\tCompiled verify_transaction.c ..");
-  else
-  {
-   printf("\n\tERROR: Could not compile verify_transaction.c ..");
-   exit(1);
-   }
-
-  printf("\n Running command: \vgcc make_transaction.c -o  ~/betacoin/binary/make_transaction ..");
-  if(system("gcc make_transaction.c -o  ~/betacoin/binary/make_transaction") == 0)
+/*--COMPILE PROGRAM TO MAKE TRANSACTION----------------------------------------------------------*/
+  strcpy(command , "gcc make_transaction.c -o  ~/betacoin/binary/make_transaction");
+   printf("\n Running command: \n\t%s .." , command);
+  if(system(command) == 0)
    printf("\n\tCompiled make_transaction.c ..");
   else
   {
-   printf("\n\tERROR: Could not compile make_transaction.c ..");
+   printf("\n\tERROR: Could not run %s .." , command);
+   exit(1);
+   }
+
+/*------------------------------------------------------------*/ 
+
+ #ifdef __linux__ 
+  strcpy(command , "gcc merkle_tree.c -o  ~/betacoin/binary/merkle_tree -lm");
+   printf("\n Running command: \n\t%s .." , command);
+  if(system(command) == 0)
+   printf("\n\tCompiled merkle_tree.c ..");
+  else
+  {
+   printf("\n\tERROR: Could not run %s .." , command);   
    exit(1);
    }
 
 
+/*------------------------------------------------------------*/ 
+
+  strcpy(command , "gcc verify_transaction.c -o  ~/betacoin/binary/verify_transaction -lm");
+   printf("\n Running command: \n\t%s .." , command);
+  if(system(command) == 0)
+   printf("\n\tCompiled verify_transaction.c ..");
+  else
+  {
+   printf("\n\tERROR: Could not run %s .." , command);
+   exit(1);
+   }
+
+/*------------------------------------------------------------*/ 
 
 
 
  #elif __APPLE__ 
-  printf("\n Running command: \vgcc merkle_tree.c -o  ~/betacoin/binary/merkle_tree ..");
-  if(system("gcc merkle_tree.c -o  ~/betacoin/binary/merkle_tree") == 0)
+  strcpy(command , "gcc merkle_tree.c -o  ~/betacoin/binary/merkle_tree");
+   printf("\n Running command: \n\t%s .." , command);
+  if(system(command) == 0)
    printf("\n\tCompiled merkle_tree.c ..");
   else
   {
-   printf("\n\tERROR: Could not compile merkle_tree.c ..");
+   printf("\n\tERROR: Could not run %s .." , command);
    exit(1);
    }
 
-  printf("\n Running command: \vgcc verify_transaction.c -o  ~/betacoin/binary/verify_transaction ..");
-  if(system("gcc verify_transaction.c -o  ~/betacoin/binary/verify_transaction") == 0)
+
+/*------------------------------------------------------------*/
+
+  strcpy(command , "gcc verify_transaction.c -o  ~/betacoin/binary/verify_transaction");
+   printf("\n Running command: \n\t%s .." , command);
+  if(system(command) == 0)
    printf("\n\tCompiled verify_transaction.c ..");
   else
   {
-   printf("\n\tERROR: Could not compile verify_transaction.c ..");
+   printf("\n\tERROR: Could not run %s .." , command);
    exit(1);
    }
 
+/*------------------------------------------------------------*/ 
 
 
 

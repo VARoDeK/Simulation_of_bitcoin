@@ -1,3 +1,12 @@
+/*
+-This program will allow user to make transaction.
+-This program will be called by index.c but before calling this, index.c should call recalculate_balnce() function to know correct current balance of user.
+-The transaction fee for each transaction is 1 betacoin.
+-The t_id (transaction id) of transaction will be strcat(timestamp + wallet_id of user).
+-The name of transaction file will be t_id.transaction. (t_id means strcat(timestamp + wallet_id of user)).
+*/
+
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
@@ -6,15 +15,15 @@
 
 
 /*------------------------------------------------------------------------*/
-long double user_balance;
-
 struct block block_global;
 struct transaction trans_global;
 struct user user_global;
-char tempstring[FILE_SIZE];
+/*------------------------------------------------------------------------*/
+
+char tempstring[FILE_SIZE];     //use to store temporary filename.
 FILE *fp;
 /*------------------------------------------------------------------------*/
-void prerun_setup();
+
 void display_user_details();
 void display_transaction_details();
 
@@ -25,6 +34,19 @@ so as we can confirm that data was properly written on file.
 */
 /*------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------*/
+/*
+- first call display_user_details(), this will not only show details of user but also save it in object, trans_global.
+- then ask for reciever_id of reciever, this is the wallet id of reciever.
+- then ask for amount that has to be paid. if your balance is less than (amount+transaction_fee), it wont allow transaction.
+- then asks for confirmation.
+- once confirmed, deducts the amount from user's balance. else exit the program.
+- calculates timestamp which is in form "unsigned long" and writes it to ~/betacoin/sha/input.txt.
+- then reads than timestamp and stores it in the form of string, so as to calculate t_id. (t_id = strcat(timestamp+wallet_id)).
+- then writes the transaction record in t_id.transaction file.
+- then again calls display_user_details(); and display_transaction_details(). These two program open specific files, read them and print.
+- reading records from file, ensures that file was properly written, or else it would have not read it properly.
+*/
+
 int main()
 {
  char t, ch;
@@ -33,20 +55,20 @@ int main()
  strcpy(folder , getenv("HOME"));
  strcat(folder , "/betacoin");
 
+ display_user_details();                                         //display_user_details
 
-display_user_details();
 start:
  line();
  printf("\n\t\t\t\tPAY");
  line();
-  printf("\n\n\tEnter the reciever's wallet id: ");
+  printf("\n\n\tEnter the reciever's wallet id: ");              //asking for reciever's wallet id
   scanf("%[^\n]s" , trans_global.reciever_id);
    t = 0;
    while(t != '\n')
     t = getchar();
 
 re:
-  printf("\n\tEnter the amount to be paid: ");
+  printf("\n\tEnter the amount to be paid: ");                   //amount to be paid
   scanf("%LF" , &trans_global.amount);
    if(trans_global.amount > (user_global.account_balance -1))
     {
@@ -60,18 +82,17 @@ re:
 
 
 
- strcpy(trans_global.sender_id , user_global.wallet_id);
+ strcpy(trans_global.sender_id , user_global.wallet_id);          //sender's id is same as wallet id of user
   
  gettimeofday(&tv , NULL);
- trans_global.timestamp = (unsigned long)tv.tv_sec;
+ trans_global.timestamp = (unsigned long)tv.tv_sec;               //calculated timestamp
 
- trans_global.transaction_fee = 1;
- trans_global.amount += (long double)1;
+ trans_global.transaction_fee = 1;                                //included transaction fee
 
  printf("\n\n\tReciever's Wallet id: %s" , trans_global.reciever_id);
  printf("\n\tAmount to be paid: %Lf" , trans_global.amount);
  printf("\n\tTransaction fee: %Lf" , (long double)trans_global.transaction_fee);
-
+ printf("\n\tTotal amount to be deducted: %LF" , trans_global.amount+(long double)1);
  line();
   printf("\n\t\t\t\tCONFIRM");
  line();
@@ -98,9 +119,10 @@ re:
     goto re2;
 
  write:
-  strcpy(filename , "input.txt");
+/*-----------------------------------------------------------------*/
+  strcpy(filename , "input.txt");                                   //writing timestamp to ~/betacoin/sha/input.txt in unsigned long format
   full_path(sha , filename);
-printf("\n Opening %s for writing.." , filename);
+ printf("\n Opening %s for writing.." , filename);
   fp = fopen(filename , "w");
           if(fp == NULL)
           {
@@ -110,9 +132,9 @@ printf("\n Opening %s for writing.." , filename);
 
   fprintf(fp,"%lu" , trans_global.timestamp);
   fclose(fp);
-
+/*-----------------------------------------------------------------*/
 printf("\n Opening %s for reading.." , filename);
-  fp = fopen(filename , "r");
+  fp = fopen(filename , "r");                                       //reading timestamp from ~/betacoin/sha/input.txt in string format
           if(fp == NULL)
           {
            printf("\n\tERROR: CANNOT OPEN %s.." , filename);
@@ -122,6 +144,7 @@ printf("\n Opening %s for reading.." , filename);
   fscanf(fp , "%s" , tempstring);
   fclose(fp);
 
+/*-----------------------------------------------------------------*/
  strcat(tempstring , user_global.wallet_id);
  strcpy(trans_global.t_id , tempstring);
  strcat(tempstring , ".transaction");
@@ -140,7 +163,8 @@ printf("\n%s" , trans_global.t_id);
  fwrite(&trans_global , sizeof(struct transaction) , 1 , fp);
  fclose(fp);      
 
-user_global.account_balance -= trans_global.amount;
+user_global.account_balance -= trans_global.amount;                //amount deducted
+user_global.account_balance -= (long double)1;                     //transaction fee deducted
 
 strcpy(filename , "sha.256");
 full_path(binary , filename);
