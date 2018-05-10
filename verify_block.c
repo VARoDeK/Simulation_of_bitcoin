@@ -81,7 +81,7 @@ int main()
   if (fpg == NULL)
   {
    line();
-    printf("\n\n\tERROR: COULDN'T READ BLOCK RECORDS FROM %s. ABORTING PROCESS.\n", tempstring);
+    printf("\n\n\tERROR: COULDN'T READ BLOCK RECORDS FROM %s. ABORTING PROCESS.\n", filename);
     line();
     exit(1);
   }
