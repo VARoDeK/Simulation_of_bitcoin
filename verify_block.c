@@ -156,6 +156,8 @@ int main()
     printf("\n Read Transaction: %s.." , test_trans[i].t_id);
   }
 
+ fclose(fpg);
+
   printf("\n Regenerating a merkle hash for reverification..\n");
   height_global = ceil(log2(count_global));
 
