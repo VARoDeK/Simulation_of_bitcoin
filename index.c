@@ -86,7 +86,7 @@ re1:
      if(user_global.miner_flag == 0)
       goto re1;
    system("~/betacoin/binary/create_block");
-   system("~/betacoin/binary/send_newblock.c");
+   system("~/betacoin/binary/send_newblock");
    goto re1;
    }
 
@@ -129,8 +129,10 @@ re1:
        strcpy(filename , "sha.256");
        full_path(binary , filename);
        remove(filename);
+       system("rm ~/betacoin/miner/*");
+       system("~/betacoin/binary/first_run");
        line();
-      printf("\n\tACCOUNT SUCCESSFULLY DELETED");
+       printf("\n\tACCOUNT SUCCESSFULLY DELETED");
        line(); 
       exit(1);
      }

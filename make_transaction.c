@@ -176,7 +176,9 @@ re:
  fp = fopen(filename , "rb");
  if(fp == NULL)
  {
-  printf("\n ERROR: Could not open %s to read." , filename);
+  line();
+  printf("\n\n\tERROR: Could not open %s to read.\n" , filename);
+  line();
   exit(1);
   }
 
@@ -228,7 +230,9 @@ re:
   fp = fopen(filename , "w");
           if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s.." , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s..\n" , filename);
+           line();
            exit(1);
             }
 
@@ -239,7 +243,9 @@ printf("\n Opening %s for reading.." , filename);
   fp = fopen(filename , "r");                                       //reading timestamp from ~/betacoin/sha/input.txt in string format
           if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s.." , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s..\n" , filename);
+           line();
            exit(1);
             }
 
@@ -259,7 +265,9 @@ printf("\n%s" , trans_global.t_id);
  fp = fopen(tempstring , "wb");
     if(fp == NULL)
     {
-     printf("\n ERROR: Could not open %s to write." , filename);
+     line();
+     printf("\n\n\tERROR: Could not open %s to write.\n" , filename);
+     line();
      exit(1);
      }
  fwrite(&trans_global , sizeof(struct transaction) , 1 , fp);
@@ -273,7 +281,9 @@ full_path(binary , filename);
  fp = fopen(filename , "wb");
     if(fp == NULL)
     {
-     printf("\n ERROR: Could not open %s to write." , filename);
+     line();
+     printf("\n\n\tERROR: Could not open %s to write.\n" , filename);
+     line();
      exit(1);
      }
  fwrite(&user_global , sizeof(struct user) , 1 , fp);
@@ -294,7 +304,9 @@ void display_user_details()
  fp = fopen(filename , "rb");
     if(fp == NULL)
     {
-     printf("\n ERROR: Could not open %s to read user details" , filename);
+     line();
+     printf("\n\n\t ERROR: Could not open %s to read user details\n" , filename);
+     line();
      exit(1);
      }
   fread(&user_global , sizeof(struct user) , 1 , fp);
@@ -326,7 +338,9 @@ void display_transaction_details()
  fp = fopen(tempstring , "rb");
     if(fp == NULL)
     {
-     printf("\n ERROR: Could not open %s to read user details" , tempstring);
+     line();
+     printf("\n\n\tERROR: Could not open %s to read user details.\n" , tempstring);
+     line();
      exit(1);
      }
   fread(&trans_global , sizeof(struct transaction) , 1 , fp);
@@ -360,7 +374,9 @@ void display_beneficiary()
  fp = fopen(filename , "r");
   if(fp == NULL)
   {
-   printf("\n\n\t\tERROR: Could not open %s to read." , filename);
+   line();
+   printf("\n\n\t\tERROR: Could not open %s to read.\n" , filename);
+   line();
    exit(1);
    }
 
@@ -413,7 +429,9 @@ FILE *fp1;
  fp = fopen(filename , "r");
   if(fp == NULL)
   {
-   printf("\n\n\t\tERROR: Could not open %s to read." , filename);
+   line();
+   printf("\n\n\t\tERROR: Could not open %s to read.\n" , filename);
+   line();
    exit(1);
    }
 
@@ -466,7 +484,9 @@ fseek(fp , 0 , SEEK_SET);
  fp1 = fopen(tempfile1 , "w");
   if(fp == NULL)
   {
-   printf("\n\n\t\tERROR: Could not open %s to write." , tempfile1);
+   line();
+   printf("\n\n\t\tERROR: Could not open %s to write.\n" , tempfile1);
+   line();
    exit(1);
    }
 
@@ -487,7 +507,9 @@ num--;
  fp = fopen(tempfile2 , "w");
  if(fp == NULL)
  {
-   printf("\n\n\t\tERROR: Could not open %s to write." , tempfile2);
+   line();
+   printf("\n\n\t\tERROR: Could not open %s to write.\n" , tempfile2);
+   line();
    exit(1);
   }
 
@@ -576,7 +598,9 @@ so opening in append mode will create file if it does not exist, or if it exists
  fp = fopen(filename , "rb");
   if(fp == NULL)
   {
-   printf("\n\n\t\tERROR: Could not open %s to read." , filename);
+   line();
+   printf("\n\n\t\tERROR: Could not open %s to read.\n" , filename);
+   line();
    exit(1);
    }
 
@@ -598,7 +622,9 @@ fclose(fp);
  fp = fopen(filename , "ab");
   if(fp == NULL)
   {
-   printf("\n\n\t\tERROR: Could not open %s to append." , filename);
+   line();
+   printf("\n\n\t\tERROR: Could not open %s to append.\n" , filename);
+   line();
    fclose(fp);
    exit(1);
    }
@@ -611,7 +637,9 @@ fclose(fp);
  fp = fopen(filename , "w");
   if(fp == NULL)
   {
-   printf("\n\n\t\tERROR: Could not open %s." , filename);
+   line();
+   printf("\n\n\t\tERROR: Could not open %s.\n" , filename);
+   line();
    fclose(fp);
    exit(1);
    }

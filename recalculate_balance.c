@@ -41,7 +41,9 @@ printf("\n Reading user details..");
  fp = fopen(filename , "rb");
   if(fp == NULL)
   {
-   printf("\n\tERROR: Couldn't read user details to recalaculate balance.");
+   line();
+   printf("\n\n\tERROR: Couldn't read user details to recalaculate balance.\n");
+   line();
    exit(1);
    } 
  fread(&user_global , sizeof(struct user) , 1 , fp);
@@ -54,7 +56,9 @@ printf("\n Reading user details..");
  fp = fopen(filename , "rb");
     if(fp == NULL)
     {
-     printf("\n ERROR: Could not open %s to read number of blocks." , filename);
+     line();
+     printf("\n\n\tERROR: Could not open %s to read number of blocks.\n" , filename);
+     line();
      exit(1);
      }
   fscanf(fp , "%lu" , &num);
@@ -68,7 +72,9 @@ printf("\n Current Balance: %Lf" , user_balance);
   fpg = fopen(filename , "r");
     if(fpg == NULL)
     {
-     printf("\n ERROR: Could not open %s to read list of blocks." , filename);
+     line();
+     printf("\n\n\tERROR: Could not open %s to read list of blocks.\n" , filename);
+     line();
      exit(1);
      }
 
@@ -81,7 +87,9 @@ printf("\n Current Balance: %Lf" , user_balance);
    fp = fopen(filename , "rb");
        if(fp == NULL)
        {
-        printf("\n ERROR: Could not open %s to read block." , filename);
+        line();
+        printf("\n\n\tERROR: Could not open %s to read block.\n" , filename);
+        line();
         exit(1);
         }
 
@@ -133,7 +141,9 @@ printf("\n Your current balance is: %Lf" , user_balance);
  fp = fopen(filename , "wb");
     if(fp == NULL)
     {
-     printf("\n ERROR: Could not open %s to write recalculated balance." , filename);
+     line();
+     printf("\n\n\tERROR: Could not open %s to write recalculated balance.\n" , filename);
+     line();
      exit(1);
      }
   fwrite(&user_global , sizeof(struct user) , 1 , fp);

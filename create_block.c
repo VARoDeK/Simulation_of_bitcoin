@@ -15,8 +15,9 @@ void display_block();
 /*----------------------------------------------------------------------------------------------------------*/
 char tempstring[FILE_SIZE];
 struct transaction *trans_global;
-struct block block_global;
+struct block block_global, prev_block;
 struct user user_global;
+unsigned long bb;                                   //no of blocks in blockchain
 /*----------------------------------------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------------------------------------*/
 int main()
@@ -59,7 +60,9 @@ int main()
  fp = fopen(filename , "w");
          if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s FOR WRITING." , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s FOR WRITING.\n" , filename);
+           line();
            exit(1);
             }
  fprintf(fp , "%lu" , block_global.timestamp);
@@ -69,7 +72,9 @@ int main()
   fp = fopen(filename , "r");
          if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s FOR WRITING." , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s FOR WRITING.\n" , filename);
+           line();
            exit(1);
             }
  fscanf(fp , "%s" , filename);
@@ -85,7 +90,9 @@ int main()
   fp = fopen(filename , "wb");
           if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s." , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s.\n" , filename);
+           line();
            exit(1);
             }
   fwrite(&block_global , sizeof(struct block) , 1 , fp);
@@ -113,6 +120,7 @@ void prerun_setup()
 {
  FILE *fp;
  struct timeval tv;
+ unsigned long i;
 
  strcpy(folder , getenv("HOME")); //sets folder to "/home/<user-name>" in linux and "/Users/<user-name>" for OSX.
  strcat(folder , "/betacoin");    //sets folder to "/home/<user-name>/betacoin" in linux and "/Users/<user-name>/betacoin" for OSX. 
@@ -122,7 +130,9 @@ void prerun_setup()
  fp = fopen(filename , "r");
        if(fp == NULL)
        {
-        printf("\n\tERROR: COULD NOT OPEN %s TO READ NO OF TRANSACTIONS." , filename);
+        line();
+        printf("\n\n\tERROR: COULD NOT OPEN %s TO READ NO OF TRANSACTIONS.\n" , filename);
+        line();
         exit(1);
         }
  printf("\n Reading Count Of Transaction Files From %s.." , filename);
@@ -136,7 +146,9 @@ void prerun_setup()
  fp = fopen(filename , "r");
        if(fp == NULL)
        {
-        printf("\n\tERROR: COULD NOT OPEN %s TO READ MERKLE SHA." , filename);
+        line();
+        printf("\n\n\tERROR: COULD NOT OPEN %s TO READ MERKLE SHA.\n" , filename);
+        line();
         exit(1);
         }
  printf("\n Reading Merkle Hash From %s.." , filename);
@@ -150,7 +162,9 @@ void prerun_setup()
  fp = fopen(filename , "r");
        if(fp == NULL)
        {
-        printf("\n\tERROR: COULD NOT OPEN %s TO READ DIFFICULTY TARGET." , filename);
+        line();
+        printf("\n\n\tERROR: COULD NOT OPEN %s TO READ DIFFICULTY TARGET.\n" , filename);
+        line();
         exit(1);
         }
  printf("\n Reading Difficulty Target From %s.." , filename);
@@ -186,7 +200,9 @@ void prerun_setup()
  fp = fopen(filename , "rb");
        if(fp == NULL)
        {
-        printf("\n\tERROR: COULD NOT OPEN %s TO READ USER DETAILS." , filename);
+        line();
+        printf("\n\n\tERROR: COULD NOT OPEN %s TO READ USER DETAILS.\n" , filename);
+        line();
         exit(1);
         }
  printf("\n Reading User Details From %s.." , filename);
@@ -194,6 +210,57 @@ void prerun_setup()
  fclose(fp);
 /*--Miner ID-------------------------------------------------------------*/
 strcpy(block_global.miner_id , user_global.wallet_id);
+
+
+/*--Reading Previous Block Hash---------------------------------------------*/
+ strcpy(filename , "no_of_blocks.txt");
+ full_path(blockchain , filename);
+ fp = fopen(filename , "r");
+       if(fp == NULL)
+       {
+        line();
+        printf("\n\n\tERROR: COULD NOT OPEN %s TO READ PREVIOUS BLOCK.\n" , filename);
+        line();
+        exit(1);
+        }
+
+ printf("\n Reading Number of Blocks %s.." , filename);
+ fscanf(fp , "%lu" , &bb);
+ fclose(fp);
+
+
+ strcpy(filename , "block_list.txt");
+ full_path(blockchain , filename);
+ fp = fopen(filename , "r");
+       if(fp == NULL)
+       {
+        line();
+        printf("\n\n\tERROR: COULD NOT OPEN %s TO READ PREVIOUS BLOCK.\n" , filename);
+        line();
+        exit(1);
+        }
+ 
+ printf("\n Reading Name of Block %s.." , filename);
+ for(i = 0 ; i<bb ; i++)
+  fscanf(fp , "%s" , filename);
+ fclose(fp);
+
+ full_path(blockchain , filename);
+ fp = fopen(filename , "rb");
+       if(fp == NULL)
+       {
+        line();
+        printf("\n\n\tERROR: COULD NOT OPEN %s TO READ PREVIOUS BLOCK.\n" , filename);
+        line();
+        exit(1);
+        }
+
+ printf("\n Reading Block %s.." , filename);
+  fread(&prev_block , sizeof(struct block) , 1 , fp);
+ fclose(fp);
+
+ 
+ strcpy(block_global.previous_block_hash , prev_block.current_block_hash);
 
 }
 
@@ -209,7 +276,9 @@ void read_transaction_files()
  fpg = fopen(filename , "r");
       if(fpg == NULL)
       {
-       printf("\n\tERROR: COULD NOT OPEN %s TO FORM MERKLE TREE." , filename);
+       line();
+       printf("\n\n\tERROR: COULD NOT OPEN %s TO FORM MERKLE TREE.\n" , filename);
+       line();
        exit(1);
        }
 
@@ -223,7 +292,9 @@ void read_transaction_files()
   fp = fopen(filename , "rb");
           if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s IN binary_make()" , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s IN binary_make().\n" , filename);
+           line();
            exit(1);
             }
   printf("\n Reading Transaction Record %s.." , filename);
@@ -252,7 +323,9 @@ void create_current_block_hash()
 
   if(p != 0 && nonce == 0)  
   {
-   printf("\n\tERROR: THE CYCLE OF unsigned long nonce HAS COMPLETED.");
+   line();
+   printf("\n\n\tERROR: THE CYCLE OF unsigned long nonce HAS COMPLETED.\n");
+   line();
    exit(1);
    }  
 
@@ -263,7 +336,9 @@ void create_current_block_hash()
   fp = fopen(filename , "w");
             if(fp == NULL)
             {
-             printf("\nERROR: COULD NOT OPEN %s TO CALCULATE NONCE." , filename);
+             line();
+             printf("\n\n\tERROR: COULD NOT OPEN %s TO CALCULATE NONCE.\n" , filename);
+             line();
              exit(1);
              }
    fprintf(fp , "%u" , block_global.magic_number);
@@ -298,7 +373,9 @@ void create_current_block_hash()
   fp = fopen(filename , "r");
             if(fp == NULL)
             {
-             printf("\nERROR: COULD NOT OPEN %s TO CALCULATE NONCE." , filename);
+             line();
+             printf("\n\n\tERROR: COULD NOT OPEN %s TO CALCULATE NONCE.\n" , filename);
+             line();
              exit(1);
              }
   fscanf(fp , "%[^\n]s" , block_global.current_block_hash);

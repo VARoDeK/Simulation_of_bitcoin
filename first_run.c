@@ -15,14 +15,18 @@ int main()
 /*--CHECK PYTHON----------------------------------------------------------*/ 
  if(system("python3 -V") != 0)
  {
-  printf("\n]tERROR: CANNOT RUN python3. CHECK IF IT IS INSTALLED OR FOR OTHER ERRORS.");
+  line();
+  printf("\n\n\tERROR: CANNOT RUN python3. CHECK IF IT IS INSTALLED OR FOR OTHER ERRORS.\n");
+  line();
   exit(1);
   }
  
 /*--CHECK GCC----------------------------------------------------------*/ 
  if(system("gcc -v") != 0)
  {
-  printf("\n]tERROR: CANNOT RUN gcc. CHECK IF IT IS INSTALLED OR FOR OTHER ERRORS.");
+  line();
+  printf("\n\n\tERROR: CANNOT RUN gcc. CHECK IF IT IS INSTALLED OR FOR OTHER ERRORS.\n");
+  line();
   exit(1);
   }
 
@@ -34,7 +38,9 @@ int main()
  {
   if(errno != EEXIST)                    //mkdir throws non-zero number on failure. The errno is set to certain value. EEXIST means already exist.
   { 
-   printf("\n\n\t\tCANNOT CREATE DIRECTORY %s." , static_path);
+   line();
+   printf("\n\n\t\tCANNOT CREATE DIRECTORY %s.\n" , static_path);
+   line();
    exit(1);
    }
   }
@@ -49,7 +55,9 @@ int main()
  {
   if(errno != EEXIST)
   {
-   printf("\n\n\t\tCANNOT CREATE DIRECTORY %s." , tempname);
+   line();
+   printf("\n\n\t\tCANNOT CREATE DIRECTORY %s.\n" , tempname);
+   line();
    exit(1);
    }
   }
@@ -66,7 +74,9 @@ int main()
  {
   if(errno != EEXIST)
   {
-   printf("\n\n\t\tCANNOT CREATE DIRECTORY %s." , tempname);
+   line();
+   printf("\n\n\t\tCANNOT CREATE DIRECTORY %s.\n" , tempname);
+   line();
    exit(1);
    }
   }
@@ -82,7 +92,9 @@ int main()
  {
   if(errno != EEXIST)
   {
-   printf("\n\n\t\tCANNOT CREATE DIRECTORY %s." , tempname);
+   line();
+   printf("\n\n\t\tCANNOT CREATE DIRECTORY %s.\n" , tempname);
+   line();
    exit(1);
    }
   }
@@ -98,7 +110,9 @@ int main()
  {
   if(errno != EEXIST)
   {
-   printf("\n\n\t\tCANNOT CREATE DIRECTORY %s." , tempname);
+   line();
+   printf("\n\n\t\tCANNOT CREATE DIRECTORY %s.\n" , tempname);
+   line();
    exit(1);
    }
   }
@@ -113,7 +127,9 @@ int main()
  {
   if(errno != EEXIST)
   {
-   printf("\n\n\t\tCANNOT CREATE DIRECTORY %s." , tempname);
+   line();
+   printf("\n\n\t\tCANNOT CREATE DIRECTORY %s.\n" , tempname);
+   line();
    exit(1);
    }
   }
@@ -128,7 +144,9 @@ int main()
      printf("\n Copied ./SHA_function.py to ~/betacoin/binary/SHA_function_DUP.py..");
     else
     {
-     printf("\n\tERROR: Could not run %s.." , command);
+     line();
+     printf("\n\n\tERROR: Could not run %s..\n" , command);
+     line();
      exit(1);
      }
 
@@ -140,7 +158,9 @@ int main()
      printf("\n Copied ./MD5_function.py to ~/betacoin/binary/MD5_function_DUP.py..");
     else
     {
-     printf("\n\tERROR: Could not run %s.." , command);
+     line();
+     printf("\n\n\tERROR: Could not run %s..\n" , command);
+     line();
      exit(1);
      }
 
@@ -152,7 +172,9 @@ int main()
      printf("\n Copied ./no_of_blocks.txt ~/betacoin/BLOCKCHAIN/no_of_blocks.txt..");
     else
     {
-     printf("\n\tERROR: Could not run %s.." , command);
+     line();
+     printf("\n\n\tERROR: Could not run %s..\n" , command);
+     line();
      exit(1);
      }
 
@@ -165,7 +187,9 @@ int main()
      printf("\n Copied ./0.block to ~/betacoin/BLOCKCHAIN/0.block..");
     else
     {
-     printf("\n\tERROR: Could not run %s.." , command);
+     line();
+     printf("\n\n\tERROR: Could not run %s..\n" , command);
+     line();
      exit(1);
      }
 
@@ -177,7 +201,9 @@ int main()
      printf("\n Copied ./block_list.txt to ~/betacoin/BLOCKCHAIN/block_list.txt..");
     else
     {
-     printf("\n\tERROR: Could not run %s.." , command);
+     line();
+     printf("\n\n\tERROR: Could not run %s..\n" , command);
+     line();
      exit(1);
      }
 
@@ -188,9 +214,12 @@ int main()
  fp = fopen(tempname , "w");
          if(fp == NULL)
          {
-          printf("\n\tERROR: COULD NOT OPEN %s TO WRITE DIFFICULTY TARGET." , tempname);
+         line();
+          printf("\n\n\tERROR: COULD NOT OPEN %s TO WRITE DIFFICULTY TARGET.\n" , tempname);
+          line();
           exit(1);
           } 
+
  fprintf(fp , "%lu" , (unsigned long)2);
  fclose(fp);
  printf("\n Created file %s to set difficulty target.." , tempname);
@@ -204,7 +233,9 @@ int main()
      printf("\n Compiled create_account.c..");
     else
     {
-     printf("\n\tERROR: Could not run %s.." , command);
+     line();
+     printf("\n\n\tERROR: Could not run %s..\n" , command);
+     line();
      exit(1);
      }
 
@@ -216,7 +247,9 @@ int main()
   printf("\n\tCompiled create_genesis_block.c..");
  else
   {
-   printf("\n\tERROR: Could not run %s.." , command);
+   line();
+   printf("\n\n\tERROR: Could not run %s..\n" , command);
+   line();
    exit(1);
    }
 
@@ -228,7 +261,9 @@ int main()
   printf("\n\tCompiled create_block.c..");
  else
   {
-   printf("\n\tERROR: Could not run %s.." , command);
+   line();
+   printf("\n\n\tERROR: Could not run %s..\n" , command);
+   line();
    exit(1);
    }
 
@@ -240,7 +275,9 @@ int main()
   printf("\n\tCompiled create_list_of_new_blocks.c..");
  else
   {
-   printf("\n\tERROR: Could not run %s .." , command);
+   line();
+   printf("\n\n\tERROR: Could not run %s ..\n" , command);
+   line();
    exit(1);
    }
 
@@ -252,7 +289,9 @@ int main()
   printf("\n\tCompiled add_a_new_miner.c..");
  else
   {
-   printf("\n\tERROR: Could not run %s .." , command);
+   line();
+   printf("\n\n\tERROR: Could not run %s ..\n" , command);
+   line();
    exit(1);
    }
 
@@ -264,7 +303,9 @@ int main()
   printf("\n\tCompiled first_run.c..");
  else
   {
-   printf("\n\tERROR: Could not run %s .." , command);
+   line();
+   printf("\n\n\tERROR: Could not run %s ..\n" , command);
+   line();
    exit(1);
    }
 
@@ -276,7 +317,9 @@ int main()
    printf("\n\tCompiled make_transaction.c ..");
   else
   {
-   printf("\n\tERROR: Could not run %s .." , command);
+   line();
+   printf("\n\n\tERROR: Could not run %s ..\n" , command);
+   line();
    exit(1);
    }
 
@@ -287,7 +330,9 @@ int main()
    printf("\n\tCompiled send_newblock.c ..");
   else
   {
-   printf("\n\tERROR: Could not run %s .." , command);
+   line();
+   printf("\n\n\tERROR: Could not run %s ..\n" , command);
+   line();
    exit(1);
    }
 
@@ -299,7 +344,9 @@ int main()
    printf("\n\tCompiled recalculate_balance.c ..");
   else
   {
-   printf("\n\tERROR: Could not run %s .." , command);
+   line();
+   printf("\n\n\tERROR: Could not run %s ..\n" , command);
+   line();
    exit(1);
    }
 
@@ -311,7 +358,9 @@ int main()
    printf("\n\tCompiled synchronize.c ..");
   else
   {
-   printf("\n\tERROR: Could not run %s .." , command);
+   line();
+   printf("\n\n\tERROR: Could not run %s ..\n" , command);
+   line();
    exit(1);
    }
 
@@ -323,7 +372,9 @@ int main()
    printf("\n\tCompiled index.c ..");
   else
   {
-   printf("\n\tERROR: Could not run %s .." , command);
+   line();
+   printf("\n\n\tERROR: Could not run %s ..\n" , command);
+   line();
    exit(1);
    }
 
@@ -338,7 +389,9 @@ int main()
    printf("\n\tCompiled merkle_tree.c ..");
   else
   {
-   printf("\n\tERROR: Could not run %s .." , command);   
+   line();
+   printf("\n\n\tERROR: Could not run %s ..\n" , command);   
+   line();
    exit(1);
    }
 
@@ -351,7 +404,9 @@ int main()
    printf("\n\tCompiled verify_transaction.c ..");
   else
   {
-   printf("\n\tERROR: Could not run %s .." , command);
+   line();
+   printf("\n\n\tERROR: Could not run %s ..\n" , command);
+   line();
    exit(1);
    }
 
@@ -366,7 +421,9 @@ int main()
    printf("\n\tCompiled merkle_tree.c ..");
   else
   {
-   printf("\n\tERROR: Could not run %s .." , command);
+   line();
+   printf("\n\n\tERROR: Could not run %s ..\n" , command);
+   line();
    exit(1);
    }
 
@@ -379,7 +436,9 @@ int main()
    printf("\n\tCompiled verify_transaction.c ..");
   else
   {
-   printf("\n\tERROR: Could not run %s .." , command);
+   line();
+   printf("\n\n\tERROR: Could not run %s ..\n" , command);
+   line();
    exit(1);
    }
 

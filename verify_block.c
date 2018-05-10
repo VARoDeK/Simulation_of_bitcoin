@@ -23,13 +23,14 @@
 unsigned short height_global; //height of bin tree = ceil of log base 2 of count
 unsigned short count_global;  //total number of transactions
 unsigned short c_global; //counter to check if all transaction records have been inserted in the tree
+unsigned long bb;         //no of blocks in current blockchain
 char b_hash[SHA_HASH];
 
 FILE *fpg, *fp;
 /**********************************/
 
 /**********Stuctures*************/
-struct block test_block;
+struct block test_block, prev_block;
 struct transaction *test_trans;
 struct merkle *root;
 /*************************************************/
@@ -48,11 +49,12 @@ void display_block();
 /*****************Main function*********************/
 int main()
 {
- short i;
+ unsigned long i;
  unsigned long num;
- unsigned char tempstring[FILE_SIZE];
+ char tempstring[FILE_SIZE];
  strcpy(folder , getenv("HOME"));
  strcat(folder , "/betacoin");
+
 
 /*--reading file to know how many newblocks are created.-----------*/
   strcpy(filename , "list_of_new_blocks.txt");
@@ -61,7 +63,9 @@ int main()
   fp = fopen(filename , "r");
          if(fp == NULL)
          {
-          printf("\n ERROR: Could not open %s to read list of new blocks" , filename);
+          line();
+          printf("\n\n\tERROR: Could not open %s to read list of new blocks.\n" , filename);
+          line();
           exit(1);
            }
   fscanf(fp , "%s" , tempstring);
@@ -76,16 +80,73 @@ int main()
   //Reading block header and transactions
   if (fpg == NULL)
   {
-    printf("\n ERROR: COULDN'T READ BLOCK RECORDS FROM %s. ABORTING PROCESS", tempstring);
+   line();
+    printf("\n\n\tERROR: COULDN'T READ BLOCK RECORDS FROM %s. ABORTING PROCESS.\n", tempstring);
+    line();
     exit(1);
   }
 
-  //Reading block header
+/*--Reading block header------------------------------------------------*/
   fread(&test_block, sizeof(struct block), 1, fpg);
 
   count_global = test_block.no_of_transaction;
   printf("\n Counted number of transactions records..");
-  //Reading transactions
+  //confirming previous block hash
+ strcpy(filename , "no_of_blocks.txt");
+ full_path(blockchain , filename);
+ fp = fopen(filename , "r");
+       if(fp == NULL)
+       {
+        line();
+        printf("\n\n\tERROR: COULD NOT OPEN %s TO READ PREVIOUS BLOCK.\n" , filename);
+        line();
+        exit(1);
+        }
+
+ printf("\n Reading Number of Blocks %s.." , filename);
+ fscanf(fp , "%lu" , &bb);
+ fclose(fp);
+
+
+ strcpy(filename , "block_list.txt");
+ full_path(blockchain , filename);
+ fp = fopen(filename , "r");
+       if(fp == NULL)
+       {
+        line();
+        printf("\n\n\tERROR: COULD NOT OPEN %s TO READ PREVIOUS BLOCK.\n" , filename);
+        line();
+        exit(1);
+        }
+ 
+ printf("\n Reading Name of Block %s.." , filename);
+ for(i = 0 ; i<bb ; i++)
+  fscanf(fp , "%s" , filename);
+ fclose(fp);
+
+ full_path(blockchain , filename);
+ fp = fopen(filename , "rb");
+       if(fp == NULL)
+       {
+        line();
+        printf("\n\n\tERROR: COULD NOT OPEN %s TO READ PREVIOUS BLOCK.\n" , filename);
+        line();
+        exit(1);
+        }
+ printf("\n Reading Block %s.." , filename);
+  fread(&prev_block , sizeof(struct block) , 1 , fp);
+ fclose(fp);
+
+ if(strcmp(test_block.previous_block_hash , prev_block.current_block_hash) != 0)
+ {
+  line();
+  printf("\n\n\tEROOR: Previous Block Hash Didn't Matched.\n");
+  line();
+  exit(1);
+  }
+
+
+/*--Reading transactions-------------------------------------------------*/
 
   test_trans = (struct transaction*)malloc(count_global * sizeof(struct transaction));
 
@@ -114,7 +175,7 @@ int main()
   merkle_hash(root , height_global , 0);
 
   //Testing equality of previous merkle hash and current regenrated merkle hash. Tampering of block induces a change in the merkle hash
-  printf("\nHash of merkle: %s\nCalculated Hash of merkle: %s\n" , root->hash , test_block.merkle_hash);
+  printf("\nHash of merkle: %s\nCalculated Hash of merkle: %s\n" ,test_block.merkle_hash , root->hash);
   if (strcmp (root->hash , test_block.merkle_hash) == 0)
   {
    printf("\n\n\t No tampering detected in transaction records..\n");
@@ -151,9 +212,12 @@ int main()
  fp = fopen(filename , "r");
          if(fp == NULL)
          {
-          printf("\n ERROR: Could not open %s to read in long format" , filename);
+          line();
+          printf("\n\n\tERROR: Could not open %s to read in long format.\n" , filename);
+          line();
           exit(1);
            }
+
   fscanf(fp , "%lu" , &num);
   fseek(fp ,0 , SEEK_SET);
   fscanf(fp , "%s" , tempstring);
@@ -164,7 +228,9 @@ int main()
  fp = fopen(filename , "w");
          if(fp == NULL)
          {
-          printf("\n ERROR: Could not open %s to write." , filename);
+          line();
+          printf("\n\n\tERROR: Could not open %s to write.\n" , filename);
+          line();
           exit(1);
            }
   fprintf(fp , "%lu" , num);
@@ -173,7 +239,9 @@ int main()
  fp = fopen(filename , "r");
          if(fp == NULL)
          {
-          printf("\n ERROR: Could not open %s to read in string format." , filename);
+          line();
+          printf("\n\n\t ERROR: Could not open %s to read in string format.\n" , filename);
+          line();
           exit(1);
            }
   fscanf(fp , "%s" , tempstring);
@@ -188,7 +256,9 @@ int main()
  fp = fopen(filename , "a");
          if(fp == NULL)
          {
-          printf("\n ERROR: Could not open %s to write." , filename);
+          line();
+          printf("\n\n\tERROR: Could not open %s to write.\n" , filename);
+          line();
           exit(1);
            }
   fprintf(fp , "%s\n" , tempstring);
@@ -232,7 +302,9 @@ struct merkle* binary_make(struct merkle *head, unsigned short height_local, uns
 
  if(head == NULL)
  {
-   printf("\n\n\tERROR: MERKLE TREE CREATION FAILED AT HEIGHT %d", height_local);
+  line();
+   printf("\n\n\tERROR: MERKLE TREE CREATION FAILED AT HEIGHT %d.\n", height_local);
+   line();
    exit(1);
  }
 
@@ -241,9 +313,12 @@ struct merkle* binary_make(struct merkle *head, unsigned short height_local, uns
    head->data = create_transaction_node();
    if(head->data == NULL)
    {
-     printf("\n\n\tERROR: TRANSACTION NODE NOT CREATED AT HEIGHT %d", height_local);
+    line();
+     printf("\n\n\tERROR: TRANSACTION NODE NOT CREATED AT HEIGHT %d.\n", height_local);
+    line();
      exit(1);
    }
+
    *(head->data) = test_trans[c_global];
    c_global++;
  }
@@ -322,7 +397,9 @@ void merkle_hash(struct merkle *head, unsigned short height_local, unsigned shor
     fp = fopen(filename , "w");
     if(fp == NULL)
     {
-      printf("\n\tERROR: CANNOT OPEN %s IN merkle_hash()" , filename);
+     line();
+      printf("\n\n\tERROR: CANNOT OPEN %s IN merkle_hash()\n" , filename);
+     line();
       exit(1);
     }
 
@@ -345,7 +422,9 @@ void merkle_hash(struct merkle *head, unsigned short height_local, unsigned shor
     fp = fopen(filename , "r");
     if(fp == NULL)
     {
-      printf("\n\tERROR: CANNOT OPEN %s IN merkle_hash()" , filename);
+     line();
+      printf("\n\n\tERROR: CANNOT OPEN %s IN merkle_hash().\n" , filename);
+     line();
       exit(1);
     }
 
@@ -368,7 +447,9 @@ void merkle_hash(struct merkle *head, unsigned short height_local, unsigned shor
    fp = fopen(filename , "w");
    if(fp == NULL)
    {
-     printf("\n\tERROR: CANNOT OPEN %s IN merkle_hash()" , filename);
+    line();
+     printf("\n\n\tERROR: CANNOT OPEN %s IN merkle_hash().\n" , filename);
+    line();
      exit(1);
    }
 
@@ -383,7 +464,9 @@ void merkle_hash(struct merkle *head, unsigned short height_local, unsigned shor
    fp = fopen(filename , "r");
    if(fp == NULL)
    {
-     printf("\n\tERROR: CANNOT OPEN %s IN merkle_hash()" , filename);
+    line();
+     printf("\n\n\tERROR: CANNOT OPEN %s IN merkle_hash().\n" , filename);
+    line();
      exit(1);
    }
 
@@ -428,7 +511,9 @@ short i;
   fp = fopen(filename , "w");
             if(fp == NULL)
             {
-             printf("\nERROR: COULD NOT OPEN %s TO CALCULATE NONCE." , filename);
+             line();
+             printf("\n\n\tERROR: COULD NOT OPEN %s TO CALCULATE NONCE.\n" , filename);
+             line();
              exit(1);
              }
    fprintf(fp , "%u" , test_block.magic_number);
@@ -463,7 +548,9 @@ short i;
   fp = fopen(filename , "r");
             if(fp == NULL)
             {
-             printf("\nERROR: COULD NOT OPEN %s TO CALCULATE NONCE." , filename);
+             line();
+             printf("\n\n\tERROR: COULD NOT OPEN %s TO CALCULATE NONCE.\n" , filename);
+             line();
              exit(1);
              }
   fscanf(fp , "%[^\n]s" , b_hash);

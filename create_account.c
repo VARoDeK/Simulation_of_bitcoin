@@ -38,7 +38,9 @@ int main()
  fp = fopen(filename , "rb");
   if(fp != NULL)
   {
-   printf("\n\n\t\tERROR: USER ACCOUNT ALREADY EXISTS.");
+   line();
+   printf("\n\n\t\tERROR: USER ACCOUNT ALREADY EXISTS.\n");
+   line();
    fclose(fp);
    return 1;
    }
@@ -83,7 +85,9 @@ re1:
   fp = fopen(filename , "w");
           if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s.." , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s..\n" , filename);
+           line();
            exit(1);
             }
 
@@ -96,7 +100,9 @@ re1:
   fp = fopen(filename , "r");
           if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s.." , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s..\t" , filename);
+           line();
            exit(1);
             }
 
@@ -111,7 +117,9 @@ re1:
   fp = fopen(filename , "r");
           if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s.." , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s..\n" , filename);
+           line();
            exit(1);
             }
 
@@ -128,7 +136,9 @@ re1:
   fp = fopen(filename , "wb");
           if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s.." , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s..\n" , filename);
+           line();
            exit(1);
             }
   fwrite(&user_global , sizeof(struct user) , 1 , fp);

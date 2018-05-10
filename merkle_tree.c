@@ -69,7 +69,9 @@ int main()
  fpg = fopen(filename , "r");
       if(fpg == NULL)
       {
-       printf("\n\tERROR: COULD NOT OPEN %s TO FORM MERKLE TREE." , filename);
+       line();
+       printf("\n\n\tERROR: COULD NOT OPEN %s TO FORM MERKLE TREE.\n" , filename);
+       line();
        exit(1);
        }
 
@@ -95,14 +97,15 @@ printf("\n Calculating Merkle Hash..");
  fpg = fopen(filename , "w");
       if(fpg == NULL)
       {
-       printf("\n\tERROR: COULD NOT OPEN %s TO FORM MERKLE TREE." , filename);
+       line();
+       printf("\n\n\tERROR: COULD NOT OPEN %s TO FORM MERKLE TREE.\n" , filename);
+       line();
        exit(1);
        }
+
  printf("\n Writing Merkle Hash to %s.." , filename);
  fprintf(fpg , "%s" , root->hash);
  fclose(fpg);
-
-
 
  strcpy(filename , "count_no_of_files_in_block.txt");
  full_path(miner , filename);
@@ -110,7 +113,9 @@ printf("\n Calculating Merkle Hash..");
  fpg = fopen(filename , "w");
       if(fpg == NULL)
       {
-       printf("\n\tERROR: COULD NOT OPEN %s TO FORM MERKLE TREE." , filename);
+       line();
+       printf("\n\n\tERROR: COULD NOT OPEN %s TO FORM MERKLE TREE.\n" , filename);
+       line();
        exit(1);
        }
  printf("\n Writing No Of Transactions to %s.." , filename);
@@ -180,7 +185,9 @@ struct merkle* binary_make(struct merkle *head, unsigned short height_local, uns
 
  if(head == NULL)
  {
-  printf("\n\n\tERROR: WHILE CREATING MERKLE TREE, AT HEIGHT %d", height_local);
+  line();
+  printf("\n\n\tERROR: WHILE CREATING MERKLE TREE, AT HEIGHT %d\n", height_local);
+  line();
   exit(1);
   }
 
@@ -201,7 +208,9 @@ struct merkle* binary_make(struct merkle *head, unsigned short height_local, uns
   fp = fopen(filename , "rb");
           if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s IN binary_make()" , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s IN binary_make()\n" , filename);
+           line();
            exit(1); 
             }
   printf("\n Reading Transaction Record %s.." , filename);
@@ -251,7 +260,9 @@ void prerun_setup()
 
  if(dr == NULL)
  {
-  printf("ERROR: CANNOT OPEN %s DIRECTORY IN prerun_setup." , tempfile);
+  line();
+  printf("\n\n\tERROR: CANNOT OPEN %s DIRECTORY IN prerun_setup.\n" , tempfile);
+  line();
   exit(0);
   }
 
@@ -261,7 +272,9 @@ void prerun_setup()
  fp = fopen(filename , "w");
           if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s IN prerun_setup()" , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s IN prerun_setup()\n" , filename); 
+           line();
            closedir(dr);
            exit(1);
             }
@@ -283,6 +296,17 @@ void prerun_setup()
  fclose(fp);
  closedir(dr);
 
+
+if(count_global == 0)
+{
+ line();
+ printf("\n\n\tERROR: No transactions made yet.\n");
+ line();
+ exit(0);
+ }
+
+
+
  name = (char**)malloc(sizeof(char*)*count_global);
  for(i = 0; i < count_global; i++)
   name[i] = (char*)malloc(sizeof(char*)*NAME_SIZE);
@@ -290,7 +314,9 @@ void prerun_setup()
  fp = fopen(filename,"r");
           if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s IN binary_make() for reading to sort contents." , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s IN binary_make() for reading to sort contents.\n" , filename);
+           line();
            exit(1);
             }
 
@@ -320,9 +346,12 @@ void prerun_setup()
   fp = fopen(tempfile,"w");
           if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s IN binary_make() for writing to sort contents." , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s IN binary_make() for writing to sort contents.\n" , filename);
+           line();
            exit(1);
             }
+
  printf("\n Writing to %s.." , tempfile);
    for(i=0 ; i<count_global ; i++)
    { 
@@ -432,7 +461,9 @@ void merkle_hash(struct merkle *head, unsigned short height_local, unsigned shor
   fp = fopen(filename , "w");
           if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s IN merkle_hash()" , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s IN merkle_hash()\n" , filename);
+           line();
            exit(1);
             }
 
@@ -475,7 +506,9 @@ void merkle_hash(struct merkle *head, unsigned short height_local, unsigned shor
   fp = fopen(filename , "w");
           if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s IN merkle_hash()" , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s IN merkle_hash()\n" , filename);
+           line();
            exit(1);
             }
 
@@ -490,7 +523,9 @@ void merkle_hash(struct merkle *head, unsigned short height_local, unsigned shor
   fp = fopen(filename , "r");
           if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s IN merkle_hash()" , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s IN merkle_hash()\n" , filename);
+           line();
            exit(1);
             }
 
@@ -505,11 +540,10 @@ void merkle_hash(struct merkle *head, unsigned short height_local, unsigned shor
 
 void display_transaction(struct transaction *trans)
 {
-   printf("\n\ntid: %s", trans->t_id);
+  printf("\n\ntid: %s", trans->t_id);
   printf("\nsender id: %s", trans->sender_id);
   printf("\nreciever id: %s", trans->reciever_id);
   printf("\namount %LF" ,trans->amount);
   printf("\nt fee: %c" , trans->transaction_fee);
   printf("\ntime stamp %lu" , trans->timestamp);
-
  }
