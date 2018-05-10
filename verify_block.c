@@ -1,3 +1,8 @@
+/*
+-This program verifies the newly created block, created by any of the miner on the network.
+-When a miner creates a block, it is created with extension .newblock, and sends it to ~/betacoin/verify folder of other miners, with "no_of_blocks.txt" and "block_list.txt"
+-Once the block is verified it is added to the blockchain of other miners, and later on it cn by symchronized by everyone.
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
@@ -22,16 +27,16 @@
 
 unsigned short height_global; //height of bin tree = ceil of log base 2 of count
 unsigned short count_global;  //total number of transactions
-unsigned short c_global; //counter to check if all transaction records have been inserted in the tree
-unsigned long bb;         //no of blocks in current blockchain
+unsigned short c_global;      //counter to check if all transaction records have been inserted in the tree
+unsigned long bb;             //no of blocks in current blockchain
 char b_hash[SHA_HASH];
 
 FILE *fpg, *fp;
 /**********************************/
 
 /**********Stuctures*************/
-struct block test_block, prev_block;
-struct transaction *test_trans;
+struct block test_block/*saves current block which is to be verified*/, prev_block/*saves previous block to get previous block hash*/;
+struct transaction *test_trans;/*to dynamically allocate array of structure to extract transaction records from newblock, so as to recaclculate merkle hash for verification*/
 struct merkle *root;
 /*************************************************/
 
@@ -57,7 +62,7 @@ int main()
 
 
 /*--reading file to know how many newblocks are created.-----------*/
-  strcpy(filename , "list_of_new_blocks.txt");
+  strcpy(filename , "list_of_new_blocks.txt");//opening this file to get the name of new block.
   full_path(verify , filename);
   printf("\n Opening: %s..", filename);
   fp = fopen(filename , "r");
@@ -89,7 +94,7 @@ int main()
 /*--Reading block header------------------------------------------------*/
   fread(&test_block, sizeof(struct block), 1, fpg);
 
-  count_global = test_block.no_of_transaction;
+  count_global = test_block.no_of_transaction; //now we know the number of transaction records stored in this block.
   printf("\n Counted number of transactions records..");
   //confirming previous block hash
  strcpy(filename , "no_of_blocks.txt");
