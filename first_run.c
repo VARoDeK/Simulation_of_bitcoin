@@ -224,6 +224,24 @@ int main()
  fclose(fp);
  printf("\n Created file %s to set difficulty target.." , tempname);
 
+/*--NUMBER OF MINERS IN NETWORK----------------------------------------------------------*/
+ strcpy(tempname , static_path);
+ strcat(tempname , "/miner/no_of_miners.txt");
+
+ fp = fopen(tempname , "w");
+         if(fp == NULL)
+         {
+         line();
+          printf("\n\n\tERROR: COULD NOT OPEN %s TO WRITE NUMBER OF MINERS.\n" , tempname);
+          line();
+          exit(1);
+          }
+
+ fprintf(fp , "%hu" , (unsigned short)0);
+ fclose(fp);
+ printf("\n Created file %s to set difficulty target.." , tempname);
+
+
 
 
 /*--COMPILE PROGRAM TO CREATE ACCOUNT----------------------------------------------------------*/

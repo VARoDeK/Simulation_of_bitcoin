@@ -172,9 +172,7 @@ else if(ch == 'I' || ch == 'i')
 
 
 else if(ch == 'J' || ch == 'j')
-{
- if(system("~/betacoin/binary/synchronize") != 0)
-  exit(1); 
+{ 
  if(system("~/betacoin/binary/verify_block") != 0)
   exit(1);
 

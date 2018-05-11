@@ -142,6 +142,7 @@ i = rand()%no_of_hosts;//call files from ay random miner
  
  system("rm ~/betacoin/BLOCKCHAIN/block_list.txt");
  system("mv ~/betacoin/verify/block_list.txt ~/betacoin/BLOCKCHAIN/block_list.txt");
+ system("rm ~/betacoin/verify/*");       //to delete all useless files, if present, inside verify folder
  
   }
  }
@@ -165,12 +166,13 @@ void prerun_setup()
  strcpy(filename , "no_of_miners.txt");
  full_path(miner , filename);
 
+
  printf("\n Reading number of host names of miners saved in your system..");
  fp = fopen(filename , "r");
          if(fp == NULL)
          {
           line();
-          printf("\n\n\t ERROR: Could not open: %s\n Maybe no record for any miner exists. Add miners to your list first.\n" , filename);
+          printf("\n\n\t ERROR: Could not open: %s.\n" , filename);
           line();
           exit(1);
           }
@@ -178,6 +180,15 @@ void prerun_setup()
   fscanf(fp , "%hu" , &no_of_hosts);
   fclose(fp);
  printf("\n Creating dynamic memory, for saving host names of miners..");
+
+if(no_of_hosts == 0)
+{
+ line();
+ printf("\n\n\tERROR: No Miners found in your record.\n");
+ line();
+ exit(0);
+ }
+
 
  hosts = (char**)malloc(sizeof(char*) * no_of_hosts);
 
