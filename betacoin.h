@@ -39,7 +39,7 @@ struct user
  long double account_balance;            //account balance of user
  unsigned long timestamp;                 
  char location[NAME_SIZE];
- char user_and_hostname[NAME_SIZE];      //for my system: varodek@varodek.local
+ char user_and_hostname[2][NAME_SIZE];   //for my system: varodek@varodek.local
  char email[NAME_SIZE];
  char miner_flag;                        //flag to tell of user is also a miner
  };
@@ -85,6 +85,7 @@ char sha[] = "/sha/";
 char binary[] = "/binary/";
 char blockchain[] = "/BLOCKCHAIN/";
 char verify[] = "/verify/";
+char synchronize[] = "/synchronize/";
 
 //extensions for various files
 char trans_extension[] = ".transaction";   //extension for transaction files

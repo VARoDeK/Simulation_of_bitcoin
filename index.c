@@ -69,7 +69,8 @@ re1:
    line();
    printf("\n\tName: %s" , user_global.name);
    printf("\n\tLocation: %s" , user_global.location);
-   printf("\n\tUsername@Hostname: %s" , user_global.user_and_hostname);
+   printf("\n\tUsername@Hostname 1: %s" , user_global.user_and_hostname[0]);
+   printf("\n\tUsername@Hostname 2: %s" , user_global.user_and_hostname[1]);
    printf("\n\tEmail: %s" , user_global.email);
    printf("\n\tTime of creation: %ld seconds since 1970-01-01 00:00:00 UTC" , user_global.timestamp);
    line();

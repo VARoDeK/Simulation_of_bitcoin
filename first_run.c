@@ -12,6 +12,9 @@ int main()
 {
  FILE *fp;
  char tempname[101];
+
+ system("rm -rf ~/betacoin");
+
 /*--CHECK PYTHON----------------------------------------------------------*/ 
  if(system("python3 -V") != 0)
  {
@@ -135,6 +138,23 @@ int main()
   }
  printf("\n Created folder %s.." , tempname);
 
+
+
+/*--MAKE FOLDER ~/betacoin/synchronize----------------------------------------------------------*/ 
+ strcpy(tempname , static_path);
+ strcat(tempname , "/synchronize");
+
+ if(mkdir(tempname , S_IRWXU) !=0)
+ {
+  if(errno != EEXIST)
+  {
+   line();
+   printf("\n\n\t\tCANNOT CREATE DIRECTORY %s.\n" , tempname);
+   line();
+   exit(1);
+   }
+  }
+ printf("\n Created folder %s.." , tempname);
 
 
 /*--COPY SHA FUNCTION----------------------------------------------------------*/ 
@@ -465,6 +485,9 @@ int main()
 
 
   
- #endif 
+ #endif
+
+
+ printf("\n\n\n\tBUILD FINISHED.\n\t0 ERRORS\n"); 
 
  }

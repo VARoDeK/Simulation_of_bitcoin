@@ -10,7 +10,7 @@
 
 
 /*------------------------------------------------------------------------------------*/
-unsigned short height_global;                                                           //stores the height of the binary tree
+unsigned short height_global;                                                   //stores the height of the binary tree
 unsigned short count_global;          //counts the total number of transactions. The ceil() of log of count, with base 2, will give the height of binary tree.
 unsigned short c_global;
 
@@ -33,12 +33,11 @@ void char_refresh(char[],unsigned short);
 struct merkle *root;
 /*------------------------------------------------------------------------------------*/
 /*
-- prerun_setup() is called. This will create list of transaction files and save their name in "list.txt", and their count in "count_no_of_files_in_block.txt".
-- then it sorts the transaction files in alphabetical order and saves them in "temp.txt". deletes "list.txt" and renames "temp.txt" to "list.txt"
-
+- prerun_setup() is called. 
+- This will create list of transaction files and save their name in "list.txt".
+- And their count in "count_no_of_files_in_block.txt".
+- Then it sorts the transaction files in alphabetical order and saves them in "temp.txt". deletes "list.txt" and renames "temp.txt" to "list.txt"
 */
-
-
 
 
 
@@ -75,20 +74,20 @@ int main()
        exit(1);
        }
 
-printf("\n Reading Transactions Record..");
+ printf("\n Reading Transactions Record..");
  root = binary_make(root , height_global , 0);
  fclose(fpg);
 
 
 
-printf("\n Correcting Merkle Tree..");
+ printf("\n Correcting Merkle Tree..");
  binary_correct(root , height_global , 0);
-// printf("\n\n The output is in level order\n");
-// binary_traverse(root,height,0);
+// printf("\n\n The output is in level order\n");  //un-comment during debug time.
+// binary_traverse(root,height,0);                 //un-comment during debug time.
 
 printf("\n Calculating Merkle Hash..");
  merkle_hash(root , height_global , 0);
-// binary_traverse(root , height_global , 0);
+// binary_traverse(root , height_global , 0);      //un-comment during debug time.
 
 
 /*--OPening ~/betacoin/miner/merkle_sha.txt----------------------*/
@@ -409,7 +408,7 @@ void binary_correct(struct merkle *head, unsigned short height_local, unsigned s
  binary_correct(head->right, height_local, h+1); 
  }
 /*
-- Since we are traversing in Inorder sequence, only the right leg of any of the node will have to contain repeated data, since left leg will be filled first.
+- Since we are traversing in Inorder sequence, only the right leg of any of the node will have to contain repeated data, as left leg will be filled first.
 - Now, copy = 1, means the right leg of current node, is pointing to same chain, pointed by its left leg.
 - We could have duplicated the data, but to make it memory efficient, we pointed it.
  */

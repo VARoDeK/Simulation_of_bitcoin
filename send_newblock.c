@@ -1,3 +1,4 @@
+/*After creation of new block, it will be sent to other miners.*/
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
@@ -26,7 +27,8 @@ int main()
   {
    generate_command(i ,j);
    printf("\n%s", command);
-   system(command);
+   if(system(command) !=0)
+    break;	   
    }
 
   }

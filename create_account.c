@@ -199,14 +199,16 @@ void input()
    while(t != '\n')
      t = getchar();
 
- getlogin_r(user_global.user_and_hostname, NAME_SIZE);
- strcat(user_global.user_and_hostname , "@");
+ if(getlogin_r(user_global.user_and_hostname[0], NAME_SIZE) != 0)
+  strcpy(user_global.user_and_hostname[0] , getenv("USER"));
+ 
+ strcat(user_global.user_and_hostname[0] , "@");
  gethostname(tempstring , NAME_SIZE);
- strcat(user_global.user_and_hostname , tempstring);
+ strcat(user_global.user_and_hostname[0] , tempstring);
 
-#ifdef __linux__
- strcat(user_global.user_and_hostname , ".local");
-#endif
+ strcpy(user_global.user_and_hostname[1] , user_global.user_and_hostname[0]);
+ strcat(user_global.user_and_hostname[1] , ".local");
+
  }
 
 /*------------------------------------------------------------------------------*/
@@ -216,9 +218,10 @@ void display_details()
   printf("\nWallet id: %s" , user_global.wallet_id);
  printf("\nName: %s" , user_global.name);
  if(account != 0)
-  printf("\ntimestamp: %lu" , user_global.timestamp);
- printf("\nlocation: %s" , user_global.location);
- printf("\nuser and hostname: %s" , user_global.user_and_hostname);
+  printf("\nTimestamp: %lu" , user_global.timestamp);
+ printf("\nLocation: %s" , user_global.location);
+ printf("\nUser and hostname 1: %s" , user_global.user_and_hostname[0]);
+ printf("\nUser and hostname 2: %s" , user_global.user_and_hostname[1]);
  printf("\nemail: %s" , user_global.email);
  if(account != 0)
   printf("\naccount balance: %LF" , user_global.account_balance);

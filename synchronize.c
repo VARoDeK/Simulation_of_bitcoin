@@ -29,7 +29,7 @@ struct transaction trans_global;
 int main()
 {
 unsigned long i , j , temp1, temp2;
-system("rm ~/betacoin/verify/*");       //to delete all useless files, if present, inside verify folder
+system("rm ~/betacoin/synchronize/*");       //to delete all useless files, if present, inside verify folder
 prerun_setup();
 
 srand(time(0));
@@ -44,7 +44,7 @@ i = rand()%no_of_hosts;//call files from ay random miner
   system(command);
 
   strcpy(filename , "no_of_blocks.txt");
-  full_path(verify , filename);
+  full_path(synchronize , filename);
   fp = fopen(filename , "r");
           if(fp == NULL)
           {
@@ -85,7 +85,7 @@ i = rand()%no_of_hosts;//call files from ay random miner
   system(command);
 
   strcpy(filename , "block_list.txt");
-  full_path(verify , filename);
+  full_path(synchronize , filename);
  
    fp = fopen(filename , "r");
           if(fp == NULL)
@@ -141,8 +141,8 @@ i = rand()%no_of_hosts;//call files from ay random miner
 
  
  system("rm ~/betacoin/BLOCKCHAIN/block_list.txt");
- system("mv ~/betacoin/verify/block_list.txt ~/betacoin/BLOCKCHAIN/block_list.txt");
- system("rm ~/betacoin/verify/*");       //to delete all useless files, if present, inside verify folder
+ system("mv ~/betacoin/synchronize/block_list.txt ~/betacoin/BLOCKCHAIN/block_list.txt");
+ system("rm ~/betacoin/synchronize/*");       //to delete all useless files, if present, inside verify folder
  
   }
  }
@@ -239,7 +239,7 @@ void generate_command(unsigned short i, unsigned short flag)
   strcat(command , "block_list.txt");
 
  strcat(command , " ");
- strcat(command , "~/betacoin/verify/");
+ strcat(command , "~/betacoin/synchronize/");
  }
 
 /*------------------------------------------------------------------------------*/

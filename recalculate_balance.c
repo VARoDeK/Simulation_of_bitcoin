@@ -64,6 +64,7 @@ printf("\n Reading user details..");
   fscanf(fp , "%lu" , &num);
   fclose(fp);
 
+  printf("Number of blocks: %lu", num);
 /*--calculate balance--------*/
 printf("\n Current Balance: %Lf" , user_balance);
  strcpy(filename , "block_list.txt");
@@ -95,6 +96,8 @@ printf("\n Current Balance: %Lf" , user_balance);
 
    fread(&block_global , sizeof(struct block) , 1 , fp);
 
+//   printf("\n%hu", block_global.no_of_transaction);
+
    if(strcmp(block_global.miner_id , user_global.wallet_id) == 0)
    {
     user_balance += trans_fee;
@@ -107,6 +110,7 @@ printf("\n Current Balance: %Lf" , user_balance);
    for(j = 0 ; j< block_global.no_of_transaction ; j++)
    {
     fread(&trans_global , sizeof(struct transaction) , 1, fp);
+//    printf("\n1-%s\n2-%s\n",trans_global.reciever_id,user_global.wallet_id);
     if(strcmp(trans_global.sender_id , user_global.wallet_id) == 0)
     {
      line(); 
