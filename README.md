@@ -60,8 +60,8 @@ Step5- Enter option 'E' in main menu and become a miner.
 
 Step6- After making several transactions, enter option 'D' in main menu and mine your block. After mining, your block will be send to other miners for verification. 
     * Other miners should keep on checking their ~/betacoin/verify folder.
-    * Users should mine their block one by one. Simultaneously all systems should not mine their       blocks together as this version of this software does not support this scenerio.
-    * Once it is non-empty, it means a newblock is sent by any of the miner for verification.
+    * Users should mine their block one by one. Simultaneously all systems should not mine their blocks together as this version of this software does not support this scenerio.
+    * Once ~/betacoin/verify is non-empty, it means a newblock is sent by any of the miner for verification.
     * In main menu of other miners, they will ente option 'J' and verify the block.
     * Once the block is verified by other miners, it will be added to their blockchain.
 
