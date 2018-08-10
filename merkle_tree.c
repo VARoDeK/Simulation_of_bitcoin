@@ -10,7 +10,7 @@
 
 
 /*------------------------------------------------------------------------------------*/
-unsigned short height_global;                                                           //stores the height of the binary tree
+unsigned short height_global;                                                   //stores the height of the binary tree
 unsigned short count_global;          //counts the total number of transactions. The ceil() of log of count, with base 2, will give the height of binary tree.
 unsigned short c_global;
 
@@ -33,12 +33,11 @@ void char_refresh(char[],unsigned short);
 struct merkle *root;
 /*------------------------------------------------------------------------------------*/
 /*
-- prerun_setup() is called. This will create list of transaction files and save their name in "list.txt", and their count in "count_no_of_files_in_block.txt".
-- then it sorts the transaction files in alphabetical order and saves them in "temp.txt". deletes "list.txt" and renames "temp.txt" to "list.txt"
-
+- prerun_setup() is called. 
+- This will create list of transaction files and save their name in "list.txt".
+- And their count in "count_no_of_files_in_block.txt".
+- Then it sorts the transaction files in alphabetical order and saves them in "temp.txt". deletes "list.txt" and renames "temp.txt" to "list.txt"
 */
-
-
 
 
 
@@ -69,24 +68,26 @@ int main()
  fpg = fopen(filename , "r");
       if(fpg == NULL)
       {
-       printf("\n\tERROR: COULD NOT OPEN %s TO FORM MERKLE TREE." , filename);
+       line();
+       printf("\n\n\tERROR: COULD NOT OPEN %s TO FORM MERKLE TREE.\n" , filename);
+       line();
        exit(1);
        }
 
-printf("\n Reading Transactions Record..");
+ printf("\n Reading Transactions Record..");
  root = binary_make(root , height_global , 0);
  fclose(fpg);
 
 
 
-printf("\n Correcting Merkle Tree..");
+ printf("\n Correcting Merkle Tree..");
  binary_correct(root , height_global , 0);
-// printf("\n\n The output is in level order\n");
-// binary_traverse(root,height,0);
+// printf("\n\n The output is in level order\n");  //un-comment during debug time.
+// binary_traverse(root,height,0);                 //un-comment during debug time.
 
 printf("\n Calculating Merkle Hash..");
  merkle_hash(root , height_global , 0);
-// binary_traverse(root , height_global , 0);
+// binary_traverse(root , height_global , 0);      //un-comment during debug time.
 
 
 /*--OPening ~/betacoin/miner/merkle_sha.txt----------------------*/
@@ -95,14 +96,15 @@ printf("\n Calculating Merkle Hash..");
  fpg = fopen(filename , "w");
       if(fpg == NULL)
       {
-       printf("\n\tERROR: COULD NOT OPEN %s TO FORM MERKLE TREE." , filename);
+       line();
+       printf("\n\n\tERROR: COULD NOT OPEN %s TO FORM MERKLE TREE.\n" , filename);
+       line();
        exit(1);
        }
+
  printf("\n Writing Merkle Hash to %s.." , filename);
  fprintf(fpg , "%s" , root->hash);
  fclose(fpg);
-
-
 
  strcpy(filename , "count_no_of_files_in_block.txt");
  full_path(miner , filename);
@@ -110,7 +112,9 @@ printf("\n Calculating Merkle Hash..");
  fpg = fopen(filename , "w");
       if(fpg == NULL)
       {
-       printf("\n\tERROR: COULD NOT OPEN %s TO FORM MERKLE TREE." , filename);
+       line();
+       printf("\n\n\tERROR: COULD NOT OPEN %s TO FORM MERKLE TREE.\n" , filename);
+       line();
        exit(1);
        }
  printf("\n Writing No Of Transactions to %s.." , filename);
@@ -180,7 +184,9 @@ struct merkle* binary_make(struct merkle *head, unsigned short height_local, uns
 
  if(head == NULL)
  {
-  printf("\n\n\tERROR: WHILE CREATING MERKLE TREE, AT HEIGHT %d", height_local);
+  line();
+  printf("\n\n\tERROR: WHILE CREATING MERKLE TREE, AT HEIGHT %d\n", height_local);
+  line();
   exit(1);
   }
 
@@ -201,7 +207,9 @@ struct merkle* binary_make(struct merkle *head, unsigned short height_local, uns
   fp = fopen(filename , "rb");
           if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s IN binary_make()" , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s IN binary_make()\n" , filename);
+           line();
            exit(1); 
             }
   printf("\n Reading Transaction Record %s.." , filename);
@@ -251,7 +259,9 @@ void prerun_setup()
 
  if(dr == NULL)
  {
-  printf("ERROR: CANNOT OPEN %s DIRECTORY IN prerun_setup." , tempfile);
+  line();
+  printf("\n\n\tERROR: CANNOT OPEN %s DIRECTORY IN prerun_setup.\n" , tempfile);
+  line();
   exit(0);
   }
 
@@ -261,7 +271,9 @@ void prerun_setup()
  fp = fopen(filename , "w");
           if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s IN prerun_setup()" , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s IN prerun_setup()\n" , filename); 
+           line();
            closedir(dr);
            exit(1);
             }
@@ -283,6 +295,17 @@ void prerun_setup()
  fclose(fp);
  closedir(dr);
 
+
+if(count_global == 0)
+{
+ line();
+ printf("\n\n\tERROR: No transactions made yet.\n");
+ line();
+ exit(0);
+ }
+
+
+
  name = (char**)malloc(sizeof(char*)*count_global);
  for(i = 0; i < count_global; i++)
   name[i] = (char*)malloc(sizeof(char*)*NAME_SIZE);
@@ -290,7 +313,9 @@ void prerun_setup()
  fp = fopen(filename,"r");
           if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s IN binary_make() for reading to sort contents." , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s IN binary_make() for reading to sort contents.\n" , filename);
+           line();
            exit(1);
             }
 
@@ -320,9 +345,12 @@ void prerun_setup()
   fp = fopen(tempfile,"w");
           if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s IN binary_make() for writing to sort contents." , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s IN binary_make() for writing to sort contents.\n" , filename);
+           line();
            exit(1);
             }
+
  printf("\n Writing to %s.." , tempfile);
    for(i=0 ; i<count_global ; i++)
    { 
@@ -380,7 +408,7 @@ void binary_correct(struct merkle *head, unsigned short height_local, unsigned s
  binary_correct(head->right, height_local, h+1); 
  }
 /*
-- Since we are traversing in Inorder sequence, only the right leg of any of the node will have to contain repeated data, since left leg will be filled first.
+- Since we are traversing in Inorder sequence, only the right leg of any of the node will have to contain repeated data, as left leg will be filled first.
 - Now, copy = 1, means the right leg of current node, is pointing to same chain, pointed by its left leg.
 - We could have duplicated the data, but to make it memory efficient, we pointed it.
  */
@@ -432,7 +460,9 @@ void merkle_hash(struct merkle *head, unsigned short height_local, unsigned shor
   fp = fopen(filename , "w");
           if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s IN merkle_hash()" , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s IN merkle_hash()\n" , filename);
+           line();
            exit(1);
             }
 
@@ -475,7 +505,9 @@ void merkle_hash(struct merkle *head, unsigned short height_local, unsigned shor
   fp = fopen(filename , "w");
           if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s IN merkle_hash()" , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s IN merkle_hash()\n" , filename);
+           line();
            exit(1);
             }
 
@@ -490,7 +522,9 @@ void merkle_hash(struct merkle *head, unsigned short height_local, unsigned shor
   fp = fopen(filename , "r");
           if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s IN merkle_hash()" , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s IN merkle_hash()\n" , filename);
+           line();
            exit(1);
             }
 
@@ -505,11 +539,10 @@ void merkle_hash(struct merkle *head, unsigned short height_local, unsigned shor
 
 void display_transaction(struct transaction *trans)
 {
-   printf("\n\ntid: %s", trans->t_id);
+  printf("\n\ntid: %s", trans->t_id);
   printf("\nsender id: %s", trans->sender_id);
   printf("\nreciever id: %s", trans->reciever_id);
   printf("\namount %LF" ,trans->amount);
   printf("\nt fee: %c" , trans->transaction_fee);
   printf("\ntime stamp %lu" , trans->timestamp);
-
  }

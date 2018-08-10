@@ -144,7 +144,9 @@ so opening in append mode will create file if it does not exist, or if it exists
  fp = fopen(filename , "r");
   if(fp == NULL)
   {
-   printf("\n\n\t\tERROR: Could not open %s to read." , filename);
+   line();
+   printf("\n\n\t\tERROR: Could not open %s to read.\n" , filename);
+   line();
    exit(1);
    }
 
@@ -166,7 +168,9 @@ fclose(fp);
  fp = fopen(filename , "a");
   if(fp == NULL)
   {
-   printf("\n\n\t\tERROR: Could not open %s to append." , filename);
+   line();
+   printf("\n\n\t\tERROR: Could not open %s to append.\n" , filename);
+   line();
    fclose(fp);
    exit(1);
    }
@@ -179,7 +183,9 @@ fclose(fp);
  fp = fopen(filename , "w");
   if(fp == NULL)
   {
-   printf("\n\n\t\tERROR: Could not open %s." , filename);
+   line();
+   printf("\n\n\t\tERROR: Could not open %s.\n" , filename);
+   line();
    fclose(fp);
    exit(1);
    }
@@ -215,7 +221,9 @@ void display_miner()
  fp = fopen(filename , "r");
   if(fp == NULL)
   {
-   printf("\n\n\t\tERROR: Could not open %s to read." , filename);
+   line();
+   printf("\n\n\t\tERROR: Could not open %s to read.\n" , filename);
+   line();
    exit(1);
    }
 
@@ -268,7 +276,9 @@ FILE *fp1;
  fp = fopen(filename , "r");
   if(fp == NULL)
   {
-   printf("\n\n\t\tERROR: Could not open %s to read." , filename);
+   line();
+   printf("\n\n\t\tERROR: Could not open %s to read.\n" , filename);
+   line();
    exit(1);
    }
 
@@ -319,7 +329,9 @@ fseek(fp , 0 , SEEK_SET);
  fp1 = fopen(tempfile1 , "w");
   if(fp == NULL)
   {
-   printf("\n\n\t\tERROR: Could not open %s to write." , tempfile1);
+   line();
+   printf("\n\n\t\tERROR: Could not open %s to write.\n" , tempfile1);
+   line();
    exit(1);
    }
 
@@ -340,7 +352,9 @@ num--;
  fp = fopen(tempfile2 , "w");
  if(fp == NULL)
  {
-   printf("\n\n\t\tERROR: Could not open %s to write." , tempfile2);
+   line();
+   printf("\n\n\t\tERROR: Could not open %s to write.\n" , tempfile2);
+   line();
    exit(1);
   }
 

@@ -34,7 +34,9 @@ int main()
 
  if(dr == NULL)
  {
-  printf("ERROR: CANNOT OPEN %s DIRECTORY IN prerun_setup." , tempfile);
+  line();
+  printf("\n\n\tERROR: CANNOT OPEN %s DIRECTORY IN prerun_setup.\n" , tempfile);
+  line();
   exit(0);
   }
 
@@ -44,7 +46,9 @@ int main()
  fp = fopen(filename , "w");
           if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s IN prerun_setup()" , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s IN prerun_setup().\n" , filename);
+           line();
            closedir(dr);
            exit(1);
             }
@@ -67,6 +71,15 @@ int main()
   }
  }
 
+if(count == 0)
+{
+ line();
+ printf("\n\n\tERROR: No new block created.\n");
+ line();
+ exit(1);
+ }
+
+
  fclose(fp);
  closedir(dr);
 
@@ -78,7 +91,9 @@ int main()
  fp = fopen(filename,"r");
           if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s for reading to sort contents." , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s for reading to sort contents.\n" , filename);
+           line();
            exit(1);
             }
 
@@ -109,7 +124,9 @@ int main()
    fp = fopen(tempfile,"w");
           if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s for writing to sort contents." , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s for writing to sort contents.\n" , filename);
+           line();
            exit(1);
             }
  printf("\n Writing to %s.." , tempfile);
@@ -138,7 +155,9 @@ full_path(miner , filename);
    fp = fopen(filename , "w");
           if(fp == NULL)
           {
-           printf("\n\tERROR: CANNOT OPEN %s  for writing number of new blocks." , filename);
+           line();
+           printf("\n\n\tERROR: CANNOT OPEN %s  for writing number of new blocks.\n" , filename);
+           line();
            exit(1);
             } 
 fprintf(fp , "%hu" , count);

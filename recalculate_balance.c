@@ -41,7 +41,9 @@ printf("\n Reading user details..");
  fp = fopen(filename , "rb");
   if(fp == NULL)
   {
-   printf("\n\tERROR: Couldn't read user details to recalaculate balance.");
+   line();
+   printf("\n\n\tERROR: Couldn't read user details to recalaculate balance.\n");
+   line();
    exit(1);
    } 
  fread(&user_global , sizeof(struct user) , 1 , fp);
@@ -54,12 +56,15 @@ printf("\n Reading user details..");
  fp = fopen(filename , "rb");
     if(fp == NULL)
     {
-     printf("\n ERROR: Could not open %s to read number of blocks." , filename);
+     line();
+     printf("\n\n\tERROR: Could not open %s to read number of blocks.\n" , filename);
+     line();
      exit(1);
      }
   fscanf(fp , "%lu" , &num);
   fclose(fp);
 
+  printf("Number of blocks: %lu", num);
 /*--calculate balance--------*/
 printf("\n Current Balance: %Lf" , user_balance);
  strcpy(filename , "block_list.txt");
@@ -68,7 +73,9 @@ printf("\n Current Balance: %Lf" , user_balance);
   fpg = fopen(filename , "r");
     if(fpg == NULL)
     {
-     printf("\n ERROR: Could not open %s to read list of blocks." , filename);
+     line();
+     printf("\n\n\tERROR: Could not open %s to read list of blocks.\n" , filename);
+     line();
      exit(1);
      }
 
@@ -81,11 +88,15 @@ printf("\n Current Balance: %Lf" , user_balance);
    fp = fopen(filename , "rb");
        if(fp == NULL)
        {
-        printf("\n ERROR: Could not open %s to read block." , filename);
+        line();
+        printf("\n\n\tERROR: Could not open %s to read block.\n" , filename);
+        line();
         exit(1);
         }
 
    fread(&block_global , sizeof(struct block) , 1 , fp);
+
+//   printf("\n%hu", block_global.no_of_transaction);
 
    if(strcmp(block_global.miner_id , user_global.wallet_id) == 0)
    {
@@ -99,6 +110,7 @@ printf("\n Current Balance: %Lf" , user_balance);
    for(j = 0 ; j< block_global.no_of_transaction ; j++)
    {
     fread(&trans_global , sizeof(struct transaction) , 1, fp);
+//    printf("\n1-%s\n2-%s\n",trans_global.reciever_id,user_global.wallet_id);
     if(strcmp(trans_global.sender_id , user_global.wallet_id) == 0)
     {
      line(); 
@@ -133,7 +145,9 @@ printf("\n Your current balance is: %Lf" , user_balance);
  fp = fopen(filename , "wb");
     if(fp == NULL)
     {
-     printf("\n ERROR: Could not open %s to write recalculated balance." , filename);
+     line();
+     printf("\n\n\tERROR: Could not open %s to write recalculated balance.\n" , filename);
+     line();
      exit(1);
      }
   fwrite(&user_global , sizeof(struct user) , 1 , fp);

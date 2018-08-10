@@ -1,3 +1,4 @@
+/*After creation of new block, it will be sent to other miners.*/
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
@@ -26,7 +27,8 @@ int main()
   {
    generate_command(i ,j);
    printf("\n%s", command);
-   system(command);
+   if(system(command) !=0)
+    break;	   
    }
 
   }
@@ -49,7 +51,12 @@ void prerun_setup()
  fp = fopen(filename , "r");
          if(fp == NULL)
          {
-          printf("\n ERROR: Could not open: %s\n Maybe no record for any miner exists. Add miners to your list first." , filename);
+          line();
+          printf("\n\n\tERROR: Could not open: %s\n Maybe no record for any miner exists. Add miners to your list first.\n" , filename);
+          line();
+          system("rm ~/betacoin/miner/*.newblock");
+          system("rm ~/betacoin/miner/no_of_new_blocks.txt");
+          system("rm ~/betacoin/miner/list_of_new_blocks.txt");
           exit(1);
           }
   fscanf(fp , "%hu" , &no_of_hosts);
@@ -70,7 +77,9 @@ void prerun_setup()
  fp = fopen(filename , "r");
          if(fp == NULL)
          {
-          printf("\n ERROR: Could not open: %s\n Maybe no record for any miner exists. Add miners to your list first." , filename);
+          line();
+          printf("\n\n\tERROR: Could not open: %s\n Maybe no record for any miner exists. Add miners to your list first.\n" , filename);
+          line();
           exit(1);
           }
 
@@ -90,7 +99,9 @@ fclose(fp);
  fp = fopen(filename , "r");
          if(fp == NULL)
          {
-          printf("\n ERROR: Could not open: %s." , filename);
+          line();
+          printf("\n\n\tERROR: Could not open: %s.\n" , filename);
+          line();
           exit(1);
           }
   fscanf(fp , "%s" , block_name);

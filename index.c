@@ -49,12 +49,16 @@ re1:
 
   if(ch == 'A' || ch == 'a')
   {
+   if(system("~/betacoin/binary/synchronize") != 0)
+    exit(1); 
    /*
      - first call the function to recalculate balance
      - then read the modified user_details from the file
      - and store in user_global
-    */
-   system("~/betacoin/binary/recalculate_balance");
+    */ 
+   if(system("~/betacoin/binary/recalculate_balance") != 0)
+    exit(1);
+
    read_user_details();
    goto re1;
    }
@@ -65,7 +69,8 @@ re1:
    line();
    printf("\n\tName: %s" , user_global.name);
    printf("\n\tLocation: %s" , user_global.location);
-   printf("\n\tUsername@Hostname: %s" , user_global.user_and_hostname);
+   printf("\n\tUsername@Hostname 1: %s" , user_global.user_and_hostname[0]);
+   printf("\n\tUsername@Hostname 2: %s" , user_global.user_and_hostname[1]);
    printf("\n\tEmail: %s" , user_global.email);
    printf("\n\tTime of creation: %ld seconds since 1970-01-01 00:00:00 UTC" , user_global.timestamp);
    line();
@@ -75,7 +80,8 @@ re1:
 
   else if(ch == 'C' || ch == 'c')
   {
-   system("~/betacoin/binary/make_transaction");
+   if(system("~/betacoin/binary/make_transaction") != 0)
+     exit(1);
    goto re1;
    }
 
@@ -85,8 +91,11 @@ re1:
    mine();
      if(user_global.miner_flag == 0)
       goto re1;
-   system("~/betacoin/binary/create_block");
-   system("~/betacoin/binary/send_newblock.c");
+   if(system("~/betacoin/binary/create_block") != 0)
+     exit(1);
+   
+   if(system("~/betacoin/binary/send_newblock") != 0)
+     exit(1);
    goto re1;
    }
 
@@ -129,8 +138,9 @@ re1:
        strcpy(filename , "sha.256");
        full_path(binary , filename);
        remove(filename);
+       system("rm ~/betacoin/miner/*");
        line();
-      printf("\n\tACCOUNT SUCCESSFULLY DELETED");
+       printf("\n\tACCOUNT SUCCESSFULLY DELETED");
        line(); 
       exit(1);
      }
@@ -153,13 +163,6 @@ re1:
   goto re1;
   }
 
- 
- else if(ch == 'H' || ch == 'h')
- {
-  if(system("~/betacoin/binary/first_run") != 0)
-   exit(1);
-  goto re1;
-  }
 
 else if(ch == 'I' || ch == 'i')
 {
@@ -170,12 +173,14 @@ else if(ch == 'I' || ch == 'i')
 
 
 else if(ch == 'J' || ch == 'j')
-{
- if(system("~/betacoin/binary/verify_block") !=0)
+{ 
+ if(system("~/betacoin/binary/verify_block") != 0)
   exit(1);
 
  else
   system("rm ~/betacoin/verify/*");
+
+ goto re1;
  }
 
 
@@ -251,7 +256,6 @@ printf("\n\n\tEnter 'D' to mine.");
 printf("\n\n\tEnter 'E' to become a new miner.");
 printf("\n\n\tEnter 'F' to delte your account.");
 printf("\n\n\tEnter 'G' to add/ delete/ display miners.");
-printf("\n\n\tEnter 'H' to re-run first_run setup");
 printf("\n\n\tEnter 'I' to synchronize");
 printf("\n\n\tEnter 'J' to verify a miner's block");
 printf("\n\n\tEnter 'K' to leave this portal and exit.");
