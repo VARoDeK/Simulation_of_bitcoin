@@ -33,7 +33,7 @@ As Bitcoin is based on "block chain", it replicates the behaviour of linked list
 
 ----------------------------------------------------------------------------------------------------
 
-STEPS FOR USAGE OF THIS VERSION
+# STEPS FOR USAGE OF THIS VERSION
 
 Assuming that users have cloned the software.
 
@@ -43,13 +43,13 @@ Step2- Open Terminal and type: ~/index
 
 Step3- At first, it will ask you to create account. After submitting details, confirm.
  On account creation, you will get 1000 betacoins. This is similar to minimum account balance required to open account in conventional banking system.
-  * THE ACCOUNT NUMBER IS SAME AS WALLET ID.
-  * In main menu, opt to check user details, there you will get to know your <user_name>@<host_name>.
-  * Take a group of systems, let's say system A, B and C.
-  * CONNECT ALL THE SYSTEMS TO THE SAME ROUTER.
-  * Then enable password-less ssh for each of the pair. A->B , B->A , B->C , C->B , A->C and C->A.
-  * To go for passwrod-less ssh, follow instructions from net.
-  * To do so, you will require <user_name>@<host_name> of other users, which you will get know from    their user details. And other users will require your's which they will get from your user        details.
+  - THE ACCOUNT NUMBER IS SAME AS WALLET ID.
+  -In main menu, opt to check user details, there you will get to know your <user_name>@<host_name>.
+  - Take a group of systems, let's say system A, B and C.
+  - CONNECT ALL THE SYSTEMS TO THE SAME ROUTER.
+  - Then enable password-less ssh for each of the pair. A->B , B->A , B->C , C->B , A->C and C->A.
+  - To go for passwrod-less ssh, follow instructions from net.
+  - To do so, you will require <user_name>@<host_name> of other users, which you will get know from    their user details. And other users will require your's which they will get from your user        details.
 
 Step4- Opt for "make a transaction", you will be driven to another menu, Transaction Menu. 
  First you need to add beneficiaries to your account. Feed the account numbers of your beneficiaries.
