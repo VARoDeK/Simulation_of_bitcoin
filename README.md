@@ -1,12 +1,11 @@
 # Simulation_of_bitcoin
-The Project is made for POSIX systems.
-Steps for using this version is given at last.
+- [x] The Project is made for POSIX systems.
 
+> Steps, for using this version, are given at last.
 ----------------------------------------------------------------------------------------------------
-This is the group project of our subject, SDF (Software Development Fundamentals), for our first year.
-
+> This is the group project of our subject, SDF (Software Development Fundamentals), for the first year of our college.
 ----------------------------------------------------------------------------------------------------
-The boundaries decided by the syllabus and technical skills we have acquired till now, are:
+### The boundaries decided by the syllabus and technical skills we have acquired till now, are:
 - Project has to include any of the data structures we have learned about. (linked lists or binary tree).
 - The project has to be made using c.
 - Due to unawareness about socket programming and protocols, the transfer of files between two POSIX systems is made using "scp". That will be made password-less using ssh keygen.
@@ -15,7 +14,7 @@ The boundaries decided by the syllabus and technical skills we have acquired til
 - At few places Safety and Security are compromised, as it is just a simulation.
 
 ----------------------------------------------------------------------------------------------------
-As Bitcoin is based on "block chain", it replicates the behaviour of linked list. The "hash" of previous block is stored in the current block. Also before the construction of a block, the transactions are buffered in a Merkle tree. Hence a binary tree is used.
+As [Bitcoin](https://en.wikipedia.org/wiki/Bitcoin) is based on "[block chain](https://en.wikipedia.org/wiki/Blockchain)", it replicates the behaviour of linked list. The "[hash](https://en.wikipedia.org/wiki/Cryptographic_hash_function)" of previous block is stored in the current block. Also before the construction of a block, the transactions are buffered in a [Merkle tree](https://en.wikipedia.org/wiki/Merkle_tree), hence a binary tree is used.
 
 1- We will use several POSIX machines and connect them to Internet using a signle router. Hence there will be zero probability of conflicting hostnames. 
 
