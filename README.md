@@ -1,10 +1,11 @@
 # Simulation_of_bitcoin
 - [x] The Project is made for [POSIX](https://en.wikipedia.org/wiki/POSIX) systems.
 
-##### Steps, for using this version, are given at last.
-====================================================================================================
-##### This is the group project of our subject, SDF (Software Development Fundamentals), for the first year of our college.
-====================================================================================================
+##### * This is the group project of our subject, SDF (Software Development Fundamentals), for the first year of our college.
+##### * Steps, for using this version, are given at last.
+
+----------------------------------------------------------------------------------------------------
+
 ### The boundaries decided by the syllabus and technical skills we have acquired till now, are:
 - Project has to include any of the data structures we have learned about. ([linked lists](https://www.geeksforgeeks.org/data-structures/linked-list/) and/or [binary tree](https://www.geeksforgeeks.org/binary-tree-data-structure/)).
 - The project has to be made using [C](https://en.wikipedia.org/wiki/C_(programming_language)) language.
@@ -13,7 +14,8 @@
 - 2-3 Steps are Manual.
 - At few places Safety and Security are compromised, as it is just a simulation and we are bound with syllabus.
 
-====================================================================================================
+----------------------------------------------------------------------------------------------------
+
 ## Summary on working
 As [Bitcoin](https://en.wikipedia.org/wiki/Bitcoin) is based on "[block chain](https://en.wikipedia.org/wiki/Blockchain)", it replicates the behaviour of linked list. The "[hash](https://en.wikipedia.org/wiki/Cryptographic_hash_function)" of previous block is stored in the current block. Also before the construction of a block, the transactions are buffered in a [Merkle tree](https://en.wikipedia.org/wiki/Merkle_tree), hence a binary tree is used.
 
@@ -26,9 +28,9 @@ As [Bitcoin](https://en.wikipedia.org/wiki/Bitcoin) is based on "[block chain](h
 4- For example, there will be sepearte `.c` programs to request transaction, create block, make merkle tree etc.
 
 5- We will use [system calls](https://www.geeksforgeeks.org/system-call-in-c/) to call and run different `.c` programs in between. Suppose while mining, during execution of a one `.c` program we will have to call the various `.c` programs:
-`system(\_path_to_c_program_\.merkle_tree.out);` to calculate merkle [SHA256](https://en.wikipedia.org/wiki/Secure_Shell).
-`system(\_path_to_c_program_\.create_block.out);` to create new block.
-`system(\_path_to_c_program_\.send_newblock.out);` to send newly mined block to other miners for verification.
+  * `system(\_path_to_c_program_\.merkle_tree.out);` to calculate merkle [SHA256](https://en.wikipedia.org/wiki/Secure_Shell).
+  * `system(\_path_to_c_program_\.create_block.out);` to create new block.
+  * `system(\_path_to_c_program_\.send_newblock.out);` to send newly mined block to other miners for verification.
 ...etc.
 
 6- Assume, 1st program generated an output which is an argument for 2nd [C](https://en.wikipedia.org/wiki/C_(programming_language)) program. Since project is divided into different `.c` files, we will save that ouput in a specific, file so that when 2nd program executes, it can read that particular file for arguments. 
@@ -38,6 +40,7 @@ As [Bitcoin](https://en.wikipedia.org/wiki/Bitcoin) is based on "[block chain](h
 8- To generate [SHA256](https://en.wikipedia.org/wiki/Secure_Shell), we will not write [C](https://en.wikipedia.org/wiki/C_(programming_language)) function for it. sha256 is builtin in python, hence we will integrate python program to generate [SHA256](https://en.wikipedia.org/wiki/Secure_Shell) using [system calls](https://www.geeksforgeeks.org/system-call-in-c/).
 
 ----------------------------------------------------------------------------------------------------
+
 ## STEPS FOR USAGE OF THIS VERSION
 
 Assuming that users have cloned the software and have [gcc](https://en.wikipedia.org/wiki/GNU_Compiler_Collection) and python3 installed.
