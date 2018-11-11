@@ -9,7 +9,7 @@
 ### The boundaries decided by the syllabus and technical skills we have acquired till now, are:
 - Project has to include any of the data structures we have learned about. ([linked lists](https://www.geeksforgeeks.org/data-structures/linked-list/) and/or [binary tree](https://www.geeksforgeeks.org/binary-tree-data-structure/)).
 - The project has to be made using [C](https://en.wikipedia.org/wiki/C_(programming_language)) language.
-- Due to unawareness about socket programming and protocols, the transfer of files between two POSIX systems is made using "[SCP](https://en.wikipedia.org/wiki/Secure_copy)". That will be made password-less using [ssh](https://en.wikipedia.org/wiki/Secure_Shell) keygen.
+- Due to unawareness about socket programming and protocols, the transfer of files between two [POSIX](https://en.wikipedia.org/wiki/POSIX) systems is made using "[SCP](https://en.wikipedia.org/wiki/Secure_copy)". That will be made password-less using [ssh](https://en.wikipedia.org/wiki/Secure_Shell) keygen.
 - [SHA256](https://en.wikipedia.org/wiki/Secure_Shell) and [MD5](https://en.wikipedia.org/wiki/MD5) hashing is done using Python3 inbuilt functions.
 - 2-3 Steps are Manual.
 - At few places Safety and Security are compromised, as it is just a simulation and we are bound with syllabus.
