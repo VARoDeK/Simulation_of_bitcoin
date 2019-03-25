@@ -79,5 +79,14 @@ Assuming that users have cloned the software and have [gcc](https://en.wikipedia
 
 And you can now make more transactions, mine your block keep going. 
 
+----------------------------------------------------------------------------------------------------
 
+## Screenshots
+![image](ImageSources/1.png)
+![image](ImageSources/2.png)
+![image](ImageSources/3.png)
+![image](ImageSources/4.png)
+![image](ImageSources/5.png)
+![image](ImageSources/6.png)
+![image](ImageSources/7.png)
 
