@@ -124,7 +124,7 @@ printf("\n Current Balance: %Lf" , user_balance);
 
     if(strcmp(trans_global.reciever_id , user_global.wallet_id) == 0)
     {
-     user_balance -= trans_global.amount;
+     user_balance += trans_global.amount;
      line();
       printf("\n You recieved %Lf from %s" , trans_global.amount , trans_global.sender_id);
       printf("\n Balance: %Lf" , user_balance);
