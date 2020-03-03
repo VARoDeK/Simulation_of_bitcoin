@@ -4,6 +4,17 @@
 ##### * This is the group project of our subject, SDF (Software Development Fundamentals), for the first year of our college.
 ##### * Steps, for using this version, are given at last.
 
+---
+
+# Collaborators / Direct Contributors
+
+1) [Kanchan Joshi](https://github.com/koderjoker)
+2) [Shikhar Kataruka](https://github.com/shikhar9820)
+3) [Shivam Khurana](https://github.com/SeeBoom)
+4) [Vaibhav Gupta](https://github.com/VARoDeK)
+
+
+
 ----------------------------------------------------------------------------------------------------
 
 ### The boundaries decided by the syllabus and technical skills we have acquired till now, are:
